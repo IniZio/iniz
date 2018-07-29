@@ -1,0 +1,66 @@
+{
+  "name": "reim",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/reim.cjs.js",
+  "module": "dist/reim.es.js",
+  "unpkg": "dist/reim.js",
+  "jsdelivr": "dist/reim.js",
+  "files": [
+    "dist",
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "bili --no-babel.babelrc --watch",
+    "build": "npm run build:dist",
+    "build:dist": "rimraf dist && bili --no-babel.babelrc",
+    "lint": "xo --fix"
+  },
+  "xo": {
+    "parser": "babel-eslint",
+    "extends": "xo-react",
+    "semicolon": false,
+    "esnext": true,
+    "space": 2,
+    "envs": [
+      "node",
+      "browser",
+      "es6",
+      "serviceworker"
+    ],
+    "globals": [
+      "it"
+    ],
+    "rules": {
+      "import/no-unassigned-import": 0,
+      "capitalized-comments": 0,
+      "quote-props": [
+        "warn",
+        "consistent"
+      ],
+      "react/button-has-type": 0
+    }
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "bili": "^3.1.2",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.2.0",
+    "eslint-config-xo-react": "^0.17.0",
+    "eslint-plugin-react": "^7.10.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "rimraf": "^2.6.2",
+    "xo": "^0.21.1"
+  },
+  "dependencies": {
+    "immer": "^1.5.0"
+  }
+}
