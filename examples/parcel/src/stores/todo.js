@@ -17,6 +17,9 @@ export const effects = {
 export const mutations = {
   changeCurrTodo: (state, todo) => {
     state.currTodo = todo
+  },
+  removeTodo: (state, index) => {
+    state.todos.splice(index, 1)
   }
 }
 

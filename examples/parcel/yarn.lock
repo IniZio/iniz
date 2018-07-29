@@ -3359,7 +3359,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.6.0:
+prop-types@^15.6.0, prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   dependencies:
@@ -3547,7 +3547,7 @@ regjsparser@^0.1.4:
     jsesc "~0.5.0"
 
 reim@../../:
-  version "1.0.0"
+  version "0.1.0"
   dependencies:
     immer "^1.5.0"
 

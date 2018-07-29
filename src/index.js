@@ -43,11 +43,14 @@ export class Store {
    * subscribe - Add subscriber
    *
    * @param {Function} handler Subscriber callback
+   * @param {Object} option Options for subscription
+   * @param {boolean} option.immediate Whether to run sub
+   * @param {Function} option.selector Selectors for data subscription
    *
    * @returns {Function} Unsubscriber
    */
-  subscribe(handler, {immediate = false} = {}) {
-    this._subscribers.push(handler)
+  subscribe(handler, {immediate = true, selector = state => state} = {}) {
+    this._subscribers.push({handler, selector})
     if (immediate) {
       this._notify()
     }
@@ -57,15 +60,22 @@ export class Store {
   /**
    * unsubscribe - Remove subscriber
    *
-   * @param {Function} handler Subscriber callback
+   * @param {Function} handler Subscriber to remvoe
    *
    */
   unsubscribe(handler) {
-    this._subscribers.splice(this._subscribers.indexOf(handler), 1)
+    this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
   }
 
   _notify() {
-    this._subscribers.forEach(handler => handler(this.state))
+    this._subscribers.forEach(sub => {
+      // Notify if selected is updated
+      const selected = produce(this.state, sub.selector)
+      if (selected !== sub.selected) {
+        sub.selected = selected
+        sub.handler(selected)
+      }
+    })
   }
 }
 
