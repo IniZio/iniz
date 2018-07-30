@@ -1,22 +1,13 @@
 {
-  "name": "reim",
-  "version": "0.2.0",
-  "license": "MIT",
-  "main": "dist/reim.cjs.js",
-  "module": "dist/reim.es.js",
-  "unpkg": "dist/reim.js",
-  "jsdelivr": "dist/reim.js",
-  "files": [
-    "dist",
-    "lib",
-    "src"
+  "name": "reim-dev",
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
-    "start": "npm run dev",
-    "dev": "bili --no-babel.babelrc --watch",
-    "build": "npm run build:dist",
-    "build:dist": "rimraf dist && bili --no-babel.babelrc",
-    "lint": "xo --fix"
+    "lint": "xo --fix",
+    "build": "rollup -c",
+    "watch": "rollup -w -c"
   },
   "xo": {
     "parser": "babel-eslint",
@@ -43,24 +34,29 @@
       "react/button-has-type": 0
     }
   },
-  "peerDependencies": {
-    "react": "*"
-  },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
+    "babel-plugin-import": "^1.8.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "bili": "^3.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "cross-env": "^5.2.0",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "rimraf": "^2.6.2",
+    "get-lerna-packages": "^0.1.0",
+    "lerna": "^3.0.0-rc.0",
+    "rollup": "^0.63.4",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-commonjs": "^9.1.4",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "to-pascal-case": "^1.0.0",
     "xo": "^0.21.1"
   },
-  "dependencies": {
-    "immer": "^1.5.0"
-  }
+  "dependencies": {}
 }

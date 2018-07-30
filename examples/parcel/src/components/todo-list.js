@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 
 import TodoStore, {mutations} from '../stores/todo'
 import TodoItem from './todo-item'
-import TodoInput from './todo-input'
 
 class TodoList extends Component {
   state = {
@@ -11,27 +10,24 @@ class TodoList extends Component {
 
   constructor() {
     super()
-    TodoStore.subscribe(state => {
-      this.setState({
-        todos: state.todos
-      })
-    })
   }
 
   render() {
-    const {todos} = this.state
+    const {todos} = this.props
 
     return (
-      <div>
-        <ul>
-          {
-            todos.map((todo, index) => <TodoItem key={JSON.stringify(todo)} onRemove={() => TodoStore.commit(mutations.removeTodo)(index)} todo={todo}/>)
-          }
-        </ul>
-        <TodoInput/>
-      </div>
+      <ul>
+        {
+          todos.map((todo, index) => <TodoItem key={JSON.stringify(todo)} onRemove={() => TodoStore.commit(mutations.removeTodo)(index)} todo={todo}/>)
+        }
+      </ul>
     )
   }
 }
 
-export default TodoList
+export default p =>
+  <TodoStore.Consumer selector={state => ({todos: state.todos})}>
+    {
+      state => <TodoList {...state} {...p}/>
+    }
+  </TodoStore.Consumer>

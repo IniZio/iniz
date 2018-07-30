@@ -1,9 +1,10 @@
-import * as Reim from 'reim'
+import {register} from 'reim'
+import createContext from 'react-reim'
 
-const store = new Reim.Store({
+const store = createContext(register({
   todos: [],
   currTodo: {value: ''}
-})
+}))
 
 export const effects = {
   addTodo: todo => {

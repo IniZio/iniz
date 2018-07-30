@@ -1,19 +1,19 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 
 # testing
-/coverage
+coverage
 
 # production
-/build
-/dist
-/lib
-/storybook
-/styleguide
-/.out
-/.ghpages-tmp
+build
+dist
+lib
+storybook
+styleguide
+.out
+.ghpages-tmp
 
 # misc
 .DS_Store
@@ -27,3 +27,5 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+lerna-error.log*

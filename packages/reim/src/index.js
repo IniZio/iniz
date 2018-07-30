@@ -1,4 +1,5 @@
 import {produce} from 'immer'
+import isEqual from 'lodash/isEqual'
 
 export class Store {
   state = null
@@ -71,7 +72,7 @@ export class Store {
     this._subscribers.forEach(sub => {
       // Notify if selected is updated
       const selected = produce(this.state, sub.selector)
-      if (selected !== sub.selected) {
+      if (!isEqual(selected, sub.selected)) {
         sub.selected = selected
         sub.handler(selected)
       }
