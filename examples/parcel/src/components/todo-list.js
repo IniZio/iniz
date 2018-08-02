@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 
 import TodoStore, {mutations} from '../stores/todo'
 import TodoItem from './todo-item'
 
-class TodoList extends Component {
+class TodoList extends PureComponent {
   state = {
     todos: []
   }
