@@ -1,38 +1,24 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
+import {connect} from 'react-reim'
 
 import TodoStore, {effects, mutations} from '../stores/todo'
 
 class TodoInput extends PureComponent {
-  state = {
-    currTodo: {value: ''}
-  }
-
-  constructor() {
-    super()
-    TodoStore.subscribe(state => {
-      this.setState({
-        currTodo: state.currTodo
-      })
-    }, {
-      selector: state => ({currTodo: state.currTodo})
-    })
-  }
-
   handleTodoChange = e => {
     e.preventDefault()
     TodoStore.commit(mutations.changeCurrTodo)({value: e.target.value})
   }
 
   handleAddTodo = () => {
-    this.props.onAddTodo(this.state.currTodo)
+    this.props.onAddTodo(this.props.currTodo)
       .then(TodoStore.commit(state => {
         state.currTodo = {value: ''}
       }))
   }
 
   render() {
-    const {currTodo} = this.state
+    const {currTodo} = this.props
 
     return (
       <div>
@@ -44,11 +30,15 @@ class TodoInput extends PureComponent {
 }
 
 TodoInput.defaultProps = {
-  onAddTodo() {}
+  onAddTodo() {},
+  currTodo: {value: ''}
 }
 
 TodoInput.propTypes = {
-  onAddTodo: PropTypes.func
+  onAddTodo: PropTypes.func,
+  currTodo: PropTypes.shape({
+    value: PropTypes.string
+  })
 }
 
-export default p => <TodoInput onAddTodo={TodoStore.dispatch(effects.addTodo)} {...p}/>
+export default connect(TodoStore, state => ({currTodo: state.currTodo, onAddTodo: TodoStore.dispatch(effects.addTodo)}))(TodoInput)

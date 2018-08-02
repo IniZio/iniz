@@ -57,10 +57,11 @@ class RenderPure extends PureComponent {
   }
 }
 
-export default function(store) {
+export function createContext(store) {
   const Context = React.createContext()
 
   const res = {
+    get __hasContext() { return true },
     Consumer: ({selector, children}) => (
       <Context.Consumer>
         {
@@ -79,4 +80,14 @@ export default function(store) {
 
   Object.assign(store, res)
   return store
+}
+
+export function connect(store, selector) {
+  const Context = store.__hasContext ? store : createContext(store)
+  return Wrapped => p =>
+    <Context.Consumer store={store} selector={selector}>
+      {
+        selected => <Wrapped {...selected} {...p}/>
+      }
+    </Context.Consumer>
 }

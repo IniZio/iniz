@@ -1,4 +1,5 @@
 import {produce} from 'immer'
+import memoize from 'lodash/memoize'
 import isEqual from 'lodash/isEqual'
 
 export class Store {
@@ -13,32 +14,34 @@ export class Store {
   /**
    * dispatch - Execute effect
    *
-   * @param {Function} effect An effect has side-effect
+   * @param {Function} effect A function that has side-effect
    *
    * @returns {Function} dispatched effect
    */
-  dispatch(effect) {
+  dispatch = memoize(effect => {
     return async (...args) => {
-      const m = await effect(...args)
-      const mutations = [].concat(m)
-      mutations.map((...args) => this.commit(...args)())
+      const mutation = await effect.apply(this, args)
+      return this.commit(mutation)()
     }
-  }
+  })
 
   /**
-   * commit - Execute mutations
+   * commit - Execute mutation
    *
-   * @param {Function} mutations Mutations only mutate state
+   * @param {Function} mutation A function that only mutates state
    *
    * @returns {any} New state
    */
-  commit(mutations) {
+  commit = memoize.call(this, (mutation) => {
     return (...args) => {
-      this.state = produce(this.state, draft => ([].concat(mutations)).forEach(mutation => mutation(draft, ...args)))
+      if (Array.isArray(mutation)) {
+        return mutation.map(this.commit.bind(this))
+      }
+      this.state = produce(this.state, draft => mutation(draft, ...args))
       this._notify()
       return this.state
     }
-  }
+  })
 
   /**
    * subscribe - Add subscriber

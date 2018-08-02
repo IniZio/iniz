@@ -1,5 +1,5 @@
 import {register} from 'reim'
-import createContext from 'react-reim'
+import {createContext} from 'react-reim'
 
 const store = createContext(register({
   todos: [],

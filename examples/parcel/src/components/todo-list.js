@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import {connect} from 'react-reim'
 
 import TodoStore, {mutations} from '../stores/todo'
 import TodoItem from './todo-item'
@@ -25,9 +26,4 @@ class TodoList extends PureComponent {
   }
 }
 
-export default p =>
-  <TodoStore.Consumer selector={state => ({todos: state.todos})}>
-    {
-      state => <TodoList {...state} {...p}/>
-    }
-  </TodoStore.Consumer>
+export default connect(TodoStore, state => ({todos: state.todos}))(TodoList)
