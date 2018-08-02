@@ -1,6 +1,6 @@
 {
   "name": "react-reim",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "dist/react-reim.cjs.js",
   "module": "dist/react-reim.es.js",
@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "react": "^16.4.1",
-    "reim": "*"
+    "reim": "^0.3.0"
   },
   "dependencies": {
     "immer": "^1.5.0"
