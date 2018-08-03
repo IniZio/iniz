@@ -18,9 +18,9 @@ export class Store {
    *
    * @returns {Function} dispatched effect
    */
-  dispatch = memoize(effect => {
+  dispatch = memoize.call(this, effect => {
     return async (...args) => {
-      const mutation = await effect.apply(this, args)
+      const mutation = await effect.call(this, this.state, ...args)
       return this.commit(mutation)()
     }
   })
@@ -32,7 +32,7 @@ export class Store {
    *
    * @returns {any} New state
    */
-  commit = memoize.call(this, (mutation) => {
+  commit = memoize.call(this, mutation => {
     return (...args) => {
       if (Array.isArray(mutation)) {
         return mutation.map(this.commit.bind(this))

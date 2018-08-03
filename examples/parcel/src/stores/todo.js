@@ -7,7 +7,7 @@ const store = createContext(register({
 }))
 
 export const effects = {
-  addTodo: todo => {
+  addTodo: (state, todo) => {
     console.log('gonna add todo')
     return ({todos}) => {
       todos.push(todo)
