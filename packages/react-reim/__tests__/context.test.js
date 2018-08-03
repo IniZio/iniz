@@ -1,3 +1,5 @@
+/* eslint react/prop-types: 0 */
+/* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
 import {register} from '../../reim/src'
@@ -26,8 +28,10 @@ test('Consumer should have change in store state reflected', () => {
       </store.Consumer>
     </store.Provider>
   )
-  store.commit((state) => {state.yer += 88})()
-  let tree = component.toJSON()
+  store.commit(state => {
+    state.yer += 88
+  })()
+  const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
@@ -38,12 +42,13 @@ test('Unselected properties should not trigger update', () => {
 
   class Listen extends Component {
     componentDidUpdate = updated
+
     render() {
       return <div>{this.props.hel}</div>
     }
   }
 
-  const component = renderer.create(
+  renderer.create(
     <store.Provider>
       <store.Consumer selector={state => ({hel: state.hel})}>
         {
@@ -54,8 +59,12 @@ test('Unselected properties should not trigger update', () => {
       </store.Consumer>
     </store.Provider>
   )
-  store.commit((state) => {state.hel -= 22})()
+  store.commit(state => {
+    state.hel -= 22
+  })()
   expect(updated).toBeCalledTimes(1)
-  store.commit((state) => {state.gee += 88})()
+  store.commit(state => {
+    state.gee += 88
+  })()
   expect(updated).toBeCalledTimes(1)
 })

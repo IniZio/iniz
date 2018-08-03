@@ -40,7 +40,10 @@
       "serviceworker"
     ],
     "globals": [
-      "it"
+      "jest",
+      "test",
+      "expect",
+      "describe"
     ],
     "rules": {
       "import/no-unassigned-import": 0,

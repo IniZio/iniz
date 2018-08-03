@@ -1,29 +1,29 @@
 module.exports = {
-  "modulePathIgnorePatterns": [
-    "examples/.*",
-    "packages/.*/dist"
+  'modulePathIgnorePatterns': [
+    'examples/.*',
+    'packages/.*/dist'
   ],
-  "coveragePathIgnorePatterns": [
-    "/node_modules/",
-    "/dist/"
+  'coveragePathIgnorePatterns': [
+    '/node_modules/',
+    '/dist/'
   ],
-  "collectCoverageFrom": [
-    "packages/*/src/**/*.js",
+  'collectCoverageFrom': [
+    'packages/*/src/**/*.js'
   ],
-  "coverageReporters": [
-    "json",
-    "lcov"
+  'coverageReporters': [
+    'json',
+    'lcov'
   ],
-  "projects": [
-    "<rootDir>",
-    "<rootDir>/examples/*/"
+  'projects': [
+    '<rootDir>',
+    '<rootDir>/examples/*/'
   ],
-  "snapshotSerializers": [],
-  "testPathIgnorePatterns": [
-    "/node_modules/",
-    "/examples/",
-    "/e2e/.*/__tests__",
-    "\\.snap$",
-    "/packages/.*/dist"
+  'snapshotSerializers': [],
+  'testPathIgnorePatterns': [
+    '/node_modules/',
+    '/examples/',
+    '/e2e/.*/__tests__',
+    '\\.snap$',
+    '/packages/.*/dist'
   ]
 }

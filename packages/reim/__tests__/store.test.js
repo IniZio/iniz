@@ -9,7 +9,9 @@ test('register a store', () => {
 test('commit a mutation', () => {
   const store = register({foo: 17})
 
-  store.commit((state, amount) => {state.foo += amount})(11)
+  store.commit((state, amount) => {
+    state.foo += amount
+  })(11)
   expect(store.state.foo).toBe(28)
 })
 
@@ -19,7 +21,7 @@ test('dispatch an effect', async () => {
   let wap = 100
   await store.dispatch(({bar}) => {
     wap += bar
-    return (state) => {
+    return state => {
       state.bar = 10000
     }
   })()
@@ -38,7 +40,7 @@ describe('subscription', () => {
     const updated = jest.fn()
     // Should be called on subscribe also for initial fetch
     store.subscribe(updated)
-    store.commit((state) => {
+    store.commit(state => {
       state.mag -= 10
     })()
     expect(updated).toBeCalledTimes(2)
@@ -50,13 +52,13 @@ describe('subscription', () => {
     const updated = jest.fn()
 
     const handler = store.subscribe(updated)
-    store.commit((state) => {
+    store.commit(state => {
       state.poi += 30
     })()
     expect(updated).toBeCalledTimes(2)
 
     store.unsubscribe(handler)
-    store.commit((state) => {
+    store.commit(state => {
       state.poi *= 10
     })
     expect(updated).toBeCalledTimes(2)

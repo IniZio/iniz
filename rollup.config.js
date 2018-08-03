@@ -6,7 +6,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  reim: {},
+  'reim': {},
   'react-reim': {
     globals: {
       'react': 'React',
@@ -30,7 +30,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
   const PACKAGE_ROOT_PATH = path.join(process.cwd(), 'packages', name)
   const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, 'src/index.js')
   const OUTPUT_DIR = path.join(PACKAGE_ROOT_PATH, 'dist')
-  const PKG_JSON = require(path.join(PACKAGE_ROOT_PATH, 'package.json'))
+  // const PKG_JSON = require(path.join(PACKAGE_ROOT_PATH, 'package.json'))
 
   return [
     ...tasks,

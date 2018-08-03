@@ -1,18 +1,11 @@
 import React, {PureComponent} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-reim'
 
 import TodoStore, {mutations} from '../stores/todo'
 import TodoItem from './todo-item'
 
 class TodoList extends PureComponent {
-  state = {
-    todos: []
-  }
-
-  constructor() {
-    super()
-  }
-
   render() {
     const {todos} = this.props
 
@@ -24,6 +17,14 @@ class TodoList extends PureComponent {
       </ul>
     )
   }
+}
+
+TodoList.propTypes = {
+  todos: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string
+    })
+  ).isRequired
 }
 
 export default connect(TodoStore, state => ({todos: state.todos}))(TodoList)
