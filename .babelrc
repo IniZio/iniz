@@ -5,7 +5,8 @@
       "modules": false,
       "exclude": ["transform-regenerator", "transform-async-to-generator"]
     }],
-    "react"
+    "react",
+    "es2015-rollup"
   ],
   "plugins": [
     ["transform-object-rest-spread",
