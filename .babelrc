@@ -1,12 +1,11 @@
 {
   "presets": [
     ["env", {
-          "useBuiltIns": false,
-          "modules": false,
-          "exclude": ["transform-regenerator", "transform-async-to-generator"]
+      "useBuiltIns": false,
+      "modules": false,
+      "exclude": ["transform-regenerator", "transform-async-to-generator"]
     }],
-    "react",
-    "es2015-rollup"
+    "react"
   ],
   "plugins": [
     ["transform-object-rest-spread",
@@ -16,5 +15,24 @@
     ],
     "transform-flow-strip-types",
     "transform-class-properties"
-  ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        ["env", {
+          "exclude": ["transform-regenerator", "transform-async-to-generator"]
+        }],
+        "react"
+      ],
+      "plugins": [
+        ["transform-object-rest-spread",
+          {
+            "useBuiltIns": true
+          }
+        ],
+        "transform-flow-strip-types",
+        "transform-class-properties"
+      ]
+    }
+  }
 }

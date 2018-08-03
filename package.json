@@ -5,9 +5,27 @@
     "packages/*"
   ],
   "scripts": {
+    "link": "lerna exec yarn link",
     "lint": "xo --fix",
+    "dev": "yarn watch",
     "build": "rollup -c",
-    "watch": "rollup -w -c"
+    "watch": "rollup -w -c",
+    "test": "NODE_ENV=test jest --testURL=http://localhost",
+    "test:watch": "yarn test --watchAll",
+    "test:ci": "yarn test --coverage && cat ./coverage/lcov.info | codacy-coverage",
+    "prerelease": "yarn build",
+    "release": "lerna publish --conventional-commits",
+    "release:preview": "lerna publish --skip-git --skip-npm --conventional-commits"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn lint"
+    ]
   },
   "xo": {
     "parser": "babel-eslint",
@@ -37,6 +55,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "babel-jest": "^23.4.2",
     "babel-plugin-import": "^1.8.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
@@ -50,7 +69,12 @@
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
     "get-lerna-packages": "^0.1.0",
+    "husky": "^0.14.3",
+    "jest": "^23.4.2",
     "lerna": "^3.0.0-rc.0",
+    "lint-staged": "^7.2.0",
+    "react-test-renderer": "^16.4.2",
+    "regenerator-runtime": "^0.12.0",
     "rollup": "^0.63.4",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.4",
