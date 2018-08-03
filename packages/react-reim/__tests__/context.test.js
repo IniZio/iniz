@@ -3,7 +3,7 @@
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
 import {register} from '../../reim/src'
-import {createContext} from '../src'
+import {createContext, connect} from '../src'
 
 test('createContext returns Consumer and Provider', () => {
   const store = createContext(register({yer: 43}))
@@ -67,4 +67,57 @@ test('Unselected properties should not trigger update', () => {
     state.gee += 88
   })()
   expect(updated).toBeCalledTimes(1)
+})
+
+test('use convenience method connect', () => {
+  const store = createContext(register({bom: 19}))
+
+  const Container = connect(store, state => ({bom: state.bom}))(
+    state => <div>{JSON.stringify(state)}</div>
+  )
+
+  const component = renderer.create(
+    <store.Provider>
+      <Container/>
+    </store.Provider>
+  )
+  store.commit(state => {
+    state.bom += 490
+  })()
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
+})
+
+test('change selector', () => {
+  const store = createContext(register({dui: 12, geo: 'tie'}))
+
+  class Selector extends Component {
+    state = {
+      selector: state => ({dui: state.dui})
+    }
+
+    render() {
+      return (
+        <store.Provider>
+          <store.Consumer selector={this.state.selector}>
+          {
+            state => (
+              <div>
+                <div id="selected">{JSON.stringify(state)}</div>
+              </div>
+            )
+          }
+          </store.Consumer>
+        </store.Provider>
+      )
+    }
+  }
+
+  const component = renderer.create(<Selector/>)
+  expect(component.toJSON()).toMatchSnapshot()
+
+  // Change in selector should change passed in state
+  const {instance} = component.root
+  instance.setState({selector: s => s})
+  expect(component.toJSON()).toMatchSnapshot()
 })

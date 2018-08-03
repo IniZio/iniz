@@ -21,9 +21,11 @@ test('dispatch an effect', async () => {
   let wap = 100
   await store.dispatch(({bar}) => {
     wap += bar
-    return state => {
-      state.bar = 10000
-    }
+    return [
+      state => {
+        state.bar = 10000
+      }
+    ]
   })()
 
   // Side effect should be run

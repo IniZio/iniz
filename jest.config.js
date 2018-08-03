@@ -3,10 +3,6 @@ module.exports = {
     'examples/.*',
     'packages/.*/dist'
   ],
-  'coveragePathIgnorePatterns': [
-    '/node_modules/',
-    '/dist/'
-  ],
   'collectCoverageFrom': [
     'packages/*/src/**/*.js'
   ],

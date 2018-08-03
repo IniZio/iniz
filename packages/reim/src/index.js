@@ -35,7 +35,7 @@ export class Store {
   commit = memoize.call(this, mutation => {
     return (...args) => {
       if (Array.isArray(mutation)) {
-        return mutation.map(this.commit.bind(this))
+        return mutation.map(m => this.commit(m)())
       }
       this.state = produce(this.state, draft => mutation(draft, ...args))
       this._notify()
