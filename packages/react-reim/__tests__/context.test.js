@@ -100,13 +100,13 @@ test('change selector', () => {
       return (
         <store.Provider>
           <store.Consumer selector={this.state.selector}>
-          {
-            state => (
-              <div>
-                <div id="selected">{JSON.stringify(state)}</div>
-              </div>
-            )
-          }
+            {
+              state => (
+                <div>
+                  <div id="selected">{JSON.stringify(state)}</div>
+                </div>
+              )
+            }
           </store.Consumer>
         </store.Provider>
       )

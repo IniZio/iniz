@@ -8,6 +8,10 @@ class RenderPure extends PureComponent {
   }
 }
 
+RenderPure.defaultProps = {
+  children() {}
+}
+
 RenderPure.propTypes = {
   children: PropTypes.any
 }
