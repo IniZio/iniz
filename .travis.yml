@@ -9,8 +9,7 @@ notifications:
 node_js:
   - '8'
 script:
-  - yarn lint
-  - yarn test:ci
+  - yarn test:ci && yarn build && yarn lint
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
