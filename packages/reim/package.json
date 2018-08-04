@@ -1,6 +1,6 @@
 {
   "name": "reim",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "dist/reim.cjs.js",
   "module": "dist/reim.es.js",
