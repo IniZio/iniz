@@ -1,6 +1,8 @@
-import {produce} from 'immer'
+import {produce, setAutoFreeze} from 'immer'
 import memoize from 'lodash/memoize'
 import isEqual from 'lodash/isEqual'
+
+setAutoFreeze(true)
 
 export class Store {
   state = null
