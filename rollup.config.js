@@ -11,7 +11,10 @@ const builds = {
     globals: {
       'react': 'React',
       'react-dom': 'ReactDOM'
-    }
+    },
+    external: [
+      'prop-types'
+    ]
   }
 }
 
