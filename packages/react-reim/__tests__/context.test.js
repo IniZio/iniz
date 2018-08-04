@@ -35,6 +35,35 @@ test('Consumer should have change in store state reflected', () => {
   expect(tree).toMatchSnapshot()
 })
 
+test('Unmount Cunsumer should unsubscribe', () => {
+  const store = createContext(register({yer: 43}))
+
+  const selector = jest.fn()
+
+  const component = renderer.create(
+    <store.Provider>
+      <store.Consumer selector={selector}>
+        {
+          state => (
+            <div>
+              <div id="value">{state.yer}</div>
+            </div>
+          )
+        }
+      </store.Consumer>
+    </store.Provider>
+  )
+  store.commit(state => {
+    state.yer += 88
+  })()
+  expect(selector).toBeCalledTimes(2)
+  component.unmount()
+  store.commit(state => {
+    state.yer *= 88
+  })()
+  expect(selector).toBeCalledTimes(2)
+})
+
 test('Unselected properties should not trigger update', () => {
   const store = createContext(register({hel: 43, gee: 10}))
 
