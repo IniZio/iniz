@@ -1,16 +1,14 @@
-import {produce, setAutoFreeze} from 'immer'
+import produce from 'immuta'
 import memoize from 'lodash/memoize'
 import isEqual from 'lodash/isEqual'
 
-setAutoFreeze(true)
-
 export class Store {
-  state = null
+  state = {}
 
   _subscribers = []
 
   constructor(state) {
-    this.state = produce(null, () => state)
+    this.state = produce(state, () => {})
   }
 
   /**
@@ -39,7 +37,7 @@ export class Store {
       if (Array.isArray(mutation)) {
         return mutation.map(m => this.commit(m)())
       }
-      this.state = produce(this.state, draft => mutation(draft, ...args))
+      this.state = produce(this.state, draft => { mutation(draft, ...args) })
       this._notify()
       return this.state
     }
@@ -76,7 +74,7 @@ export class Store {
   _notify() {
     this._subscribers.forEach(sub => {
       // Notify if selected is updated
-      const selected = produce(this.state, sub.selector)
+      const selected = sub.selector(this.state)
       if (!isEqual(selected, sub.selected)) {
         sub.selected = selected
         sub.handler(selected)

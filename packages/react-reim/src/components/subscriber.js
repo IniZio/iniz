@@ -53,7 +53,7 @@ class Subscriber extends Component {
 }
 
 Subscriber.defaultProps = {
-  selector() {}
+  selector(s) {return s}
 }
 
 Subscriber.propTypes = {
