@@ -53,7 +53,10 @@
         "consistent"
       ],
       "react/button-has-type": 0
-    }
+    },
+    "ignores": [
+      "examples/**"
+    ]
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -6,7 +6,11 @@ import commonjs from 'rollup-plugin-commonjs'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  'reim': {},
+  'reim': {
+    external: [
+      'immuta'
+    ]
+  },
   'react-reim': {
     globals: {
       'react': 'React',
