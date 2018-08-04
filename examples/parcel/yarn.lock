@@ -3454,8 +3454,12 @@ react-dom@^16.4.1:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-reim@../../packages/react-reim:
-  version "0.0.0"
+react-reim@*:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-reim/-/react-reim-0.3.1.tgz#7c0ca8bfc7eab56218fca738e7aa2cbe50aec99d"
+  dependencies:
+    lodash "^4.17.10"
+    prop-types "^15.6.2"
 
 react@^16.4.1:
   version "16.4.1"
@@ -3549,8 +3553,9 @@ regjsparser@^0.1.4:
   dependencies:
     jsesc "~0.5.0"
 
-reim@../../packages/reim:
-  version "0.2.0"
+reim@*:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/reim/-/reim-0.3.1.tgz#1eef7921774825312443590b9f74c972037d518a"
   dependencies:
     immer "^1.5.0"
     lodash "^4.17.10"
