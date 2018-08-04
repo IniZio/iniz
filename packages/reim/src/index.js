@@ -3,12 +3,16 @@ import memoize from 'lodash/memoize'
 import isEqual from 'lodash/isEqual'
 
 export class Store {
-  state = {}
+  _state = {}
 
   _subscribers = []
 
+  get state() {
+    return this._state
+  }
+
   constructor(state) {
-    this.state = produce(state, () => {})
+    this._state = produce(state, () => {})
   }
 
   /**
@@ -37,7 +41,9 @@ export class Store {
       if (Array.isArray(mutation)) {
         return mutation.map(m => this.commit(m)())
       }
-      this.state = produce(this.state, draft => { mutation(draft, ...args) })
+      this._state = produce(this.state, draft => {
+        mutation(draft, ...args)
+      })
       this._notify()
       return this.state
     }
