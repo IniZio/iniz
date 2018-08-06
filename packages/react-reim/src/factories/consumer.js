@@ -8,7 +8,7 @@ function createConsumer(Consumer) {
     props => (
       <Consumer>
         {
-          store => <Subscriber store={store} selector={props.selector}>{props.children}</Subscriber>
+          store => <Subscriber store={store} getter={props.getter} setter={props.setter}>{props.children}</Subscriber>
         }
       </Consumer>
     )

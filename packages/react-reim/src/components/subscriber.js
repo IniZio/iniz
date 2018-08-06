@@ -1,65 +1,80 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import isPlainObject from 'lodash/isPlainObject'
 
 import RenderPure from './render-pure'
 
 class Subscriber extends Component {
   state = {
     isInitialized: false,
-    selected: null
+    getterCache: {},
+    setterCache: {}
   }
 
   componentDidMount() {
-    this.updateSubscription()
+    this.updateGetterCache()
+    this.updateSetterCache()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (nextProps.selector !== this.props.selector || nextState.selected !== this.state.selected)
+    return (
+      (nextProps.getter !== this.props.getter || nextState.getterCache !== this.state.getterCache) ||
+      (nextProps.setter !== this.props.setter || nextState.setterCache !== this.state.setterCache)
+    )
   }
 
-  updateSubscription() {
+  updateGetterCache() {
     if (this._handler) {
-      this.props.store.unsubscribe(this._handler)
+      this.props.store.unsync(this._handler)
     }
-    this._handler = this.props.store.subscribe(selected => {
-      this.setState({isInitialized: true, selected})
+    this._handler = this.props.store.sync(getterCache => {
+      this.setState({isInitialized: true, getterCache})
     }, {
-      selector: this.props.selector
+      getter: this.props.getter
+    })
+  }
+
+  updateSetterCache() {
+    this.setState({
+      setterCache: this.props.setter(this.props.store)
     })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // User changed selector
-    if (prevProps.selector !== this.props.selector && prevState.selected === this.state.selected) {
-      this.updateSubscription()
+    // User changed getter
+    if (prevProps.getter !== this.props.getter && prevState.getterCache === this.state.getterCache) {
+      this.updateGetterCache()
+    }
+    if (prevProps.setter !== this.props.setter && prevState.setterCache === this.state.setterCache) {
+      this.updateSetterCache()
     }
   }
 
   componentWillUnmount() {
-    this.props.store.unsubscribe(this._handler)
+    this.props.store.unsync(this._handler)
   }
 
   render() {
-    const {children, store} = this.props
-    const {selected, isInitialized} = this.state
+    const {children} = this.props
+    const {getterCache, setterCache, isInitialized} = this.state
 
-    const fn = ({__obj, ...rest}) => children(__obj ? rest : rest.selected, store)
-    const isObject = isPlainObject(selected)
-    const props = isObject ? selected : {selected}
-
-    return isInitialized ? <RenderPure __obj={isObject} {...props}>{fn}</RenderPure> : null
+    return isInitialized ? <RenderPure {...setterCache} {...getterCache}>{children}</RenderPure> : null
   }
 }
 
 Subscriber.defaultProps = {
-  selector(s) {return s}
+  getter(s) {
+    return s
+  },
+  setter() {
+    return {}
+  }
 }
 
 Subscriber.propTypes = {
   children: PropTypes.func.isRequired,
   store: PropTypes.any.isRequired,
-  selector: PropTypes.func
+  getter: PropTypes.func,
+  setter: PropTypes.func
 }
 
 export default Subscriber

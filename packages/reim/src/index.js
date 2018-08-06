@@ -1,6 +1,7 @@
-import produce from 'immuta'
-import memoize from 'lodash/memoize'
+import {produce} from 'immer'
+import bind from 'auto-bind'
 import isEqual from 'lodash/isEqual'
+import isFunction from 'lodash/isFunction'
 
 export class Store {
   _state = {}
@@ -13,77 +14,55 @@ export class Store {
 
   constructor(state) {
     this._state = produce(state, () => {})
+    bind(this)
+  }
+
+  setState(mutation) {
+    if (Array.isArray(mutation)) {
+      mutation.map(this.setState)
+    } else {
+      this._state = produce(this.state, isFunction(mutation) ? mutation : () => mutation)
+    }
+    this._notify()
+    return this.state
   }
 
   /**
-   * dispatch - Execute effect
+   * sync - Add subscriber
    *
-   * @param {Function} effect A function that has side-effect
-   *
-   * @returns {Function} dispatched effect
-   */
-  dispatch = memoize.call(this, effect => {
-    return async (...args) => {
-      const mutation = await effect.call(this, this.state, ...args)
-      return this.commit(mutation)()
-    }
-  })
-
-  /**
-   * commit - Execute mutation
-   *
-   * @param {Function} mutation A function that only mutates state
-   *
-   * @returns {any} New state
-   */
-  commit = memoize.call(this, mutation => {
-    return (...args) => {
-      if (Array.isArray(mutation)) {
-        return mutation.map(m => this.commit(m)())
-      }
-      this._state = produce(this.state, draft => {
-        mutation(draft, ...args)
-      })
-      this._notify()
-      return this.state
-    }
-  })
-
-  /**
-   * subscribe - Add subscriber
-   *
-   * @param {Function} handler Subscriber callback
+   * @param {Function} handler subscriber callback
    * @param {Object} option Options for subscription
    * @param {boolean} option.immediate Whether to run sub
-   * @param {Function} option.selector Selectors for data subscription
+   * @param {Function} option.getter getters for data subscription
    *
-   * @returns {Function} Unsubscriber
+   * @returns {Function} unsubscriber
    */
-  subscribe(handler, {immediate = true, selector = state => state} = {}) {
-    this._subscribers.push({handler, selector})
+  sync(handler, {immediate = true, getter = state => state} = {}) {
+    // TODO: check if the getter is not cachable here
+    this._subscribers.push({handler, getter})
     if (immediate) {
       this._notify()
     }
-    return () => this.unsubscribe(handler)
+    return () => this.unsync(handler)
   }
 
   /**
-   * unsubscribe - Remove subscriber
+   * unsync - Remove subscriber
    *
-   * @param {Function} handler Subscriber to remvoe
+   * @param {Function} handler subscriber to remvoe
    *
    */
-  unsubscribe(handler) {
+  unsync(handler) {
     this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
   }
 
   _notify() {
     this._subscribers.forEach(sub => {
-      // Notify if selected is updated
-      const selected = sub.selector(this.state)
-      if (!isEqual(selected, sub.selected)) {
-        sub.selected = selected
-        sub.handler(selected)
+      // Notify if getterCache is updated
+      const getterCache = sub.getter(this.state)
+      if (!isEqual(getterCache, sub.getterCache)) {
+        sub.getterCache = getterCache
+        sub.handler(getterCache)
       }
     })
   }

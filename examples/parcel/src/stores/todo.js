@@ -6,20 +6,11 @@ const store = createContext(register({
   currTodo: {value: ''}
 }))
 
-export const effects = {
-  addTodo: (state, todo) => {
-    console.log('gonna add todo')
-    return ({todos}) => {
-      todos.push(todo)
-    }
-  }
-}
-
 export const mutations = {
-  changeCurrTodo: (state, todo) => {
+  changeCurrTodo: todo => state => {
     state.currTodo = todo
   },
-  removeTodo: (state, index) => {
+  removeTodo: index => state => {
     state.todos.splice(index, 1)
   }
 }

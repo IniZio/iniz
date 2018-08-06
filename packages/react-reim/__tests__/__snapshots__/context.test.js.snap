@@ -10,7 +10,7 @@ exports[`Consumer should have change in store state reflected 1`] = `
 </div>
 `;
 
-exports[`change selector 1`] = `
+exports[`change getter 1`] = `
 <div>
   <div
     id="selected"
@@ -20,7 +20,7 @@ exports[`change selector 1`] = `
 </div>
 `;
 
-exports[`change selector 2`] = `
+exports[`change getter 2`] = `
 <div>
   <div
     id="selected"

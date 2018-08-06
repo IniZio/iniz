@@ -8,7 +8,7 @@ import getLernaPackages from 'get-lerna-packages'
 const builds = {
   'reim': {
     external: [
-      'immuta'
+      'immer'
     ]
   },
   'react-reim': {
@@ -17,7 +17,7 @@ const builds = {
       'react-dom': 'ReactDOM'
     },
     external: [
-      'prop-types'
+      'react', 'react-dom', 'prop-types'
     ]
   }
 }

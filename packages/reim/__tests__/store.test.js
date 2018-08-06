@@ -6,93 +6,73 @@ test('register a store', () => {
   expect(store.state.abc).toBe(12)
 })
 
-test('commit a mutation', () => {
+test('setState', () => {
   const store = register({foo: 17})
 
-  store.commit((state, amount) => {
-    state.foo += amount
-  })(11)
+  store.setState(state => {
+    state.foo += 11
+  })
   expect(store.state.foo).toBe(28)
 })
 
-test('dispatch an effect', async () => {
-  const store = register({bar: -1})
+// test('primitives Map & Set support', async () => {
+//   const store = register({
+//     deep: {
+//       foo: {
+//         bar: {
+//           baz: true
+//         }
+//       },
+//       set: new Set([{ one: "two" }, { two: "three" }]),
+//       map: new Map([["one", { foo: "bar" }]]),
+//       array: [{ i: 1 }, { i: 2 }, { i: 3 }, { i: 4 }, { i: 5 }]
+//     }
+//   })
 
-  let wap = 100
-  await store.dispatch(({bar}) => {
-    wap += bar
-    return [
-      state => {
-        state.bar = 10000
-      }
-    ]
-  })()
+//   const updated = jest.fn()
 
-  // Side effect should be run
-  expect(wap).toBe(99)
+//   store.sync(updated)
 
-  // Mutation returned by effect should run also
-  expect(store.state.bar).toBe(10000)
-})
+//   expect(updated).toBeCalledTimes(1)
 
-test('primitives Map & Set support', async () => {
-  const store = register({
-    deep: {
-      foo: {
-        bar: {
-          baz: true
-        }
-      },
-      set: new Set([{ one: "two" }, { two: "three" }]),
-      map: new Map([["one", { foo: "bar" }]]),
-      array: [{ i: 1 }, { i: 2 }, { i: 3 }, { i: 4 }, { i: 5 }]
-    }
-  })
+//   store.setState(draft => {
+//     const one = draft.deep.map.get('one');
+//     if (one) {
+//       one.foo = 1;
+//     }
+//     draft.deep.set.clear();
+//     draft.deep.set.add({ some: "obj" });
+//   })()
 
-  const updated = jest.fn()
-
-  store.subscribe(updated)
-
-  expect(updated).toBeCalledTimes(1)
-
-  store.commit(draft => {
-    const one = draft.deep.map.get('one');
-    if (one) {
-      one.foo = 1;
-    }
-    draft.deep.set.clear();
-    draft.deep.set.add({ some: "obj" });
-  })()
-
-  expect(updated).toBeCalledTimes(2)
-})
+//   expect(updated).toBeCalledTimes(2)
+// })
 
 describe('subscription', () => {
-  test('subscribe to store', () => {
+  test('sync to store', () => {
     const store = register({mag: 75})
 
     const updated = jest.fn()
-    // Should be called on subscribe also for initial fetch
-    store.subscribe(updated)
-    store.commit(state => {
+    // Should be called on sync also for initial fetch
+    store.sync(updated)
+    store.setState(state => {
       state.mag -= 10
-    })()
+    })
     expect(updated).toBeCalledTimes(2)
   })
 
-  test('unsubscribe from store', () => {
+  test('unsync from store', () => {
     const store = register({poi: 500})
 
     const updated = jest.fn()
 
-    const handler = store.subscribe(updated)
-    store.commit(state => {
+    const handler = store.sync(updated)
+    store.setState(state => {
       state.poi += 30
-    })()
+    })
     expect(updated).toBeCalledTimes(2)
 
-    store.unsubscribe(handler)
-    store.commit(state => {
+    store.unsync(handler)
+    store.setState(state => {
       state.poi *= 10
     })
     expect(updated).toBeCalledTimes(2)

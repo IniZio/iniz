@@ -28,21 +28,21 @@ test('Consumer should have change in store state reflected', () => {
       </store.Consumer>
     </store.Provider>
   )
-  store.commit(state => {
+  store.setState(state => {
     state.yer += 88
-  })()
+  })
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
-test('Unmount Cunsumer should unsubscribe', () => {
+test('Unmount Cunsumer should unsync', () => {
   const store = createContext(register({yer: 43}))
 
-  const selector = jest.fn()
+  const getter = jest.fn()
 
   const component = renderer.create(
     <store.Provider>
-      <store.Consumer selector={selector}>
+      <store.Consumer getter={getter}>
         {
           state => (
             <div>
@@ -53,18 +53,18 @@ test('Unmount Cunsumer should unsubscribe', () => {
       </store.Consumer>
     </store.Provider>
   )
-  store.commit(state => {
+  store.setState(state => {
     state.yer += 88
-  })()
-  expect(selector).toBeCalledTimes(2)
+  })
+  expect(getter).toBeCalledTimes(2)
   component.unmount()
-  store.commit(state => {
+  store.setState(state => {
     state.yer *= 88
-  })()
-  expect(selector).toBeCalledTimes(2)
+  })
+  expect(getter).toBeCalledTimes(2)
 })
 
-test('Unselected properties should not trigger update', () => {
+test('Properties not included in getter should not trigger update', () => {
   const store = createContext(register({hel: 43, gee: 10}))
 
   const updated = jest.fn()
@@ -79,7 +79,7 @@ test('Unselected properties should not trigger update', () => {
 
   renderer.create(
     <store.Provider>
-      <store.Consumer selector={state => ({hel: state.hel})}>
+      <store.Consumer getter={state => ({hel: state.hel})}>
         {
           state => (
             <Listen {...state}/>
@@ -88,13 +88,13 @@ test('Unselected properties should not trigger update', () => {
       </store.Consumer>
     </store.Provider>
   )
-  store.commit(state => {
+  store.setState(state => {
     state.hel -= 22
-  })()
+  })
   expect(updated).toBeCalledTimes(1)
-  store.commit(state => {
+  store.setState(state => {
     state.gee += 88
-  })()
+  })
   expect(updated).toBeCalledTimes(1)
 })
 
@@ -110,29 +110,29 @@ test('use convenience method connect', () => {
       <Container/>
     </store.Provider>
   )
-  store.commit(state => {
+  store.setState(state => {
     state.bom += 490
-  })()
+  })
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
-test('change selector', () => {
+test('change getter', () => {
   const store = createContext(register({dui: 12, geo: 'tie'}))
 
-  class Selector extends Component {
+  class Getter extends Component {
     state = {
-      selector: state => ({dui: state.dui})
+      getter: state => ({dui: state.dui})
     }
 
     render() {
       return (
         <store.Provider>
-          <store.Consumer selector={this.state.selector}>
+          <store.Consumer getter={this.state.getter}>
             {
               state => (
                 <div>
-                  <div id="selected">{JSON.stringify(state)}</div>
+                  <div id="getterCache">{JSON.stringify(state)}</div>
                 </div>
               )
             }
@@ -142,11 +142,11 @@ test('change selector', () => {
     }
   }
 
-  const component = renderer.create(<Selector/>)
+  const component = renderer.create(<Getter/>)
   expect(component.toJSON()).toMatchSnapshot()
 
-  // Change in selector should change passed in state
+  // Change in getter should change passed in state
   const {instance} = component.root
-  instance.setState({selector: s => s})
+  instance.setState({getter: s => s})
   expect(component.toJSON()).toMatchSnapshot()
 })

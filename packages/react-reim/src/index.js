@@ -7,7 +7,7 @@ export function createContext(store) {
   const Context = React.createContext()
 
   const res = {
-    get __hasContext() {
+    get __isContext() {
       return true
     },
     Consumer: createConsumer(Context.Consumer),
@@ -18,12 +18,12 @@ export function createContext(store) {
   return store
 }
 
-export function connect(store, selector) {
-  const Context = store.__hasContext ? store : createContext(store)
+export function connect(store, getter = s => s, setter = () => ({})) {
+  const Context = store.__isContext ? store : createContext(store)
   return Wrapped => p => (
-    <Context.Consumer store={store} selector={selector}>
+    <Context.Consumer store={store} getter={getter} setter={setter}>
       {
-        selected => <Wrapped {...selected} {...p}/>
+        cache => <Wrapped {...cache} {...p}/>
       }
     </Context.Consumer>
   )

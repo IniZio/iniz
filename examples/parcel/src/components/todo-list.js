@@ -12,7 +12,13 @@ class TodoList extends PureComponent {
     return (
       <ul>
         {
-          todos.map((todo, index) => <TodoItem key={JSON.stringify(todo)} onRemove={() => TodoStore.commit(mutations.removeTodo)(index)} todo={todo}/>)
+          todos.map((todo, index) => (
+            <TodoItem
+              key={JSON.stringify(todo)}
+              onRemove={() => this.props.removeTodo(index)}
+              todo={todo}
+            />
+          ))
         }
       </ul>
     )
@@ -27,4 +33,12 @@ TodoList.propTypes = {
   ).isRequired
 }
 
-export default connect(TodoStore, state => ({todos: state.todos}))(TodoList)
+export default connect(
+  TodoStore,
+  state => ({todos: state.todos}),
+  ({setState}) => ({
+    removeTodo: index => {
+      setState(mutations.removeTodo(index))
+    }
+  })
+)(TodoList)

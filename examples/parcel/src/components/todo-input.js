@@ -7,14 +7,15 @@ import TodoStore, {effects, mutations} from '../stores/todo'
 class TodoInput extends PureComponent {
   handleTodoChange = e => {
     e.preventDefault()
-    TodoStore.commit(mutations.changeCurrTodo)({value: e.target.value})
+    TodoStore.setState(mutations.changeCurrTodo({value: e.target.value}))
   }
 
   handleAddTodo = () => {
     this.props.onAddTodo(this.props.currTodo)
-      .then(TodoStore.commit(state => {
-        state.currTodo = {value: ''}
-      }))
+
+    TodoStore.setState(state => {
+      state.currTodo = {value: ''}
+    })
   }
 
   render() {
@@ -41,4 +42,14 @@ TodoInput.propTypes = {
   })
 }
 
-export default connect(TodoStore, state => ({currTodo: state.currTodo, onAddTodo: TodoStore.dispatch(effects.addTodo)}))(TodoInput)
+export default connect(
+  TodoStore,
+  state => ({currTodo: state.currTodo}),
+  ({setState}) => ({
+    onAddTodo: todo => {
+      setState(({todos}) => {
+        todos.push(todo)
+      })
+    }
+  })
+)(TodoInput)
