@@ -6,6 +6,8 @@ Reim.js is an immutable state management library with immer
 
 ## Quick Start
 
+[https://codesandbox.io/s/480xmrxy74](https://codesandbox.io/s/480xmrxy74)
+
 1. Install `reim` and `react-reim`: `npm i reim react-reim`
 2. Use `create-react-app` to make a new project
 3. {% code-tabs %}
