@@ -132,7 +132,7 @@ test('change getter', () => {
             {
               state => (
                 <div>
-                  <div id="getterCache">{JSON.stringify(state)}</div>
+                  <div id="selected">{JSON.stringify(state)}</div>
                 </div>
               )
             }
