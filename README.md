@@ -6,8 +6,6 @@ Reim.js is an immutable state management library with immer
 
 ## Quick Start
 
-{% embed data="{\"url\":\"https://codesandbox.io/s/480xmrxy74\",\"type\":\"rich\",\"title\":\"Reim in React - CodeSandbox\",\"description\":\"The online code editor tailored for web applications\",\"icon\":{\"type\":\"icon\",\"url\":\"https://codesandbox.io/favicon.ico\",\"aspectRatio\":0},\"thumbnail\":{\"type\":\"thumbnail\",\"url\":\"https://codesandbox.io/api/v1/sandboxes/480xmrxy74/screenshot.png\",\"width\":1200,\"height\":630,\"aspectRatio\":0.525},\"embed\":{\"type\":\"reader\",\"url\":\"https://codesandbox.io/embed/480xmrxy74\",\"html\":\"<div style=\\\"left: 0; width: 100%; height: 0; position: relative; padding-bottom: 50%;\\\"><iframe src=\\\"https://codesandbox.io/embed/480xmrxy74\\\" style=\\\"border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;\\\" allowfullscreen></iframe></div>\",\"aspectRatio\":2}}" %}
-
 ## Learn Reim
 
 Checkout our documentation at [https://reimjs.gitbook.io/reim](https://reimjs.gitbook.io/reim)
