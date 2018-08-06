@@ -6,61 +6,7 @@ Reim.js is an immutable state management library with immer
 
 ## Quick Start
 
-[https://codesandbox.io/s/480xmrxy74](https://codesandbox.io/s/480xmrxy74)
-
-1. Install `reim` and `react-reim`: `npm i reim react-reim`
-2. Use `create-react-app` to make a new project
-3. {% code-tabs %}
-   {% code-tabs-item title="src/App.jsx" %}
-   ```jsx
-   import React from "react";
-   import ReactDOM from "react-dom";
-
-   import {register} from 'reim';
-   import {createContext} from 'react-reim';
-
-   const todoStore = createContext(register({todos: []}));
-
-   function App() {
-     editTodo(index, todo) {
-       todoStore.setState(({ todos }) => {
-         todos[index] = todo;
-       })
-     }
-  
-     addTodo() {
-       todoStore.setState(({todos}) => {
-         todos.push('');
-       })
-     }
-
-     return (
-       <div className="App">
-         <todoStore.Provider>
-           <todoStore.Consumer>
-             {
-               ({todos}) => (
-                 <ul>
-                   {list.map((todo, index) => (
-                     <li key={index}>
-                       <input value={todo} onChange={e => editTodo(index, e.target.value)} />
-                     </li>
-                   ))}
-                   <button onClick={addTodo}>Add todo</button>
-                 </ul>
-               )
-             }
-           </todoStore.Consumer>
-         </todoStore.Provider>
-       </div>
-     );
-   }
-
-   const rootElement = document.getElementById("root");
-   ReactDOM.render(<App />, rootElement);
-   ```
-   {% endcode-tabs-item %}
-   {% endcode-tabs %}
+{% embed data="{\"url\":\"https://codesandbox.io/s/480xmrxy74\",\"type\":\"rich\",\"title\":\"Reim in React - CodeSandbox\",\"description\":\"The online code editor tailored for web applications\",\"icon\":{\"type\":\"icon\",\"url\":\"https://codesandbox.io/favicon.ico\",\"aspectRatio\":0},\"thumbnail\":{\"type\":\"thumbnail\",\"url\":\"https://codesandbox.io/api/v1/sandboxes/480xmrxy74/screenshot.png\",\"width\":1200,\"height\":630,\"aspectRatio\":0.525},\"embed\":{\"type\":\"reader\",\"url\":\"https://codesandbox.io/embed/480xmrxy74\",\"html\":\"<div style=\\\"left: 0; width: 100%; height: 0; position: relative; padding-bottom: 50%;\\\"><iframe src=\\\"https://codesandbox.io/embed/480xmrxy74\\\" style=\\\"border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;\\\" allowfullscreen></iframe></div>\",\"aspectRatio\":2}}" %}
 
 ## Learn Reim
 
