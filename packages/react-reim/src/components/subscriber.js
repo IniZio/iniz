@@ -1,7 +1,5 @@
-import React, {Component} from 'react'
+import {Component} from 'react'
 import PropTypes from 'prop-types'
-
-import RenderPure from './render-pure'
 
 class Subscriber extends Component {
   state = {
