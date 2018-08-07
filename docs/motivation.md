@@ -2,7 +2,7 @@
 description: What and why Reim.js?
 ---
 
-# Movitation
+# Motivation
 
 ## State management
 
