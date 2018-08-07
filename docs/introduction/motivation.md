@@ -50,9 +50,9 @@ Reim.js tries to solve these issues that make state management uncomfortable
 
 There are 3 parts in Reim.js:
 
-* \`\`[`store` + `context`](motivation.md#create-a-store)\`\`
-* \`\`[`connect`](motivation.md#connect-store-to-component)\`\`
-* \`\`[`setState`](motivation.md#connect-store-to-component)\`\`
+* [`store` + `context`](motivation.md#create-a-store)
+* [`connect`](motivation.md#connect-store-to-component)
+* [`setState`](motivation.md#connect-store-to-component)
 
 #### Create a store
 
