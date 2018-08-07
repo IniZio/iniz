@@ -24,11 +24,12 @@ class Subscriber extends Component {
 
   updateGetterCache() {
     if (this._handler) {
-      this.props.store.unsync(this._handler)
+      this.props.store.unsubscribe(this._handler)
     }
-    this._handler = this.props.store.sync(getterCache => {
+    this._handler = this.props.store.subscribe(getterCache => {
       this.setState({isInitialized: true, getterCache})
     }, {
+      immediate: true,
       getter: this.props.getter
     })
   }
@@ -50,14 +51,14 @@ class Subscriber extends Component {
   }
 
   componentWillUnmount() {
-    this.props.store.unsync(this._handler)
+    this.props.store.unsubscribe(this._handler)
   }
 
   render() {
     const {children} = this.props
     const {getterCache, setterCache, isInitialized} = this.state
 
-    return isInitialized ? <RenderPure {...setterCache} {...getterCache}>{children}</RenderPure> : null
+    return isInitialized ? (typeof children === 'function' ? children({...setterCache, ...getterCache}) : children) : null
   }
 }
 

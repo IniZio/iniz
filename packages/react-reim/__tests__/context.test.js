@@ -3,10 +3,10 @@
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
 import {register} from '../../reim/src'
-import {createContext, connect} from '../src'
+import {createContext, connect, context} from '../src'
 
-test('createContext returns Consumer and Provider', () => {
-  const store = createContext(register({yer: 43}))
+test('context returns Consumer and Provider', () => {
+  const store = context(register)({yer: 43})
 
   expect(store.Consumer).toBeDefined()
   expect(store.Provider).toBeDefined()
@@ -35,7 +35,7 @@ test('Consumer should have change in store state reflected', () => {
   expect(tree).toMatchSnapshot()
 })
 
-test('Unmount Cunsumer should unsync', () => {
+test('Unmount Cunsumer should unsubscribe', () => {
   const store = createContext(register({yer: 43}))
 
   const getter = jest.fn()

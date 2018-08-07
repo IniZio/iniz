@@ -17,6 +17,10 @@ export class Store {
     bind(this)
   }
 
+  getState() {
+    return this.state
+  }
+
   setState(mutation) {
     if (Array.isArray(mutation)) {
       mutation.map(this.setState)
@@ -28,7 +32,7 @@ export class Store {
   }
 
   /**
-   * sync - Add subscriber
+   * subscribe - Add subscriber
    *
    * @param {Function} handler subscriber callback
    * @param {Object} option Options for subscription
@@ -37,22 +41,22 @@ export class Store {
    *
    * @returns {Function} unsubscriber
    */
-  sync(handler, {immediate = true, getter = state => state} = {}) {
+  subscribe(handler, {immediate = false, getter = state => state} = {}) {
     // TODO: check if the getter is not cachable here
     this._subscribers.push({handler, getter})
     if (immediate) {
       this._notify()
     }
-    return () => this.unsync(handler)
+    return () => this.unsubscribe(handler)
   }
 
   /**
-   * unsync - Remove subscriber
+   * unsubscribe - Remove subscriber
    *
    * @param {Function} handler subscriber to remvoe
    *
    */
-  unsync(handler) {
+  unsubscribe(handler) {
     this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
   }
 
@@ -69,3 +73,4 @@ export class Store {
 }
 
 export const register = state => new Store(state)
+export const store = register

@@ -10,7 +10,7 @@ export function createContext(store) {
     get __isContext() {
       return true
     },
-    Consumer: createConsumer(Context.Consumer),
+    Consumer: createConsumer(Context.Consumer, store),
     Provider: createProvider(Context.Provider, store)
   }
 
@@ -18,10 +18,16 @@ export function createContext(store) {
   return store
 }
 
-export function connect(store, getter = s => s, setter = () => ({})) {
-  const Context = store.__isContext ? store : createContext(store)
+export function context(register) {
+  return (...args) => createContext(register(...args))
+}
+
+export function connect(Context, getter = s => s, setter = () => ({})) {
+  if (!Context.__isContext) {
+    throw new Error('You likely not have decorated `store` with `context`')
+  }
   return Wrapped => p => (
-    <Context.Consumer store={store} getter={getter} setter={setter}>
+    <Context.Consumer getter={getter} setter={setter}>
       {
         cache => <Wrapped {...cache} {...p}/>
       }

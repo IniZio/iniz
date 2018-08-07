@@ -1,9 +1,9 @@
-import {register} from '../src'
+import {register, store} from '../src'
 
 test('register a store', () => {
-  const store = register({abc: 12})
+  const tstore = store({abc: 12})
 
-  expect(store.state.abc).toBe(12)
+  expect(tstore.state.abc).toBe(12)
 })
 
 test('setState', () => {
@@ -31,7 +31,7 @@ test('setState', () => {
 
 //   const updated = jest.fn()
 
-//   store.sync(updated)
+//   store.subscribe(updated)
 
 //   expect(updated).toBeCalledTimes(1)
 
@@ -48,33 +48,33 @@ test('setState', () => {
 // })
 
 describe('subscription', () => {
-  test('sync to store', () => {
+  test('subscribe to store', () => {
     const store = register({mag: 75})
 
     const updated = jest.fn()
-    // Should be called on sync also for initial fetch
-    store.sync(updated)
+    // Should be called on subscribe also for initial fetch
+    store.subscribe(updated)
     store.setState(state => {
       state.mag -= 10
     })
-    expect(updated).toBeCalledTimes(2)
+    expect(updated).toBeCalledTimes(1)
   })
 
-  test('unsync from store', () => {
+  test('unsubscribe from store', () => {
     const store = register({poi: 500})
 
     const updated = jest.fn()
 
-    const handler = store.sync(updated)
+    const handler = store.subscribe(updated)
     store.setState(state => {
       state.poi += 30
     })
-    expect(updated).toBeCalledTimes(2)
+    expect(updated).toBeCalledTimes(1)
 
-    store.unsync(handler)
+    store.unsubscribe(handler)
     store.setState(state => {
       state.poi *= 10
     })
-    expect(updated).toBeCalledTimes(2)
+    expect(updated).toBeCalledTimes(1)
   })
 })
