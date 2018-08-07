@@ -1,6 +1,6 @@
 # Table of contents
 
 * [Reim.js](../README.md)
-* [Quick Start](quick-start.md)
-* [Motivation](motivation.md)
-
+* Introduction
+  * [Quick Start](quick-start.md)
+  * [Motivation](motivation.md)
