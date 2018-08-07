@@ -16,13 +16,13 @@ But then the new problem kicks in: How do I maintain state between components?
 
 Libraries like Redux, Mobx came to the rescue. Redux organises state changes with actions and reducers from Flux, whereas Mobx makes everything reactive according to their decorators.
 
-They are on two ends of the spectrum: One does not have any magic, only strict architecture. Another seems to make the states magically reactive. 
+They are on two ends of the spectrum: One does not have any magic, only strict architecture. Another seems to make the states magically reactive.
 
 Redux makes projects very scalable, but it is also complained to introduce boilerplate code. Mobx makes starting out projects really a breeze, but when things get pretty hard to clean up once side-effects are everywhere.
 
 ### Why setState is awesome... and why not sometimes
 
-React is very well known for its `setState` function, and libraries like unstated mocks it to make mutating store states feel more natural. 
+React is very well known for its `setState` function, and libraries like unstated mocks it to make mutating store states feel more natural.
 
 In fact, since people are already used to only changing state data instead of making side-effects in `setState`, it really does make sense to do the same thing to global state management as well.
 
@@ -86,7 +86,7 @@ import TodoList from '../components/todo-list'
 const TodoContainer = connect(
     TodoStore,
     // getters
-    ({todods}) => ({todos}),
+    ({todos}) => ({todos}),
     // setters
     ({setState}) => ({
         addTodo: todo =>
@@ -134,7 +134,7 @@ export default TodoList
 
 If you have used Redux before, you should see that quite an amount of it is pretty familiar, except for `setState` .
 
-`setState`  looks just like normal React components setting its state, instead of having to call an action and then a reducer.
+`setState` looks just like normal React components setting its state, instead of having to call an action and then a reducer.
 
 Reim also provides context Components to make firing up a store even more straight-forward, and will be explained in later section
 

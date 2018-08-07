@@ -1,7 +1,3 @@
----
-description: How it feels like using Reim in a starter project
----
-
 # Quick Start
 
 ## Quick Start
