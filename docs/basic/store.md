@@ -1,8 +1,8 @@
 # Store
 
-Reim tries to keep the store as simple as possible. 
+The **Store** is holds the state, and is responsible for change of state. You can also subscribe to a store for changes.
 
-This is how you create a store
+### Creating a store
 
 {% code-tabs %}
 {% code-tabs-item title="stores/todo.js" %}
@@ -12,9 +12,27 @@ import {store} from 'reim'
 const todoStore = store({
     todos: []
 })
+
+export default todoStore
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-Now you can subscribe and 
+### Subscribe and change the state
+
+```javascript
+import todoStore from './stores.js'
+
+// Change state
+todoStore.setState(state => {
+    state.todos.push('a todo here')
+})
+
+// Subscribe to state
+todoStore.subscribe(state => {
+    console.log('state changed!', state)
+})
+```
+
+
 

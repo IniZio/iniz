@@ -7,6 +7,6 @@
 * [Basic](basic/README.md)
   * [Store](basic/store.md)
   * [setState](basic/setstate.md)
-  * [Use with React](basic/use-with-react.md)
   * [Subscribe](basic/subscribe.md)
+  * [Use with React](basic/use-with-react.md)
 
