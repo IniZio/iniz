@@ -56,7 +56,7 @@ class Subscriber extends Component {
     const {children} = this.props
     const {getterCache, setterCache, isInitialized} = this.state
 
-    return isInitialized ? (typeof children === 'function' ? children({...setterCache, ...getterCache}) : children) : null
+    return isInitialized ? (typeof children === 'function' ? children(getterCache, setterCache) : children) : null
   }
 }
 
