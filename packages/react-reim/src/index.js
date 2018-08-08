@@ -4,14 +4,12 @@ import createConsumer from './factories/consumer'
 import createProvider from './factories/provider'
 
 export function createContext(store) {
-  const Context = React.createContext()
-
   const res = {
     get __isContext() {
       return true
     },
-    Consumer: createConsumer(Context.Consumer, store),
-    Provider: createProvider(Context.Provider, store)
+    Consumer: createConsumer(store),
+    Provider: createProvider(store)
   }
 
   Object.assign(store, res)
