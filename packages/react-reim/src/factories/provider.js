@@ -1,12 +1,12 @@
 /* eslint react/prop-types: 0 */
-import React from 'react'
+import React, {Fragment} from 'react'
 
-function createProvider(Provider, store) {
+function createProvider() {
   return (
     props => (
-      <Provider value={store}>
+      <Fragment>
         {props.children}
-      </Provider>
+      </Fragment>
     )
   )
 }
