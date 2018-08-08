@@ -1,0 +1,118 @@
+# Use with React
+
+## React Context API
+
+`react-reim` 's `context` function accepts `reim` 's `store` function, which adds `Consumer` and `Provider` so that you can use store right in components
+
+{% code-tabs %}
+{% code-tabs-item title="stores/counter.js" %}
+```javascript
+import {store} from 'reim'
+import {context} from 'react-reim'
+
+const counterStore = context(store)({
+    count: 0
+})
+
+export const mutations = {
+    decrement(state) {
+        state.count--
+    },
+    increment(state) {
+        state.count++
+    },
+    add: amount => state => {
+        state.count += amount
+    }
+}
+
+
+export default counterStore
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+Now to use it:
+
+{% code-tabs %}
+{% code-tabs-item title="index.js" %}
+```jsx
+import React from 'react'
+import {render} from 'react-dom'
+
+import counterStore, {mutations} from 'stores/counter'
+
+const App = () => {
+    return (
+        <counterStore.Provider>
+            <counterStore.Consumer>
+            {
+                ({count}) => (
+                    <div>
+                        <h1>{count}</h1>
+                        <button
+                            onClick={counterStore.setState(mutations.decrement)}
+                        >-</button>
+                        <button
+                            onClick={counterStore.setState(mutations.increment)}
+                        >+</button>
+                    </div>
+                )
+            }
+            </counterStore.Consumer>
+        </counterStore.Provider>
+    )
+}
+
+render(<App/>, document.getElementById('app'))
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+## Connect
+
+The Context API is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
+
+This is why Reim also provides the `connect` function
+
+{% code-tabs %}
+{% code-tabs-item title="containers/counter.js" %}
+```javascript
+import {connect} from 'react-reim'
+
+import counterStore, {mutations} from '../stores/counter'
+import Counter from '../components/counter'
+
+export default connect(
+    counterStore,
+
+    // Getter: extracts state from store
+    ({count}) => ({total: count}),
+    
+    // Setter: extracts methods to mutate state
+    ({setState}) => ({
+        addTwo: () =>
+            setState(mutations.add(2))
+    })
+)(Counter)
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+{% code-tabs %}
+{% code-tabs-item title="components/counter.js" %}
+```jsx
+import React from 'react'
+
+export default ({addTwo, count}) => (
+    <div>
+        <h2>{count}</h2>
+        <button onClick={addTwo}>+2</button>
+    </div>
+)
+```
+{% endcode-tabs-item %}
+{% endcode-tabs %}
+
+
+

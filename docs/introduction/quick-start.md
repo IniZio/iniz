@@ -1,4 +1,4 @@
-# Introduction
+# Quick Start
 
 ## Quick Start
 
@@ -9,7 +9,7 @@ create-react-app reim-demo
 ```
 
 {% hint style="info" %}
- You can use any other ways to create the project.
+You can use any other ways to create the project.
 {% endhint %}
 
 Next install `reim` and `react-reim`
