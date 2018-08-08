@@ -29,7 +29,7 @@ export function connect(Context, getter = s => s, setter = () => ({})) {
   return Wrapped => p => (
     <Context.Consumer getter={getter} setter={setter}>
       {
-        cache => <Wrapped {...cache} {...p}/>
+        (getter, setter) => <Wrapped {...setter} {...getter} {...p}/>
       }
     </Context.Consumer>
   )
