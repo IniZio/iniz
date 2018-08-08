@@ -1,6 +1,6 @@
 {
   "name": "react-reim",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "MIT",
   "main": "dist/react-reim.cjs.js",
   "module": "dist/react-reim.es.js",
@@ -16,5 +16,5 @@
     "lodash": "^4.17.10",
     "prop-types": "^15.6.2"
   },
-  "gitHead": "fd68c1090a4bf563cadc6716a878050a3de0da0c"
+  "gitHead": "3ba23315fcd3f611a1b055a4875ca03df5cebb0c"
 }
