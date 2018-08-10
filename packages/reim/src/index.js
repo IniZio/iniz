@@ -8,6 +8,10 @@ export class Store {
 
   _subscribers = []
 
+  get __isStore() {
+    return true
+  }
+
   get state() {
     return this._state
   }
@@ -74,3 +78,17 @@ export class Store {
 
 export const register = state => new Store(state)
 export const store = register
+
+// Returns an observable stream
+// Maybe allow multiple stores?
+export const toStream = (store, options = {}) => {
+  return {
+    subscribe: observer => ({
+      unsubscribe: store.subscribe((
+        typeof observer === 'function'
+          ? selected => observer(selected)
+          : selected => observer.next(selected),
+      ), options)
+    })
+  }
+}
