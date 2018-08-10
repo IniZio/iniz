@@ -26,10 +26,10 @@ And then replace App.jsx content
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {register} from 'reim';
-import {createContext} from 'react-reim';
+import {store} from 'reim';
+import {context} from 'react-reim';
 
-const todoStore = createContext(register({todos: []}));
+const todoStore = context(store)({todos: []}));
 
 function App() {
   editTodo(index, todo) {
@@ -46,22 +46,20 @@ function App() {
 
   return (
     <div className="App">
-      <todoStore.Provider>
-        <todoStore.Consumer>
-          {
-            ({todos}) => (
-              <ul>
-                {list.map((todo, index) => (
-                  <li key={index}>
-                    <input value={todo} onChange={e => editTodo(index, e.target.value)} />
-                  </li>
-                ))}
-                <button onClick={addTodo}>Add todo</button>
-              </ul>
-            )
-          }
-        </todoStore.Consumer>
-      </todoStore.Provider>
+      <todoStore.Consumer>
+        {
+          ({todos}) => (
+            <ul>
+              {list.map((todo, index) => (
+                <li key={index}>
+                  <input value={todo} onChange={e => editTodo(index, e.target.value)} />
+                </li>
+              ))}
+              <button onClick={addTodo}>Add todo</button>
+            </ul>
+          )
+        }
+      </todoStore.Consumer>
     </div>
   );
 }
