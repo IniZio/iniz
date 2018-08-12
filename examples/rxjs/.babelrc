@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [ "env", {
+      "targets": {
+        "browsers": "last 1 Firefox versions"
+      }
+    }]
+  ],
+  "plugins": [
+    "transform-class-properties",
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
+  ]
+}

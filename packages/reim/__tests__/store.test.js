@@ -1,4 +1,4 @@
-import {register, store} from '../src'
+import {register, store, toStream} from '../src'
 
 test('register a store', () => {
   const tstore = store({abc: 12})
@@ -76,5 +76,14 @@ describe('subscription', () => {
       state.poi *= 10
     })
     expect(updated).toBeCalledTimes(1)
+  })
+})
+
+describe('observable', () => {
+  test('create a stream from store', () => {
+    const store = register({count: 123})
+
+    const stream = toStream(store)
+    expect(stream.subscribe().unsubscribe).toBeInstanceOf(Function)
   })
 })
