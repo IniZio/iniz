@@ -1,6 +1,6 @@
 # Use with React
 
-## React Context API
+## Function as Child
 
 `react-reim` 's `context` function accepts `reim` 's `store` function, which adds `Consumer` and `Provider` so that you can use store right in components
 
@@ -44,23 +44,21 @@ import counterStore, {mutations} from 'stores/counter'
 
 const App = () => {
     return (
-        <counterStore.Provider>
-            <counterStore.Consumer>
-            {
-                ({count}) => (
-                    <div>
-                        <h1>{count}</h1>
-                        <button
-                            onClick={counterStore.setState(mutations.decrement)}
-                        >-</button>
-                        <button
-                            onClick={counterStore.setState(mutations.increment)}
-                        >+</button>
-                    </div>
-                )
-            }
-            </counterStore.Consumer>
-        </counterStore.Provider>
+        <counterStore.Consumer>
+        {
+            ({count}, {setState: setTodoState}) => (
+                <div>
+                    <h1>{count}</h1>
+                    <button
+                        onClick={() => setTodoState(mutations.decrement)}
+                    >-</button>
+                    <button
+                        onClick={() => setTodoState(mutations.increment)}
+                    >+</button>
+                </div>
+            )
+        }
+        </counterStore.Consumer>
     )
 }
 
@@ -71,7 +69,7 @@ render(<App/>, document.getElementById('app'))
 
 ## Connect
 
-The Context API is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
+The '_Function as Child_' way is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
 
 This is why Reim also provides the `connect` function
 
@@ -88,7 +86,7 @@ export default connect(
 
     // Getter: extracts state from store
     ({count}) => ({total: count}),
-    
+
     // Setter: extracts methods to mutate state
     ({setState}) => ({
         addTwo: () =>
@@ -113,6 +111,4 @@ export default ({addTwo, count}) => (
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
-
-
 

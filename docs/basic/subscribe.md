@@ -14,7 +14,7 @@ And when you want to stop it just use the returned function
 unsubscribe()
 ```
 
-### Getter
+## Getter
 
 Sometimes you want to only be notified if some instead of any of the properties changed, you can use the `getter` option, which returns a derived state from store.
 
@@ -40,6 +40,4 @@ countStore.setState(state => {
     state.count += 10
 })
 ```
-
-
 

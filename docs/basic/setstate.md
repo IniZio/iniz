@@ -26,5 +26,3 @@ store.setState(state => ({
 }))
 ```
 
-
-
