@@ -79,16 +79,20 @@ export class Store {
 export const register = state => new Store(state)
 export const store = register
 
+const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
+
 // Returns an observable stream
-// Maybe allow multiple stores?
 export const toStream = (store, options = {}) => {
   return {
-    subscribe: observer => ({
+    subscribe: (observer = () => {}) => ({
       unsubscribe: store.subscribe((
-        typeof observer === 'function'
-          ? selected => observer(selected)
-          : selected => observer.next(selected),
-      ), options)
-    })
+        typeof observer === 'function' ?
+          selected => observer(selected) :
+          selected => observer.next(selected)
+      ), {...options, immediate: true})
+    }),
+    [observableSymbol()]() {
+      return this
+    }
   }
 }

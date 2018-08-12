@@ -1,7 +1,10 @@
 import React from 'react'
-import {createEventHandler, mapPropsStream, compose} from 'recompose'
-import {merge} from 'rxjs';
+import {toStream} from 'reim'
+import {createEventHandler, mapPropsStream, compose, withHandlers} from 'recompose'
+import {merge, from, combineLatest} from 'rxjs';
 import {map, switchMap, scan, startWith, mapTo} from 'rxjs/operators'
+
+import counterStore from '../stores/counter'
 
 const App = ({count, increment, decrement}) => (
   <div>
@@ -12,24 +15,17 @@ const App = ({count, increment, decrement}) => (
 )
 
 const counter = mapPropsStream(props$ => {
-  const { handler: increment, stream: increment$ } = createEventHandler()
-  const { handler: decrement, stream: decrement$ } = createEventHandler()
-
-  return props$.pipe(
-      switchMap(props =>
-        merge(
-          increment$.pipe(mapTo(1)),
-          decrement$.pipe(mapTo(-1))
-        )
-          .pipe(
-            startWith(props.count),
-            scan((count, n) => count + n, 0),
-            map(count => ({...props, count, increment, decrement}))
-          )
-      )
-    )
+  return combineLatest(
+    props$,
+    from(toStream(counterStore))
+  ).pipe(
+    map(([props, {count}]) => ({...props, count, decrement: () => counterStore.setState(state => {state.count--})}))
+  )
 })
 
 export default compose(
+  withHandlers({
+    increment: props => e => counterStore.setState(state => {state.count++})
+  }),
   counter
 )(App)
