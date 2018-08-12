@@ -9,5 +9,6 @@
   * [setState](basic/setstate.md)
   * [Subscribe](basic/subscribe.md)
   * [Use with React](basic/use-with-react.md)
-* [Release Notes](../CHANGELOG.md)
+  * [Use with Rxjs](basic/use-with-rxjs.md)
+* [Release Notes](changelog.md)
 
