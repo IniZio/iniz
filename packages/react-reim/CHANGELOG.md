@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/IniZio/reim/compare/v1.2.0...v1.3.0) (2018-08-12)
+
+**Note:** Version bump only for package react-reim
+
+
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/IniZio/reim/compare/v1.0.1...v1.2.0) (2018-08-08)
 
