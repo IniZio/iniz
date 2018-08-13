@@ -26,7 +26,6 @@ function setState(key, state, storage) {
 
 export default function persist(options = {}) {
   const storage = options.storage || (window && window.localStorage)
-  const key = `reim/${options.key}`
 
   if (!canWriteStorage(storage)) {
     throw new Error('Invalid storage given')
@@ -35,6 +34,11 @@ export default function persist(options = {}) {
   return {
     name: 'persist',
     apply(store) {
+      if (!store.name || !store.name.length) {
+        throw new Error('You cannot persist an anonymous store, use `name` option in store')
+      }
+
+      const key = `reim/${store.name}`
       const saved = getState(key, storage)
       if (typeof saved === 'object' && saved !== null) {
         store.setState(merge({}, store.state, saved))

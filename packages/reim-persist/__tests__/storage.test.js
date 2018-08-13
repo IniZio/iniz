@@ -6,10 +6,9 @@ test('can be created', () => {
   const tstore = store({
     abc: 12
   }, {
+    name: 'xyz',
     plugins: [
-      persist({
-        key: 'xyz'
-      })
+      persist()
     ]
   })
 
@@ -26,11 +25,13 @@ test('replace store state and should subscribe to change when initialized', () =
 
   const st = store({
     xx: 234
+  }, {
+    name: 'abc'
   })
 
   st.subscribe = jest.fn()
 
-  const plugin = persist({key: 'abc', storage})
+  const plugin = persist({storage})
 
   plugin.apply(st)
 
@@ -47,12 +48,12 @@ test('should not replace store state when saved state is invalid', () => {
 
   const st = store({
     xx: 234
-  })
+  }, {name: 'abc'})
 
   st.subscribe = jest.fn()
   st.setState = jest.fn()
 
-  const plugin = persist({key: 'abc', storage})
+  const plugin = persist({storage})
 
   plugin.apply(st)
 
@@ -70,11 +71,11 @@ test('should merge saved and current store recursively and replace values', () =
     zz: {
       mag: 11
     }
-  })
+  }, {name: 'abc'})
 
   st.subscribe = jest.fn()
 
-  const plugin = persist({key: 'abc', storage})
+  const plugin = persist({storage})
 
   plugin.apply(st)
 

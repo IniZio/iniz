@@ -76,8 +76,17 @@ class Store {
   }
 }
 
-export const register = (state, {plugins = []} = {}) =>
-  plugins.reduce((store, plugin) => (plugin.apply(store) || store), new Store(state))
+export const register = (state, {name, plugins = []} = {}) => {
+  const store = new Store(state)
+  store.name = name
+
+  return plugins.reduce(
+    (store, plugin) =>
+      (plugin.apply(store) || store),
+    store
+  )
+}
+
 
 export const store = register
 
