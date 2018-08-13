@@ -1,5 +1,15 @@
 import merge from 'lodash/merge'
 
+function canWriteStorage(storage) {
+  try {
+    storage.setItem('@@', 1);
+    storage.removeItem('@@');
+    return true;
+  } catch (e) {}
+
+  return false;
+}
+
 function getState(key, storage, value) {
   try {
     return (value = storage.getItem(key)) && typeof value !== 'undefined'
@@ -17,6 +27,10 @@ function setState(key, state, storage) {
 export default function persist(options = {}) {
   const storage = options.storage || (window && window.localStorage)
   const key = `reim/${options.key}`
+
+  if (!canWriteStorage(storage)) {
+    throw new Error('Invalid storage given')
+  }
 
   return {
     name: 'persist',
