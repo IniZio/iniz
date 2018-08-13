@@ -1,6 +1,6 @@
 {
   "name": "reim-persist",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "license": "MIT",
   "main": "dist/reim-persist.cjs.js",
   "module": "dist/reim-persist.es.js",
@@ -48,5 +48,5 @@
   "dependencies": {
     "lodash": "^4.17.10"
   },
-  "gitHead": "1511aca1906f6bd0a0d553d792c56517ff8bea14"
+  "gitHead": "84f86b576e1fd1aaeb8b10b5a81289f6c3ae0d18"
 }
