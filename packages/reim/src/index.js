@@ -87,7 +87,6 @@ export const register = (state, {name, plugins = []} = {}) => {
   )
 }
 
-
 export const store = register
 
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')

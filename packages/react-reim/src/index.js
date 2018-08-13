@@ -15,23 +15,22 @@ export function createContext(store) {
 
     Object.assign(store, res)
     return store
-  } else {
-    const options = store
+  }
+  // const options = store
 
-    return {
-      name: 'context',
-      apply(store) {
-        const res = {
-          get __isContext() {
-            return true
-          },
-          Consumer: createConsumer(store),
-          Provider: createProvider(store)
-        }
-
-        Object.assign(store, res)
-        return store
+  return {
+    name: 'context',
+    apply(store) {
+      const res = {
+        get __isContext() {
+          return true
+        },
+        Consumer: createConsumer(store),
+        Provider: createProvider(store)
       }
+
+      Object.assign(store, res)
+      return store
     }
   }
 }

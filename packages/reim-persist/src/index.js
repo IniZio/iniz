@@ -2,26 +2,27 @@ import merge from 'lodash/merge'
 
 function canWriteStorage(storage) {
   try {
-    storage.setItem('@@', 1);
-    storage.removeItem('@@');
-    return true;
+    storage.setItem('@@', 1)
+    storage.removeItem('@@')
+    return true
   } catch (e) {}
 
-  return false;
+  return false
 }
 
 function getState(key, storage, value) {
   try {
-    return (value = storage.getItem(key)) && typeof value !== 'undefined'
-      ? JSON.parse(value)
-      : undefined;
+    value = storage.getItem(key)
+    return typeof value === 'undefined' ?
+      undefined :
+      JSON.parse(value)
   } catch (err) {}
 
-  return undefined;
+  return undefined
 }
 
 function setState(key, state, storage) {
-  return storage.setItem(key, JSON.stringify(state));
+  return storage.setItem(key, JSON.stringify(state))
 }
 
 export default function persist(options = {}) {
@@ -34,7 +35,7 @@ export default function persist(options = {}) {
   return {
     name: 'persist',
     apply(store) {
-      if (!store.name || !store.name.length) {
+      if (!store.name || (store.name.length <= 0)) {
         throw new Error('You cannot persist an anonymous store, use `name` option in store')
       }
 

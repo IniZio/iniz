@@ -42,7 +42,6 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "*",
     "xo": "^0.21.1"
   },
   "dependencies": {

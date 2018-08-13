@@ -1,5 +1,5 @@
 import Storage from 'dom-storage'
-import {register, store} from 'reim'
+import {store} from 'reim'
 import persist from '../src'
 
 test('can be created', () => {
@@ -21,7 +21,7 @@ test('can be created', () => {
 
 test('replace store state and should subscribe to change when initialized', () => {
   const storage = new Storage()
-  storage.setItem('reim/abc', JSON.stringify({ persisted: 'json' }))
+  storage.setItem('reim/abc', JSON.stringify({persisted: 'json'}))
 
   const st = store({
     xx: 234
@@ -79,7 +79,7 @@ test('should merge saved and current store recursively and replace values', () =
 
   plugin.apply(st)
 
-  expect(st.state).toEqual({ xx: [ 12, 33 ], y: 'as', zz: { mag: 11, ee: 38 } })
+  expect(st.state).toEqual({xx: [12, 33], y: 'as', zz: {mag: 11, ee: 38}})
 
   expect(st.subscribe).toBeCalled()
 })
