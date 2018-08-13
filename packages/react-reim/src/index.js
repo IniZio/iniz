@@ -4,16 +4,35 @@ import createConsumer from './factories/consumer'
 import createProvider from './factories/provider'
 
 export function createContext(store) {
-  const res = {
-    get __isContext() {
-      return true
-    },
-    Consumer: createConsumer(store),
-    Provider: createProvider(store)
-  }
+  if (store.__isStore) {
+    const res = {
+      get __isContext() {
+        return true
+      },
+      Consumer: createConsumer(store),
+      Provider: createProvider(store)
+    }
 
-  Object.assign(store, res)
-  return store
+    Object.assign(store, res)
+    return store
+  }
+  // const options = store
+
+  return {
+    name: 'context',
+    apply(store) {
+      const res = {
+        get __isContext() {
+          return true
+        },
+        Consumer: createConsumer(store),
+        Provider: createProvider(store)
+      }
+
+      Object.assign(store, res)
+      return store
+    }
+  }
 }
 
 export function context(register) {

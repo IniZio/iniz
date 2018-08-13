@@ -1,22 +1,16 @@
 {
-  "name": "reim",
+  "name": "reim-persist",
   "version": "1.3.1",
   "license": "MIT",
-  "main": "dist/reim.cjs.js",
-  "module": "dist/reim.es.js",
-  "unpkg": "dist/reim.js",
-  "jsdelivr": "dist/reim.js",
+  "main": "dist/reim-persist.cjs.js",
+  "module": "dist/reim-persist.es.js",
+  "unpkg": "dist/reim-persist.js",
+  "jsdelivr": "dist/reim-persist.js",
   "files": [
     "dist",
     "lib",
     "src"
   ],
-  "scripts": {
-    "start": "npm run dev",
-    "dev": "bili --no-babel.babelrc --watch",
-    "build": "npm run build:dist",
-    "build:dist": "rimraf dist && bili --no-babel.babelrc"
-  },
   "xo": {
     "parser": "babel-eslint",
     "extends": "xo-react",
@@ -44,15 +38,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
+    "dom-storage": "^2.1.0",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
+    "reim": "^1.3.1",
     "xo": "^0.21.1"
   },
   "dependencies": {
-    "auto-bind": "^1.2.1",
-    "immer": "^1.5.0",
     "lodash": "^4.17.10"
-  },
-  "gitHead": "3ba23315fcd3f611a1b055a4875ca03df5cebb0c"
+  }
 }

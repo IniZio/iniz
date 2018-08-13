@@ -3,7 +3,7 @@ import bind from 'auto-bind'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
-export class Store {
+class Store {
   _state = {}
 
   _subscribers = []
@@ -25,11 +25,11 @@ export class Store {
     return this.state
   }
 
-  setState(mutation) {
+  setState(mutation, ...args) {
     if (Array.isArray(mutation)) {
       mutation.map(this.setState)
     } else {
-      this._state = produce(this.state, isFunction(mutation) ? mutation : () => mutation)
+      this._state = produce(this.state, isFunction(mutation) ? mutation : () => ({...this.state, ...mutation}), ...args)
     }
     this._notify()
     return this.state
@@ -76,7 +76,17 @@ export class Store {
   }
 }
 
-export const register = state => new Store(state)
+export const register = (state, {name, plugins = []} = {}) => {
+  const store = new Store(state)
+  store.name = name
+
+  return plugins.reduce(
+    (store, plugin) =>
+      (plugin.apply(store) || store),
+    store
+  )
+}
+
 export const store = register
 
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
