@@ -1,3 +1,5 @@
+import merge from 'lodash/merge'
+
 function getState(key, storage, value) {
   try {
     return (value = storage.getItem(key)) && typeof value !== 'undefined'
@@ -20,8 +22,8 @@ export default function persist(options = {}) {
     name: 'persist',
     apply(store) {
       const saved = getState(key, storage)
-      if (typeof saved=== 'object' && saved !== null) {
-        store.setState(saved)
+      if (typeof saved === 'object' && saved !== null) {
+        store.setState(merge({}, store.state, saved))
       }
 
       store.subscribe(state => {

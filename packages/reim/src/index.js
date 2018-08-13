@@ -1,6 +1,5 @@
 import {produce} from 'immer'
 import bind from 'auto-bind'
-import merge from 'lodash/merge'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
@@ -30,7 +29,7 @@ class Store {
     if (Array.isArray(mutation)) {
       mutation.map(this.setState)
     } else {
-      this._state = produce(this.state, isFunction(mutation) ? mutation : () => merge({}, this.state, mutation), ...args)
+      this._state = produce(this.state, isFunction(mutation) ? mutation : () => ({...this.state, ...mutation}), ...args)
     }
     this._notify()
     return this.state
