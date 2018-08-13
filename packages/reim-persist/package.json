@@ -1,6 +1,6 @@
 {
   "name": "reim-persist",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "main": "dist/reim-persist.cjs.js",
   "module": "dist/reim-persist.es.js",
@@ -42,7 +42,7 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "*",
+    "reim": "^1.5.1",
     "xo": "^0.21.1"
   },
   "dependencies": {
