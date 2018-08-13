@@ -1,6 +1,6 @@
 {
   "name": "reim",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "license": "MIT",
   "main": "dist/reim.cjs.js",
   "module": "dist/reim.es.js",
@@ -54,5 +54,5 @@
     "immer": "^1.5.0",
     "lodash": "^4.17.10"
   },
-  "gitHead": "3ba23315fcd3f611a1b055a4875ca03df5cebb0c"
+  "gitHead": "d31d01dd142b8216a993688dd3f112b4c397a2a9"
 }
