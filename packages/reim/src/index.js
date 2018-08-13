@@ -1,5 +1,6 @@
 import {produce} from 'immer'
 import bind from 'auto-bind'
+import merge from 'lodash/merge'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
@@ -25,11 +26,11 @@ class Store {
     return this.state
   }
 
-  setState(mutation) {
+  setState(mutation, ...args) {
     if (Array.isArray(mutation)) {
       mutation.map(this.setState)
     } else {
-      this._state = produce(this.state, isFunction(mutation) ? mutation : () => mutation)
+      this._state = produce(this.state, isFunction(mutation) ? mutation : () => merge({}, this.state, mutation), ...args)
     }
     this._notify()
     return this.state
@@ -77,7 +78,7 @@ class Store {
 }
 
 export const register = (state, {plugins = []} = {}) =>
-  plugins.reduce((store, plugin) => plugin.apply(store), new Store(state))
+  plugins.reduce((store, plugin) => (plugin.apply(store) || store), new Store(state))
 
 export const store = register
 

@@ -13,6 +13,12 @@ test('setState', () => {
     state.foo += 11
   })
   expect(store.state.foo).toBe(28)
+
+  store.setState({
+    bb: 100
+  })
+  expect(store.state.foo).toBe(28)
+  expect(store.state.bb).toBe(100)
 })
 
 // test('primitives Map & Set support', async () => {
