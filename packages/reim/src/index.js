@@ -3,7 +3,7 @@ import bind from 'auto-bind'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
-export class Store {
+class Store {
   _state = {}
 
   _subscribers = []
@@ -76,7 +76,9 @@ export class Store {
   }
 }
 
-export const register = state => new Store(state)
+export const register = (state, {plugins = []} = {}) =>
+  plugins.reduce((store, plugin) => plugin(store), new Store(state))
+
 export const store = register
 
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')

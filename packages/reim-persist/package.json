@@ -1,0 +1,49 @@
+{
+  "name": "reim-persist",
+  "version": "1.3.0",
+  "license": "MIT",
+  "main": "dist/reim-persist.cjs.js",
+  "module": "dist/reim-persist.es.js",
+  "unpkg": "dist/reim-persist.js",
+  "jsdelivr": "dist/reim-persist.js",
+  "files": [
+    "dist",
+    "lib",
+    "src"
+  ],
+  "xo": {
+    "parser": "babel-eslint",
+    "extends": "xo-react",
+    "semicolon": false,
+    "esnext": true,
+    "space": 2,
+    "envs": [
+      "node",
+      "browser",
+      "es6",
+      "serviceworker"
+    ],
+    "globals": [
+      "it"
+    ],
+    "rules": {
+      "import/no-unassigned-import": 0,
+      "capitalized-comments": 0,
+      "quote-props": [
+        "warn",
+        "consistent"
+      ],
+      "react/button-has-type": 0
+    }
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "eslint": "^5.2.0",
+    "eslint-config-xo-react": "^0.17.0",
+    "eslint-plugin-react": "^7.10.0",
+    "xo": "^0.21.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
+  }
+}

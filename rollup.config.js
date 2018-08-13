@@ -19,7 +19,8 @@ const builds = {
     external: [
       'react', 'react-dom', 'prop-types'
     ]
-  }
+  },
+  'reim-persist': {}
 }
 
 const ALL_MODULES = getLernaPackages(process.cwd()).map(
