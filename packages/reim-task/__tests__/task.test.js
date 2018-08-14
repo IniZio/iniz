@@ -1,17 +1,6 @@
-import Storage from 'dom-storage'
-import {store} from 'reim'
-import task from '../src'
+import {task} from '../src'
 
 test('triggers hook throughout the process', async () => {
-  const tstore = store({
-    abc: 12
-  }, {
-    name: 'xyz',
-    plugins: [
-      task()
-    ]
-  })
-
   const subscriber1 = jest.fn()
   const subscriber2 = jest.fn()
 
@@ -29,7 +18,9 @@ test('triggers hook throughout the process', async () => {
   expect(subscriber2).toHaveBeenCalledTimes(2)
 
   const subscriber3 = jest.fn()
-  const failTask = task(() => {throw new Error('woops')}, subscriber3)
+  const failTask = task(() => {
+    throw new Error('woops')
+  }, subscriber3)
   try {
     await failTask()
   } catch (e) {
