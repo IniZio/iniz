@@ -64,6 +64,14 @@ class Store {
     this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
   }
 
+  plugin(...plugins) {
+    plugins.reduce(
+      (store, plugin) =>
+        (plugin.apply(store) || store),
+      this
+    )
+  }
+
   _notify() {
     this._subscribers.forEach(sub => {
       // Notify if getterCache is updated
@@ -80,11 +88,8 @@ export const register = (state, {name, plugins = []} = {}) => {
   const store = new Store(state)
   store.name = name
 
-  return plugins.reduce(
-    (store, plugin) =>
-      (plugin.apply(store) || store),
-    store
-  )
+  store.plugin(...plugins)
+  return store
 }
 
 export const store = register
