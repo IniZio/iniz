@@ -1,6 +1,6 @@
 {
   "name": "reim-persist",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "license": "MIT",
   "main": "dist/reim-persist.cjs.js",
   "module": "dist/reim-persist.es.js",
@@ -42,11 +42,11 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^1.5.4",
+    "reim": "^1.5.5",
     "xo": "^0.21.1"
   },
   "dependencies": {
     "lodash": "^4.17.10"
   },
-  "gitHead": "deff9197fe2d2419ed759c95c87e160ec8b08368"
+  "gitHead": "deceac074680a5aa201d7a765c281d92420abf27"
 }
