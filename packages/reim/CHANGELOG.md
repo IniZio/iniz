@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/IniZio/reim/compare/v1.5.6...v1.6.0) (2018-08-14)
+
+
+### Features
+
+* **plugin:** plugins can be added at runtime ([7829493](https://github.com/IniZio/reim/commit/7829493))
+* **react:** adds pipeTo function to sync props to store e.g. react-router ([#17](https://github.com/IniZio/reim/issues/17)) ([1aeed44](https://github.com/IniZio/reim/commit/1aeed44))
+
+
+
+
 <a name="1.5.6"></a>
 ## [1.5.6](https://github.com/IniZio/reim/compare/v1.5.5...v1.5.6) (2018-08-14)
 
