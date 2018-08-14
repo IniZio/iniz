@@ -67,7 +67,7 @@ class Store {
   plugin(...plugins) {
     plugins.forEach(
       plugin => {
-        plugin.apply(this)
+        plugin.call(this, this)
       }
     )
     return this

@@ -1,14 +1,13 @@
 import React, {PureComponent} from 'react'
-import isFunction from 'lodash/isFunction'
 
 import createConsumer from './factories/consumer'
 import createProvider from './factories/provider'
 
 // Syncs props to store
-export function pipeTo(store, selector = (_, p) => p) {
+export function pipeTo(store, mutation = (_, p) => p) {
   class Piper extends PureComponent {
     componentDidUpdate() {
-      store.setState(selector, this.props)
+      store.setState(mutation, this.props)
     }
 
     render() {
@@ -35,7 +34,7 @@ export function createContext(store) {
 
   return {
     name: 'context',
-    apply(store) {
+    call(store) {
       const res = {
         get __isContext() {
           return true

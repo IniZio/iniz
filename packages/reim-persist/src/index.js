@@ -34,7 +34,7 @@ export default function persist(options = {}) {
 
   return {
     name: 'persist',
-    apply(store) {
+    call(store) {
       if (!store.name || (store.name.length <= 0)) {
         throw new Error('You cannot persist an anonymous store, use `name` option in store')
       }
