@@ -1,6 +1,6 @@
 import nanoid from 'nanoid'
 import isFunction from 'lodash/isFunction'
-import {store as register} from '../../reim'
+import {store as register} from 'reim'
 
 export const task = (func, subscriber) => {
   const id = nanoid()
