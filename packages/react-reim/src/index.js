@@ -1,10 +1,25 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
+import isFunction from 'lodash/isFunction'
 
 import createConsumer from './factories/consumer'
 import createProvider from './factories/provider'
 
+// Syncs props to store
+export function pipeTo(store, selector = (_, p) => p) {
+  class Piper extends PureComponent {
+    componentDidUpdate() {
+      store.setState(selector, this.props)
+    }
+
+    render() {
+      return <div/>
+    }
+  }
+  return Piper
+}
+
 export function createContext(store) {
-  if (store.__isStore) {
+  if (store && store.__isStore) {
     const res = {
       get __isContext() {
         return true

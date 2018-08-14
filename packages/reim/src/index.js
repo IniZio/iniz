@@ -29,7 +29,7 @@ class Store {
     if (Array.isArray(mutation)) {
       mutation.map(this.setState)
     } else {
-      this._state = produce(this.state, isFunction(mutation) ? mutation : () => ({...this.state, ...mutation}), ...args)
+      this._state = produce(this.state, isFunction(mutation) ? state => (mutation(state, ...args) || undefined) : () => ({...this.state, ...mutation}))
     }
     this._notify()
     return this.state
@@ -65,11 +65,12 @@ class Store {
   }
 
   plugin(...plugins) {
-    plugins.reduce(
-      (store, plugin) =>
-        (plugin.apply(store) || store),
-      this
+    plugins.forEach(
+      plugin => {
+        plugin.apply(this)
+      }
     )
+    return this
   }
 
   _notify() {
