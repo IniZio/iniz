@@ -1,10 +1,24 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 
 import createConsumer from './factories/consumer'
 import createProvider from './factories/provider'
 
+// Syncs props to store
+export function pipeTo(store, mutation = (_, p) => p) {
+  class Piper extends PureComponent {
+    componentDidUpdate() {
+      store.setState(mutation, this.props)
+    }
+
+    render() {
+      return <div/>
+    }
+  }
+  return Piper
+}
+
 export function createContext(store) {
-  if (store.__isStore) {
+  if (store && store.__isStore) {
     const res = {
       get __isContext() {
         return true
@@ -20,7 +34,7 @@ export function createContext(store) {
 
   return {
     name: 'context',
-    apply(store) {
+    call(store) {
       const res = {
         get __isContext() {
           return true
