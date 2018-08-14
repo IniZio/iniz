@@ -1,10 +1,9 @@
-
 /* eslint react/prop-types: 0 */
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
 import {register} from '../../reim/src'
-import {createContext, connect, context, pipeTo} from '../src'
+import {createContext, pipeTo} from '../src'
 
 test('pipeTo should pipe props to store', () => {
   const store = register({yer: 43}).plugin(createContext)
@@ -22,7 +21,7 @@ test('pipeTo should pipe props to store', () => {
     render() {
       return (
         <div>
-          <PipeToStore {...this.state} />
+          <PipeToStore {...this.state}/>
         </div>
       )
     }
