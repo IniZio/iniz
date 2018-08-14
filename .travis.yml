@@ -9,8 +9,8 @@ notifications:
 node_js:
   - '8'
 script:
-  - yarn test:ci
   - yarn build
+  - yarn test:ci
   - yarn lint
 branches:
   except:
