@@ -20,7 +20,8 @@ const builds = {
       'react', 'react-dom', 'prop-types'
     ]
   },
-  'reim-persist': {}
+  'reim-persist': {},
+  'reim-task': {}
 }
 
 const ALL_MODULES = getLernaPackages(process.cwd()).map(
