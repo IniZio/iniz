@@ -42,12 +42,11 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^1.5.6",
+    "reim": "*",
     "xo": "^0.21.1"
   },
   "dependencies": {
-    "lodash": "^4.17.10",
-    "reim": "^1.5.6"
+    "lodash": "^4.17.10"
   },
   "gitHead": "419591f08507517258271f77077dc7a1d5c1f7af"
 }
