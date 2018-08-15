@@ -6,11 +6,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  'reim': {
-    external: [
-      // 'immer', 'event-emitter'
-    ]
-  },
+  'reim': {},
   'react-reim': {
     globals: {
       'react': 'React',
@@ -53,12 +49,15 @@ export default Object.keys(builds).reduce((tasks, name) => {
     ...tasks,
     ...['es', 'umd', 'cjs', 'iife'].map(format => ({
       plugins: [
-        babel(),
+        babel({
+          include: '**/*.js',
+          exclude: 'node_modules/**'
+        }),
         commonjs({
-          include: 'node_modules/**',
+          ignoreGlobal: true,
           namedExports: {
             'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component'],
-            'node_modules/event-emitter/index.js': ['default', 'emitterize']
+            'node_modules/event-emitter/index.js': ['emitter']
           }
         }),
         isBrowserBundle(format) &&

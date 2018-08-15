@@ -1,6 +1,6 @@
 import {produce, setAutoFreeze} from 'immer'
 import bind from 'auto-bind'
-import emitterize from 'event-emitter'
+import {emitter} from 'event-emitter'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
@@ -21,8 +21,7 @@ class Store {
 
   constructor(state) {
     this._state = produce(state, () => {})
-    console.log(emitterize)
-    // emitterize(this)
+    emitter(this)
     bind(this)
   }
 
