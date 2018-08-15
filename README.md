@@ -7,26 +7,34 @@ Reim.js is an immutable state management library with immer
 ```jsx
 import React from 'react'
 import {render} from 'react-dom'
+
+// 0. Import Reim :)
 import {store} from 'reim'
 import {connect} from 'react-reim'
 
-const counter = store({count: 10})
-
 const styles = {
+  countainer: {
+    display: 'flex'
+  },
   counter: {
     fontSize: '2em',
     margin: '0 10px'
   }
 }
 
+// 1. Create a store
+const counter = store({count: 10})
+
+// 2. Make a normal component
 const Counter = ({value, increment, decrement}) => (
-  <div style={styles.counter}>
+  <div style={styles.container}>
     <button onClick={decrement}>-</button>
-    <div>{value}</div>
+    <div style={styles.counter}>{value}</div>
     <button onClick={increment}>+</button>
   </div>
 )
 
+// 3. Connect the component to store
 const ConnectedCounter = connect(
   counter,
   state => ({value: state.count}),
