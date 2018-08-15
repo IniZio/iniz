@@ -53,10 +53,8 @@ export function context(register) {
   return (...args) => createContext(register(...args))
 }
 
-export function connect(Context, getter = s => s, setter = () => ({})) {
-  if (!Context.__isContext) {
-    throw new Error('You likely not have decorated `store` with `context`')
-  }
+export function connect(store, getter = s => s, setter = () => ({})) {
+  const Context = store.__isContext ? store : store.plugin(createContext)
   return Wrapped => p => (
     <Context.Consumer getter={getter} setter={setter}>
       {
