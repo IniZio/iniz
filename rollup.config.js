@@ -3,6 +3,8 @@ import toPascal from 'to-pascal-case'
 import babel from 'rollup-plugin-babel'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
+import {uglify} from 'rollup-plugin-uglify'
+import {minify} from 'uglify-es'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
@@ -27,6 +29,8 @@ const builds = {
   },
   'reim-reporter': {}
 }
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 const ALL_MODULES = getLernaPackages(process.cwd()).map(
   name => name.replace(/(.*)packages\//, '')
@@ -59,7 +63,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
             'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
           }
         }),
-        isBrowserBundle(format) &&
+        isBrowserBundle(format) && (
           nodeResolve({
             main: false,
             module: true,
@@ -68,6 +72,11 @@ export default Object.keys(builds).reduce((tasks, name) => {
             preferBuiltIns: true,
             browser: isBrowserBundle(format)
           })
+        ),
+        isProduction && (
+          uglify({}, minify)
+        )
+
       ].filter(Boolean),
       input: INPUT_FILE,
       external: isBrowserBundle(format) ? build.external : [...ALL_MODULES, ...(build.external || [])],
