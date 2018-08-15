@@ -8,7 +8,7 @@
     "link": "lerna exec yarn link",
     "lint": "xo --fix",
     "dev": "yarn watch",
-    "build": "rollup -c",
+    "build": "NODE_ENV=production rollup -c",
     "watch": "rollup -w -c",
     "test": "NODE_ENV=test jest --testURL=http://localhost",
     "test:watch": "yarn test --watchAll",
@@ -86,7 +86,9 @@
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-uglify": "^4.0.0",
     "to-pascal-case": "^1.0.0",
+    "uglify-es": "^3.3.9",
     "xo": "^0.21.1"
   }
 }
