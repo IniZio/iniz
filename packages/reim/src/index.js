@@ -21,7 +21,8 @@ class Store {
 
   constructor(state) {
     this._state = produce(state, () => {})
-    emitterize(this)
+    console.log(emitterize)
+    // emitterize(this)
     bind(this)
   }
 

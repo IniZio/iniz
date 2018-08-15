@@ -8,7 +8,7 @@ import getLernaPackages from 'get-lerna-packages'
 const builds = {
   'reim': {
     external: [
-      'immer'
+      // 'immer', 'event-emitter'
     ]
   },
   'react-reim': {
@@ -21,7 +21,15 @@ const builds = {
     ]
   },
   'reim-persist': {},
-  'reim-task': {}
+  'reim-task': {
+    globals: {
+      'reim': 'Reim'
+    },
+    external: [
+      'reim'
+    ]
+  },
+  'reim-reporter': {}
 }
 
 const ALL_MODULES = getLernaPackages(process.cwd()).map(
@@ -46,19 +54,22 @@ export default Object.keys(builds).reduce((tasks, name) => {
     ...['es', 'umd', 'cjs', 'iife'].map(format => ({
       plugins: [
         babel(),
+        commonjs({
+          include: 'node_modules/**',
+          namedExports: {
+            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component'],
+            'node_modules/event-emitter/index.js': ['default', 'emitterize']
+          }
+        }),
         isBrowserBundle(format) &&
           nodeResolve({
             main: false,
             module: true,
+            jsnext: true,
             extensions: ['.js', '.json'],
             preferBuiltIns: true,
             browser: isBrowserBundle(format)
-          }),
-        commonjs({
-          namedExports: {
-            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
-          }
-        })
+          })
       ].filter(Boolean),
       input: INPUT_FILE,
       external: isBrowserBundle(format) ? build.external : [...ALL_MODULES, ...(build.external || [])],
