@@ -1,22 +1,16 @@
 {
-  "name": "reim",
+  "name": "reim-reporter",
   "version": "1.6.0",
   "license": "MIT",
-  "main": "dist/reim.cjs.js",
-  "module": "dist/reim.es.js",
-  "unpkg": "dist/reim.js",
-  "jsdelivr": "dist/reim.js",
+  "main": "dist/reim-reporter.cjs.js",
+  "module": "dist/reim-reporter.es.js",
+  "unpkg": "dist/reim-reporter.js",
+  "jsdelivr": "dist/reim-reporter.js",
   "files": [
     "dist",
     "lib",
     "src"
   ],
-  "scripts": {
-    "start": "npm run dev",
-    "dev": "bili --no-babel.babelrc --watch",
-    "build": "npm run build:dist",
-    "build:dist": "rimraf dist && bili --no-babel.babelrc"
-  },
   "xo": {
     "parser": "babel-eslint",
     "extends": "xo-react",
@@ -44,15 +38,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
+    "dom-storage": "^2.1.0",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
+    "reim": "^1.6.0",
     "xo": "^0.21.1"
   },
   "dependencies": {
-    "auto-bind": "^1.2.1",
-    "event-emitter": "^0.3.5",
-    "immer": "^1.5.0",
     "lodash": "^4.17.10"
   },
   "gitHead": "419591f08507517258271f77077dc7a1d5c1f7af"

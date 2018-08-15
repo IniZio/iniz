@@ -6,11 +6,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  'reim': {
-    external: [
-      'immer'
-    ]
-  },
+  'reim': {},
   'react-reim': {
     globals: {
       'react': 'React',
@@ -21,7 +17,15 @@ const builds = {
     ]
   },
   'reim-persist': {},
-  'reim-task': {}
+  'reim-task': {
+    globals: {
+      'reim': 'Reim'
+    },
+    external: [
+      'reim'
+    ]
+  },
+  'reim-reporter': {}
 }
 
 const ALL_MODULES = getLernaPackages(process.cwd()).map(
@@ -45,20 +49,25 @@ export default Object.keys(builds).reduce((tasks, name) => {
     ...tasks,
     ...['es', 'umd', 'cjs', 'iife'].map(format => ({
       plugins: [
-        babel(),
+        babel({
+          include: '**/*.js',
+          exclude: 'node_modules/**'
+        }),
+        commonjs({
+          ignoreGlobal: true,
+          namedExports: {
+            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
+          }
+        }),
         isBrowserBundle(format) &&
           nodeResolve({
             main: false,
             module: true,
+            jsnext: true,
             extensions: ['.js', '.json'],
             preferBuiltIns: true,
             browser: isBrowserBundle(format)
-          }),
-        commonjs({
-          namedExports: {
-            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
-          }
-        })
+          })
       ].filter(Boolean),
       input: INPUT_FILE,
       external: isBrowserBundle(format) ? build.external : [...ALL_MODULES, ...(build.external || [])],
