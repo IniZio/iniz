@@ -1,0 +1,18 @@
+{
+  "name": "vue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "reim": "*",
+    "vue": "^2.5.17"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0",
+    "@vue/cli-service": "^3.0.0",
+    "vue-template-compiler": "^2.5.17"
+  }
+}

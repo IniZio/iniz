@@ -29,6 +29,18 @@ class Store {
     return this.state
   }
 
+  // Mutatable way to update state
+  commit(mutation, ...args) {
+    let newState = mutation(this._state, ...args)
+    Object.assign(this._state, newState)
+
+    this.emit('setState', mutation, ...args)
+    this._notify()
+
+    return this.state
+  }
+
+  // Immutable way to update state
   setState(mutation, ...args) {
     this._state = produce(
       this.state, (
