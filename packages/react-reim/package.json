@@ -1,6 +1,6 @@
 {
   "name": "react-reim",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "main": "dist/react-reim.cjs.js",
   "module": "dist/react-reim.es.js",
