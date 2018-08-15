@@ -1,4 +1,4 @@
-# Use with Rxjs
+# Use with Angular / Rxjs
 
 Reim store can be used as an observable by using `toStream`
 
