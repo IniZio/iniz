@@ -2425,9 +2425,9 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
-"event-emitter@https://github.com/IniZio/event-emitter.git":
+event-emitter@^0.3.5:
   version "0.3.5"
-  resolved "https://github.com/IniZio/event-emitter.git#8ef2822d6217fb35edeb77b1061e041e198ea5cd"
+  resolved "http://repository.vyond.org:4873/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
   dependencies:
     d "1"
     es5-ext "~0.10.14"

@@ -56,8 +56,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
         commonjs({
           ignoreGlobal: true,
           namedExports: {
-            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component'],
-            'node_modules/event-emitter/index.js': ['emitter']
+            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
           }
         }),
         isBrowserBundle(format) &&

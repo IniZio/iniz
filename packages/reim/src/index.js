@@ -1,6 +1,6 @@
 import {produce, setAutoFreeze} from 'immer'
 import bind from 'auto-bind'
-import {emitter} from 'event-emitter'
+import emitter from 'event-emitter'
 import isEqual from 'lodash/isEqual'
 import isFunction from 'lodash/isFunction'
 
