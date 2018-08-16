@@ -50,7 +50,7 @@ const ConnectedCounter = connect(
       state.count--
     })
   })
-)
+)(Counter)
 
 render(<ConnectCounter/>, document.getElementById('app'))
 ```
