@@ -18,19 +18,15 @@ export default todoStore
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-## Subscribe and change the state
+### Creating a named store
+
+A store is anonymous by default. You can make a named store for use with plugins e.g. reim-reporter. 
 
 ```javascript
-import todoStore from './stores.js'
-
-// Change state
-todoStore.setState(state => {
-    state.todos.push('a todo here')
-})
-
-// Subscribe to state
-todoStore.subscribe(state => {
-    console.log('state changed!', state)
+const todoStore = store({
+    todos: []
+}, {
+    name: 'Todo-Store'
 })
 ```
 
