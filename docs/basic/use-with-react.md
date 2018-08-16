@@ -1,4 +1,4 @@
-# Use with React
+# Use with React / Preact
 
 ## Function as Child
 

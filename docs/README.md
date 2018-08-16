@@ -8,9 +8,11 @@
   * [Store](basic/store.md)
   * [setState](basic/setstate.md)
   * [Subscribe](basic/subscribe.md)
-  * [Plugin](basic/plugin.md)
-  * [Use with React](basic/use-with-react.md)
+  * [Use with React / Preact](basic/use-with-react.md)
   * [Use with Vue](basic/use-with-vue.md)
   * [Use with Angular / Rxjs](basic/use-with-rxjs.md)
+* [Advanced](advanced/README.md)
+  * [Event Emitter](advanced/event-emitter.md)
+  * [Plugin](advanced/plugin.md)
 * [Release Notes](changelog.md)
 

@@ -16,7 +16,7 @@ unsubscribe()
 
 ## Getter
 
-Sometimes you want to only be notified if some instead of any of the properties changed, you can use the `getter` option, which returns a derived state from store.
+Sometimes you want to only be notified if some of the properties changed, you can use the `getter` option, which returns a derived state from store.
 
 ```javascript
 const countStore = store({

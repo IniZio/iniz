@@ -30,9 +30,9 @@ render(
 ```jsx
 import React from 'react'
 import {toStream} from 'reim'
-import {createEventHandler, mapPropsStream, compose, withHandlers} from 'recompose'
+import {mapPropsStream, compose, withHandlers} from 'recompose'
 import {merge, from, combineLatest} from 'rxjs';
-import {map, switchMap, scan, startWith, mapTo} from 'rxjs/operators'
+import {map} from 'rxjs/operators'
 
 import counterStore from '../stores/counter'
 

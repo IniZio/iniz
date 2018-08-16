@@ -1,26 +1,38 @@
 # setState
 
-Reim `setState` mutates the store state, similar to React
+Reim `setState` mutates the store state, similar to React:
 
 ```javascript
 store.setState({message: 'Hello world!'})
 ```
 
-However there is one thing different from React. When you use callback in state, you should not return a value if you mutate the passed in state.
+But since Reim uses [Immer](https://github.com/mweststrate/immer), you can also create next immutable state by directly mutating it in `setState`
 
 ```javascript
+const example = store({
+    message: 'Forever'
+})
+
+// OK, merges with old state just like React
+// Result: {message: 'Forever', count: 12}
+store.setState({
+    count: 12
+})
+
 // OK
+// Result: {message: 'Forever Reim', count: 12}
 store.setState(state => {
-    state.message += ' Reim'
+    state.message = ' Reim'
 })
 
 // Not OK, do not return state if you mutate it
 store.setState(state => {
-    state.counter++
+    state.count++
     return state
 })
 
-// OK, return new state without mutating old state
+// OK, creates a completely new state
+// Result: {message: 'Forever Reim!!'}
 store.setState(state => ({
     message: state.message + '!!'
 }))

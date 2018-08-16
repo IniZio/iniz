@@ -44,5 +44,5 @@ setState(state => ({
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-Reim.js tries to solve these issues that make state management uncomfortable
+Reim.js tries to solve these issues that make state management uncomfortable.
 

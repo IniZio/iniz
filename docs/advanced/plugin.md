@@ -1,6 +1,6 @@
 # Plugin
 
-Reim can be extended using plugins. An example plugin would be like this
+Reim can be extended using plugins. An example plugin would be like this:
 
 ```javascript
 const sayHello(options) {
@@ -21,6 +21,7 @@ const sayBye(options) {
         call(store) {
             store.subscribe(state => {
                 console.log('Bye! ', options.message)
+                // Emit event to store
                 store.emit('said-bye', options.message)
             })
         }
@@ -35,7 +36,12 @@ Note that it is a function returning an function. This enables us to accept plug
 const someStore = store({}, {plugins: sayHello({message: 'World'})})
 
 // Add plugins in runtime
-store.plugin(sayBye('Again!'))
+someSore.plugin(sayBye('Once'), sayBye('Again!'))
+
+someStore.setState({count: 1000})
+// logs 'Hello! World'
+// logs 'Bye! Once'
+// logs 'Bye! Again!'
 ```
 
 

@@ -70,5 +70,5 @@ ReactDOM.render(<App />, rootElement);
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-Now just run `npm run start`
+Now just run `npm run start` !
 
