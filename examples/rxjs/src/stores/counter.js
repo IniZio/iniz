@@ -1,6 +1,6 @@
-import {store} from 'reim'
+import reim from 'reim'
 
-const counterStore = store({
+const counterStore = reim({
   count: 100
 })
 

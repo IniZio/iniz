@@ -1,9 +1,9 @@
 import Storage from 'dom-storage'
-import {store} from '../../reim/src'
+import reim from '../../reim/src'
 import persist from '../src'
 
 test('can be created', () => {
-  const tstore = store({
+  const tstore = reim({
     abc: 12
   }, {
     name: 'xyz',
@@ -23,7 +23,7 @@ test('replace store state and should subscribe to change when initialized', () =
   const storage = new Storage()
   storage.setItem('reim/abc', JSON.stringify({persisted: 'json'}))
 
-  const st = store({
+  const st = reim({
     xx: 234
   }, {
     name: 'abc'
@@ -46,7 +46,7 @@ test('should not replace store state when saved state is invalid', () => {
   const storage = new Storage()
   storage.setItem('reim/abc', 'invalid')
 
-  const st = store({
+  const st = reim({
     xx: 234
   }, {name: 'abc'})
 
@@ -65,7 +65,7 @@ test('should merge saved and current store recursively and replace values', () =
   const storage = new Storage()
   storage.setItem('reim/abc', JSON.stringify({xx: [12, 33], zz: {ee: 38}}))
 
-  const st = store({
+  const st = reim({
     xx: [234],
     y: 'as',
     zz: {
@@ -87,7 +87,7 @@ test('should merge saved and current store recursively and replace values', () =
 test('should report anonymous store trying to use persist plugin', () => {
   const storage = new Storage()
 
-  expect(() => store({
+  expect(() => reim({
     xx: [234],
     y: 'as',
     zz: {

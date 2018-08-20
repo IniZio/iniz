@@ -19,7 +19,7 @@ unsubscribe()
 Sometimes you want to only be notified if some of the properties changed, you can use the `getter` option, which returns a derived state from store.
 
 ```javascript
-const countStore = store({
+const countStore = reim({
     count: 2,
     message: ''
 })

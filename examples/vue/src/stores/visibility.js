@@ -1,6 +1,6 @@
-import {store} from 'reim'
+import reim from 'reim'
 
-export default store({
+export default reim({
   visibility: 'closed'
 })
 

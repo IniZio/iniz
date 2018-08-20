@@ -1,7 +1,6 @@
 import React, {PureComponent} from 'react'
 
 import createConsumer from './factories/consumer'
-import createProvider from './factories/provider'
 
 // Syncs props to store
 export function pipeTo(store, mutation = (_, p) => p) {
@@ -17,44 +16,25 @@ export function pipeTo(store, mutation = (_, p) => p) {
   return Piper
 }
 
-export function createContext(store) {
-  if (store && store.__isStore) {
-    const res = {
-      get __isContext() {
-        return true
-      },
-      Consumer: createConsumer(store),
-      Provider: createProvider(store)
-    }
-
-    Object.assign(store, res)
-    return store
-  }
-  // const options = store
-
-  return {
+export const context = () =>
+  ({
     name: 'context',
     call(store) {
-      const res = {
-        get __isContext() {
-          return true
+      Object.defineProperties(store, {
+        __isContext: {
+          value: true
         },
-        Consumer: createConsumer(store),
-        Provider: createProvider(store)
-      }
-
-      Object.assign(store, res)
-      return store
+        Consumer: {
+          value: createConsumer(store)
+        }
+      })
     }
-  }
-}
+  })
 
-export function context(register) {
-  return (...args) => createContext(register(...args))
-}
+export const createContext = context()
 
 export function connect(store, getter = s => s, setter = () => ({})) {
-  const Context = store.__isContext ? store : store.plugin(createContext)
+  const Context = store.__isContext ? store : store.plugin(context)
   return Wrapped => p => (
     <Context.Consumer getter={getter} setter={setter}>
       {

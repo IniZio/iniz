@@ -2,16 +2,18 @@
 
 ## Function as Child
 
-`react-reim` 's `context` function accepts `reim` 's `store` function, which adds `Consumer` and `Provider` so that you can use store right in components
+`react-reim` 's `context` function accepts `reim` 's `store` function, which adds `Consumer` component so that you can use store right in components
 
 {% code-tabs %}
 {% code-tabs-item title="stores/counter.js" %}
 ```javascript
-import {store} from 'reim'
+import reim from 'reim'
 import {context} from 'react-reim'
 
-const counterStore = context(store)({
+const counterStore = reim({
     count: 0
+}, {
+  plugins: [context()]
 })
 
 export const mutations = {
@@ -111,4 +113,3 @@ export default ({addTwo, count}) => (
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
-

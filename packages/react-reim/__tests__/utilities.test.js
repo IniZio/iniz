@@ -2,11 +2,11 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
-import {register} from '../../reim/src'
-import {createContext, pipeTo} from '../src'
+import reim from '../../reim/src'
+import {context, pipeTo} from '../src'
 
 test('pipeTo should pipe props to store', () => {
-  const store = register({yer: 43}).plugin(createContext)
+  const store = reim({yer: 43}).plugin(context)
 
   const PipeToStore = pipeTo(store)
 

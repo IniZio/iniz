@@ -7,9 +7,9 @@ The **Store** is holds the state, and is responsible for change of state. You ca
 {% code-tabs %}
 {% code-tabs-item title="stores/todo.js" %}
 ```javascript
-import {store} from 'reim'
+import reim from 'reim'
 
-const todoStore = store({
+const todoStore = reim({
     todos: []
 })
 
@@ -23,7 +23,7 @@ export default todoStore
 A store is anonymous by default. You can make a named store for use with plugins e.g. reim-reporter. 
 
 ```javascript
-const todoStore = store({
+const todoStore = reim({
     todos: []
 }, {
     name: 'Todo-Store'

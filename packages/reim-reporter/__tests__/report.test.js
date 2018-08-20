@@ -1,8 +1,8 @@
-import {store} from '../../reim/src'
+import reim from '../../reim/src'
 import {reporter} from '../src'
 
 test('can be created', () => {
-  const tstore = store({
+  const tstore = reim({
     abc: 12
   }, {
     name: 'xyz',
@@ -23,7 +23,7 @@ test('can be created', () => {
 test('should trigger callback on setState with correct meta', () => {
   const report = jest.fn(meta => meta)
 
-  const tstore = store({
+  const tstore = reim({
     abc: 12
   }, {
     name: 'xyz',

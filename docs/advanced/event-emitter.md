@@ -3,7 +3,7 @@
 Reim store is an [Event Emitter](https://www.npmjs.com/package/event-emitter), so you can freely use it for handling events
 
 ```javascript
-const emitter = store({})
+const emitter = reim({})
 
 emitter.on('test', () => {
   // … react to 'test' event

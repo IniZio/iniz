@@ -14,9 +14,9 @@ Therefore you can use `commit` method to mutate the state directly
 </template>
 
 <script>
-import {store} from 'reim'
+import reim from 'reim'
 
-const toggles = store({visibility: 'closed'})
+const toggles = reim({visibility: 'closed'})
 
 export default {
   data: () => toggles.state,

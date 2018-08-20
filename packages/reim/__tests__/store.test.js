@@ -1,13 +1,13 @@
-import {register, store, toStream} from '../src'
+import reim, {toStream} from '../src'
 
-test('register a store', () => {
-  const tstore = store({abc: 12})
+test('store a store', () => {
+  const tstore = reim({abc: 12})
 
   expect(tstore.state.abc).toBe(12)
 })
 
 test('setState', () => {
-  const store = register({foo: 17})
+  const store = reim({foo: 17})
 
   store.setState(state => {
     state.foo += 11
@@ -22,7 +22,7 @@ test('setState', () => {
 })
 
 // test('primitives Map & Set support', async () => {
-//   const store = register({
+//   const store = reim({
 //     deep: {
 //       foo: {
 //         bar: {
@@ -55,7 +55,7 @@ test('setState', () => {
 
 describe('subscription', () => {
   test('subscribe to store', () => {
-    const store = register({mag: 75})
+    const store = reim({mag: 75})
 
     const updated = jest.fn()
     // Should be called on subscribe also for initial fetch
@@ -67,7 +67,7 @@ describe('subscription', () => {
   })
 
   test('unsubscribe from store', () => {
-    const store = register({poi: 500})
+    const store = reim({poi: 500})
 
     const updated = jest.fn()
 
@@ -87,7 +87,7 @@ describe('subscription', () => {
 
 describe('observable', () => {
   test('create a stream from store', () => {
-    const store = register({count: 123})
+    const store = reim({count: 123})
 
     const stream = toStream(store)
     expect(stream.subscribe().unsubscribe).toBeInstanceOf(Function)

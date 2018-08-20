@@ -31,7 +31,7 @@ class Store {
 
   // Mutatable way to update state
   commit(mutation, ...args) {
-    let newState = mutation(this._state, ...args)
+    const newState = mutation(this._state, ...args)
     Object.assign(this._state, newState)
 
     this.emit('setState', mutation, ...args)
@@ -49,6 +49,7 @@ class Store {
           () => ({...this.state, ...mutation})
       )
     )
+
     this.emit('setState', mutation, ...args)
     this._notify()
     return this.state
@@ -104,7 +105,7 @@ class Store {
   }
 }
 
-export const register = (state, {name, plugins = []} = {}) => {
+export const store = (state, {name, plugins = []} = {}) => {
   const store = new Store(state)
   store.name = name
 
@@ -112,7 +113,9 @@ export const register = (state, {name, plugins = []} = {}) => {
   return store
 }
 
-export const store = register
+export const register = store
+
+export default store
 
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
 
