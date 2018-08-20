@@ -13,7 +13,7 @@ import React from 'react'
 import {render} from 'react-dom'
 
 // 0. Import Reim :)
-import {store} from 'reim'
+import reim from 'reim'
 import {connect} from 'react-reim'
 
 const styles = {
@@ -27,7 +27,7 @@ const styles = {
 }
 
 // 1. Create a store
-const counter = store({count: 10})
+const counter = reim({count: 10})
 
 // 2. Make a normal component
 const Counter = ({value, increment, decrement}) => (

@@ -2,31 +2,28 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
-import {register} from '../../reim/src'
-import {createContext, connect, context} from '../src'
+import reim from '../../reim/src'
+import {context, connect} from '../src'
 
-test('context returns Consumer and Provider', () => {
-  const store = context(register)({yer: 43})
+test('context returns Consumer', () => {
+  const store = reim({yer: 43}).plugin(context())
 
   expect(store.Consumer).toBeDefined()
-  expect(store.Provider).toBeDefined()
 })
 
 test('Consumer should have change in store state reflected', () => {
-  const store = createContext(register({yer: 43}))
+  const store = reim({yer: 43}).plugin(context())
 
   const component = renderer.create(
-    <store.Provider>
-      <store.Consumer>
-        {
-          state => (
-            <div>
-              <div id="value">{state.yer}</div>
-            </div>
-          )
-        }
-      </store.Consumer>
-    </store.Provider>
+    <store.Consumer>
+      {
+        state => (
+          <div>
+            <div id="value">{state.yer}</div>
+          </div>
+        )
+      }
+    </store.Consumer>
   )
   store.setState(state => {
     state.yer += 88
@@ -36,22 +33,20 @@ test('Consumer should have change in store state reflected', () => {
 })
 
 test('Unmount Cunsumer should unsubscribe', () => {
-  const store = createContext(register({yer: 43}))
+  const store = reim({yer: 43}).plugin(context())
 
   const getter = jest.fn()
 
   const component = renderer.create(
-    <store.Provider>
-      <store.Consumer getter={getter}>
-        {
-          state => (
-            <div>
-              <div id="value">{state.yer}</div>
-            </div>
-          )
-        }
-      </store.Consumer>
-    </store.Provider>
+    <store.Consumer getter={getter}>
+      {
+        state => (
+          <div>
+            <div id="value">{state.yer}</div>
+          </div>
+        )
+      }
+    </store.Consumer>
   )
   store.setState(state => {
     state.yer += 88
@@ -65,7 +60,7 @@ test('Unmount Cunsumer should unsubscribe', () => {
 })
 
 test('Properties not included in getter should not trigger update', () => {
-  const store = createContext(register({hel: 43, gee: 10}))
+  const store = reim({hel: 43, gee: 10}).plugin(context())
 
   const updated = jest.fn()
 
@@ -78,15 +73,13 @@ test('Properties not included in getter should not trigger update', () => {
   }
 
   renderer.create(
-    <store.Provider>
-      <store.Consumer getter={state => ({hel: state.hel})}>
-        {
-          state => (
-            <Listen {...state}/>
-          )
-        }
-      </store.Consumer>
-    </store.Provider>
+    <store.Consumer getter={state => ({hel: state.hel})}>
+      {
+        state => (
+          <Listen {...state}/>
+        )
+      }
+    </store.Consumer>
   )
   store.setState(state => {
     state.hel -= 22
@@ -99,16 +92,14 @@ test('Properties not included in getter should not trigger update', () => {
 })
 
 test('use convenience method connect', () => {
-  const store = createContext(register({bom: 19}))
+  const store = reim({bom: 19}).plugin(context())
 
   const Container = connect(store, state => ({bom: state.bom}))(
     state => <div>{JSON.stringify(state)}</div>
   )
 
   const component = renderer.create(
-    <store.Provider>
-      <Container/>
-    </store.Provider>
+    <Container/>
   )
   store.setState(state => {
     state.bom += 490
@@ -118,7 +109,7 @@ test('use convenience method connect', () => {
 })
 
 test('change getter', () => {
-  const store = createContext(register({dui: 12, geo: 'tie'}))
+  const store = reim({dui: 12, geo: 'tie'}).plugin(context())
 
   class Getter extends Component {
     state = {
@@ -127,17 +118,15 @@ test('change getter', () => {
 
     render() {
       return (
-        <store.Provider>
-          <store.Consumer getter={this.state.getter}>
-            {
-              state => (
-                <div>
-                  <div id="selected">{JSON.stringify(state)}</div>
-                </div>
-              )
-            }
-          </store.Consumer>
-        </store.Provider>
+        <store.Consumer getter={this.state.getter}>
+          {
+            state => (
+              <div>
+                <div id="selected">{JSON.stringify(state)}</div>
+              </div>
+            )
+          }
+        </store.Consumer>
       )
     }
   }

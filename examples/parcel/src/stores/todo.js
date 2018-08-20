@@ -1,10 +1,12 @@
-import {register} from 'reim'
-import {createContext} from 'react-reim'
+import reim from 'reim'
+import {context} from 'react-reim'
 
-const store = createContext(register({
+const store = reim({
   todos: [],
   currTodo: {value: ''}
-}))
+}, {
+  plugins: [context()]
+})
 
 export const mutations = {
   changeCurrTodo: todo => state => {

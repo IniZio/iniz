@@ -1,10 +1,10 @@
 import nanoid from 'nanoid'
 import isFunction from 'lodash/isFunction'
-import {store as register} from 'reim'
+import reim from 'reim'
 
 export const task = (func, subscriber) => {
   const id = nanoid()
-  const store = register({status: 'initialized'}, {name: `$task/${id}`})
+  const store = reim({status: 'initialized'}, {name: `$task/${id}`})
 
   if (isFunction(subscriber)) {
     store.subscribe(subscriber)

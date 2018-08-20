@@ -4,7 +4,7 @@
 
 There are 3 parts in Reim.js:
 
-* [`store` + `createContext`](how-reim-works.md#create-a-store)\`\`
+* [`store` + `context`](how-reim-works.md#create-a-store)\`\`
 * [`connect`](motivation.md#connect-store-to-component)
 * [`setState`](motivation.md#connect-store-to-component)
 
@@ -13,11 +13,13 @@ There are 3 parts in Reim.js:
 {% code-tabs %}
 {% code-tabs-item title="stores/todo.js" %}
 ```jsx
-import {store} from 'reim'
+import reim from 'reim'
 import {context} from 'react-reim'
 
-const todoStore = context(store)({
+const todoStore = reim({
     todos: []
+}, {
+  plugins: [context()]
 })
 
 export default todoStore
@@ -90,4 +92,3 @@ If you have used Redux before, you should see that quite an amount of it is pret
 `setState` looks just like normal React components setting its state, instead of having to call an action and then a reducer.
 
 Reim also provides context Components to make firing up a store even more straight-forward, and will be explained in later section.
-

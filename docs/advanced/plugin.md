@@ -33,7 +33,7 @@ Note that it is a function returning an function. This enables us to accept plug
 
 ```javascript
 // Add plugins on store creation
-const someStore = store({}, {plugins: sayHello({message: 'World'})})
+const someStore = reim({}, {plugins: sayHello({message: 'World'})})
 
 // Add plugins in runtime
 someSore.plugin(sayBye('Once'), sayBye('Again!'))

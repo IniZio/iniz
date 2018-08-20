@@ -26,10 +26,14 @@ And then replace App.jsx content
 import React from "react";
 import ReactDOM from "react-dom";
 
-import {store} from 'reim';
+import reim from 'reim';
 import {context} from 'react-reim';
 
-const todoStore = context(store)({todos: []}));
+const todoStore = reim({
+  todos: []
+}, {
+  plugins: [context()]
+});
 
 function App() {
   editTodo(index, todo) {
@@ -71,4 +75,3 @@ ReactDOM.render(<App />, rootElement);
 {% endcode-tabs %}
 
 Now just run `npm run start` !
-

@@ -9,7 +9,7 @@ store.setState({message: 'Hello world!'})
 But since Reim uses [Immer](https://github.com/mweststrate/immer), you can also create next immutable state by directly mutating it in `setState`
 
 ```javascript
-const example = store({
+const example = reim({
     message: 'Forever'
 })
 
