@@ -83,3 +83,21 @@ test('should merge saved and current store recursively and replace values', () =
 
   expect(st.subscribe).toBeCalled()
 })
+
+test('should report anonymous store trying to use persist plugin', () => {
+  const storage = new Storage()
+
+  expect(() => store({
+    xx: [234],
+    y: 'as',
+    zz: {
+      mag: 11
+    }
+  }).plugin(persist({storage}))).toThrowErrorMatchingSnapshot()
+})
+
+test('should report invalid storage', () => {
+  const storage = 'invalid storge'
+
+  expect(() => persist({storage})).toThrowErrorMatchingSnapshot()
+})
