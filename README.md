@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-Easiest (im)mutable state management library
+  Managing your state cannot be easier, trust me :smirk:
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@ Easiest (im)mutable state management library
   <img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20">
 </p>
 
-## Why me? :smirk:
+## Why me? :yum:
 
 <ul>
   <li>:sunglasses: &nbsp; No ALL_CAPS_ACTION_TYPE needed</li>
@@ -29,7 +29,7 @@ Easiest (im)mutable state management library
 $ yarn add reim react-reim
 ```
 
-## Usage
+## :ghost: Usage
 
 ### Minimal way
 
