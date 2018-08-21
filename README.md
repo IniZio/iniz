@@ -3,10 +3,6 @@
 </p>
 
 <p align="center">
-  <img src="https://i.imgur.com/iblGzsu.png" width="80%">
-</p>
-
-<p align="center">
   Managing your state cannot be easier, trust me :smirk:
 </p>
 
