@@ -45,7 +45,7 @@ import reim from 'reim'
 import {connect} from 'react-reim'
 
 // 1. Create a store
-const counter = reim({count: 10}).plugin(context())
+const counter = reim({count: 10})
 
 // 2. Create a presentational component
 const Counter = ({value, increment, decrement}) => (
