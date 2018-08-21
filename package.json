@@ -1,5 +1,9 @@
 {
   "name": "reim-dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IniZio/reim.git"
+  },
   "private": true,
   "workspaces": [
     "packages/*"
