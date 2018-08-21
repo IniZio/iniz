@@ -23,9 +23,9 @@ export const task = (func, subscriber) => {
     }
   }
 
-  task.subscribe = store.subscribe
+  store.exec = task
 
-  return task
+  return store
 }
 
 export default task

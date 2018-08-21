@@ -10,7 +10,7 @@ test('triggers hook throughout the process', async () => {
 
   testTask.subscribe(subscriber2)
 
-  await testTask()
+  await testTask.exec()
 
   expect(subscriber1).toBeCalledWith({status: 'pending'})
   expect(subscriber1).toBeCalledWith({status: 'resolved', result: 'resolved task'})
@@ -22,7 +22,7 @@ test('triggers hook throughout the process', async () => {
     throw new Error('woops')
   }, subscriber3)
   try {
-    await failTask()
+    await failTask.exec()
   } catch (e) {
     // Once for pending, once for rejected
     expect(subscriber3).toHaveBeenCalledTimes(2)
