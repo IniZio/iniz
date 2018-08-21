@@ -25,23 +25,25 @@ class Store {
     bind(this)
   }
 
-  getState() {
-    return this.state
+  snapshot(getter = state => state) {
+    return produce(this.state, getter)
   }
+
+  getState = this.snapshot
 
   // Mutatable way to update state
   commit(mutation, ...args) {
     const newState = mutation(this._state, ...args)
     Object.assign(this._state, newState)
 
-    this.emit('setState', mutation, ...args)
+    this.emit('set', mutation, ...args)
     this._notify()
 
     return this.state
   }
 
   // Immutable way to update state
-  setState(mutation, ...args) {
+  set(mutation, ...args) {
     this._state = produce(
       this.state, (
         isFunction(mutation) ?
@@ -50,10 +52,12 @@ class Store {
       )
     )
 
-    this.emit('setState', mutation, ...args)
+    this.emit('set', mutation, ...args)
     this._notify()
     return this.state
   }
+
+  setState = this.set
 
   /**
    * subscribe - Add subscriber

@@ -53,10 +53,10 @@ class Subscriber extends Component {
   }
 
   render() {
-    const {children} = this.props
+    const {children, store} = this.props
     const {getterCache, setterCache, isInitialized} = this.state
 
-    return isInitialized ? (typeof children === 'function' ? children(getterCache, setterCache) : children) : null
+    return isInitialized ? (typeof children === 'function' ? children({...setterCache, ...getterCache}, store) : children) : null
   }
 }
 
