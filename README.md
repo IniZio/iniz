@@ -81,9 +81,9 @@ const App = () => (
     {s => (
       <div>
         <h1>{s.visible ? 'ON' : 'OFF'}</h1>
-        <button onClick={store.set({visibile: s.visible})}>Toggle</button>
+        <button onClick={() => store.set({visibile: !s.visible})}>Toggle</button>
       </div>
-    ))}
+    )}
   </store.Consumer>
 )
 ```
