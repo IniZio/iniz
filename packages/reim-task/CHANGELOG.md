@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.8.1"></a>
+## [1.8.1](https://github.com/IniZio/reim/compare/v1.8.0...v1.8.1) (2018-08-21)
+
+
+### Bug Fixes
+
+* **task:** use `.exec` instead trigger task ([9456590](https://github.com/IniZio/reim/commit/9456590))
+
+
+
+
 <a name="1.8.0"></a>
 # [1.8.0](https://github.com/IniZio/reim/compare/v1.7.0...v1.8.0) (2018-08-21)
 
