@@ -10,14 +10,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * **react:** adds get/set method for store usage ([#23](https://github.com/IniZio/reim/issues/23)) ([a231533](https://github.com/IniZio/reim/commit/a231533))
-
-
-
-
-<a name="1.7.0"></a>
-# [1.7.0](https://github.com/IniZio/reim/compare/v1.6.0...v1.7.0) (2018-08-15)
-
-
-### Features
-
-* **reporter:** adds reporter plugin ([a257fb8](https://github.com/IniZio/reim/commit/a257fb8))
