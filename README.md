@@ -23,16 +23,16 @@ const User = () => (
   <div>{get(s => s.name)}</div>
 )
 
-// 3. Also setting state :O
+// 3. Also setting state :D
 const App = () => (
   <div>
     <User/>
-    get(s => (
+    {get(s => (
       <input
         value={s.name}
         onChange={ev => set({name: ev.target.value})}
       />
-    ))
+    ))}
   </div>
 )
 ```
@@ -59,12 +59,12 @@ const Counter = ({value, increment, decrement}) => (
 // 3. Create a container component
 const ConnectedCounter = connect(
   counter,
-  state => ({value: state.count}),
-  ({setState}) => ({
-    increment: () => setState(state => {
+  ({count}) => ({value: count}),
+  ({set}) => ({
+    increment: () => set(state => {
       state.count++
     }),
-    decrement: () => setState(state => {
+    decrement: () => set(state => {
       state.count--
     })
   })
