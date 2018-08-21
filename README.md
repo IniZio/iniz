@@ -3,11 +3,7 @@
 </p>
 
 <p align="center">
-  Make state easy with <b><a href="https://reimjs.gitbook.io/">Reim</a></b>
-</p>
-
-<p align="center">
-  <img src="https://i.imgur.com/iblGzsu.png" width="70%">
+  <b>Make state easy with <a href="https://reimjs.gitbook.io/">Reim</a></b>
 </p>
 
 <p align="center">
@@ -16,26 +12,31 @@
   <img src="https://travis-ci.org/IniZio/reim.svg?branch=master">
   <img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20">
   <img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20">
+  <img src="https://badgen.net/badge/license/MIT/blue" />
 </p>
 
-## Why me? :yum:
+<p align="center">
+  <img src="https://i.imgur.com/iblGzsu.png" width="80%">
+</p>
+
+### Why Reim?
 
 <ul>
-  <li>:sunglasses: &nbsp; No ALL_CAPS_ACTION_TYPE needed</li>
-  <li>:muscle: &nbsp; Can scale from simple HOC to Redux-level</li>
+  <li>:muscle: &nbsp; Can scale from HOC to Redux-level</li>
+  <li>:snowflake: &nbsp; Immutable state</li>
   <li>:zap: &nbsp; Small, just 8kb minified</li>
-  <li>:book: &nbsp; <a href="https://reimjs.gitbook.io/reim">Goodest Documentation?</a></li>
+  <li>:book: &nbsp; <a href="https://reimjs.gitbook.io/reim">Nice Documentation</a></li>
 </ul>
 
-## :computer: Install
+### Installation
 
 ```sh
 $ yarn add reim react-reim
 ```
 
-## :ghost: Usage
+### How Reim looks
 
-### Minimal way
+#### "Minimal"
 
 ```jsx
 import React from 'react'
@@ -64,7 +65,7 @@ const App = () => (
 )
 ```
 
-### Unstated-like way
+#### "Unstated"-like
 
 ```jsx
 import React from 'react'
@@ -87,7 +88,7 @@ const App = () => (
 )
 ```
 
-### Redux-like way
+#### "Redux"-like
 
 ```jsx
 import React from 'react'
@@ -123,6 +124,6 @@ const ConnectedCounter = connect(
 export default ConnectedCounter
 ```
 
-## Demo
+#### Demo
 
 [https://codesandbox.io/s/480xmrxy74](https://codesandbox.io/s/480xmrxy74)
