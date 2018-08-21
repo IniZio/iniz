@@ -14,13 +14,14 @@ Easiest (im)mutable state management library
   <img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20">
 </p>
 
-:sunglasses: &nbsp; No ALL_CAPS_ACTION_TYPE needed
+## Why me? :smirk:
 
-:muscle: &nbsp; Can scale from a simple HOC to Redux-level
-
-:zap: &nbsp; Small, just 8kb minified
-
-:book: &nbsp; [Nice Documentation?](https://reimjs.gitbook.io/reim)
+<ul>
+  <li>:sunglasses: &nbsp; No ALL_CAPS_ACTION_TYPE needed</li>
+  <li>:muscle: &nbsp; Can scale from simple HOC to Redux-level</li>
+  <li>:zap: &nbsp; Small, just 8kb minified</li>
+  <li>:book: &nbsp; <a href="https://reimjs.gitbook.io/reim">Goodest Documentation?</a></li>
+</ul>
 
 ## :computer: Install
 
