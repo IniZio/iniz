@@ -8,28 +8,46 @@ Reim.js is an \(im\)mutable state management library. Inspired by great librarie
 
 ## How it looks
 
+### Unstated-like way
+
 ```jsx
 import React from 'react'
-import {render} from 'react-dom'
+import reim from 'reim'
+import {context} from 'react-reim'
 
-// 0. Import Reim :)
+// 1. Create a store
+const {get, set} = reim({name: 'Peter'}).plugin(context())
+
+// 2. Get it already :)
+const User = () => (
+  <div>{get(s => s.name)}</div>
+)
+
+// 3. Also setting state :O
+const App = () => (
+  <div>
+    <User/>
+    get(s => (
+      <input
+        value={s.name}
+        onChange={ev => set({name: ev.target.value})}
+      />
+    ))
+  </div>
+)
+```
+
+### Redux-like way
+
+```jsx
+import React from 'react'
 import reim from 'reim'
 import {connect} from 'react-reim'
 
-const styles = {
-  countainer: {
-    display: 'flex'
-  },
-  counter: {
-    fontSize: '2em',
-    margin: '0 10px'
-  }
-}
-
 // 1. Create a store
-const counter = reim({count: 10})
+const counter = reim({count: 10}).plugin(context())
 
-// 2. Make a normal component
+// 2. Create a presentational component
 const Counter = ({value, increment, decrement}) => (
   <div style={styles.container}>
     <button onClick={decrement}>-</button>
@@ -38,7 +56,7 @@ const Counter = ({value, increment, decrement}) => (
   </div>
 )
 
-// 3. Connect the component to store
+// 3. Create a container component
 const ConnectedCounter = connect(
   counter,
   state => ({value: state.count}),
@@ -52,10 +70,9 @@ const ConnectedCounter = connect(
   })
 )(Counter)
 
-render(<ConnectCounter/>, document.getElementById('app'))
+export default ConnectedCounter
 ```
 
 ## Demo
 
 [https://codesandbox.io/s/480xmrxy74](https://codesandbox.io/s/480xmrxy74)
-

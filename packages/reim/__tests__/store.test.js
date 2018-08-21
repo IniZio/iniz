@@ -6,7 +6,7 @@ test('store a store', () => {
   expect(tstore.state.abc).toBe(12)
 })
 
-test('setState', () => {
+test('set', () => {
   const store = reim({foo: 17})
 
   store.setState(state => {

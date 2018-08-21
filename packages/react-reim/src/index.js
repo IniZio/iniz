@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 
-import createConsumer from './factories/consumer'
+import Subscriber from './components/subscriber'
 
 // Syncs props to store
 export function pipeTo(store, mutation = (_, p) => p) {
@@ -9,9 +9,7 @@ export function pipeTo(store, mutation = (_, p) => p) {
       store.setState(mutation, this.props)
     }
 
-    render() {
-      return <div/>
-    }
+    render = () => null
   }
   return Piper
 }
@@ -25,7 +23,10 @@ export const context = () =>
           value: true
         },
         Consumer: {
-          value: createConsumer(store)
+          value: props => <Subscriber store={store} {...props}/>
+        },
+        get: {
+          value: fn => <Subscriber store={store}>{fn}</Subscriber>
         }
       })
     }
@@ -38,7 +39,7 @@ export function connect(store, getter = s => s, setter = () => ({})) {
   return Wrapped => p => (
     <Context.Consumer getter={getter} setter={setter}>
       {
-        (getter, setter) => <Wrapped {...setter} {...getter} {...p}/>
+        selected => <Wrapped {...selected} {...p}/>
       }
     </Context.Consumer>
   )

@@ -2,7 +2,7 @@ export function reporter(callback = () => {}) {
   return {
     name: 'reporter',
     call(store) {
-      store.on('setState', (mutation, ...args) => {
+      store.on('set', (mutation, ...args) => {
         const {name} = mutation
         const snapshot = store.getState()
 
