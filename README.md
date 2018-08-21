@@ -7,11 +7,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/reim.svg">
-  <img src="https://img.shields.io/npm/dm/reim.svg">
-  <img src="https://travis-ci.org/IniZio/reim.svg?branch=master">
-  <img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20">
-  <img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20">
+  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/v/reim.svg"></a>
+  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/dm/reim.svg"></a>
+  <a href="https://travis-ci.org/IniZio/reim"><img src="https://travis-ci.org/IniZio/reim.svg?branch=master"></a>
+  <a href="https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20"></a>
+  <a href="https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IniZio/reim&amp;utm_campaign=Badge_Grade_Dashboard"><img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20"></a>
   <img src="https://badgen.net/badge/license/MIT/blue" />
 </p>
 
