@@ -1,9 +1,13 @@
 <p align="center">
-  <img src="https://i.imgur.com/C8AklnO.png">
+  <img src="https://i.imgur.com/C8AklnO.png" width="50px">
 </p>
 
 <p align="center">
-  Managing your state cannot be easier, trust me :smirk:
+  Make state easy with <b><a href="https://reimjs.gitbook.io/">Reim</a></b>
+</p>
+
+<p align="center">
+  <img src="https://i.imgur.com/iblGzsu.png" width="70%">
 </p>
 
 <p align="center">
