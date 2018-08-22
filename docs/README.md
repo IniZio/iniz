@@ -4,19 +4,19 @@
 
 ## Introduction
 
-* [Motivation](guide/motivation.md)
-* [Concepts](guide/concepts.md)
+* [Motivation](introduction/motivation.md)
+* [Concepts](introduction/concepts.md)
 
 ## Guide
 
-* [Store](guide-1/store.md)
-* [setState](guide-1/setstate.md)
-* [Subscribe](guide-1/subscribe.md)
-* [Plugin](guide-1/plugin.md)
-* [Event Emitter](guide-1/event-emitter.md)
-* [Use with React / Preact](guide-1/use-with-react.md)
-* [Use with Vue](guide-1/use-with-vue.md)
-* [Use with Angular / Rxjs](guide-1/use-with-rxjs.md)
+* [Store](guide/store.md)
+* [setState](guide/setstate.md)
+* [Subscribe](guide/subscribe.md)
+* [Plugin](guide/plugin.md)
+* [Event Emitter](guide/event-emitter.md)
+* [Use with React / Preact](guide/use-with-react.md)
+* [Use with Vue](guide/use-with-vue.md)
+* [Use with Angular / Rxjs](guide/use-with-rxjs.md)
 
 ## Ecosystem
 
@@ -25,4 +25,3 @@
 * [reim-reporter](ecosystem/reim-reporter.md)
 * [reim-persist](ecosystem/reim-persist.md)
 * [Release Notes](https://github.com/IniZio/reim/blob/master/CHANGELOG.md)
-
