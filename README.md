@@ -21,18 +21,14 @@
 
 ### Why Reim?
 
-<ul>
-  <li>:muscle: &nbsp; Can scale from HOC to Redux-level</li>
-  <li>:snowflake: &nbsp; Immutable state</li>
-  <li>:zap: &nbsp; Small, just 8kb minified</li>
-  <li>:book: &nbsp; <a href="https://reimjs.gitbook.io/reim">Nice Documentation</a></li>
-</ul>
+<p>🤟 Can scale from HOC to Redux-level</p>
+<p>❄  Immutable state</p>
+<p>⚡ Small, just <b>8kb</b> minified</p>
+<p>📖 Nice Documentation // hopefully ;)</p>
 
 ### Installation
 
 ```sh
-
-```bash
 $ yarn add reim react-reim
 ```
 
