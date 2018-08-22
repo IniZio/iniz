@@ -147,3 +147,19 @@ export default ({addTwo, count}) => (
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
+# Sync with react-router
+
+Just need to use pipeTo...
+
+```jsx
+import {BrowserRouter, Route} from 'react-router-dom'
+import reim from 'reim'
+
+const store = reim({})
+
+const App = () => (
+  <BrowserRouter>
+    <Route component={pipeTo(store)}/>
+  </BrowserRouter>
+)
+```
