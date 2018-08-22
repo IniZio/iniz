@@ -1,21 +1,36 @@
-# Reim.js
+<p align="center">
+  <img src="https://i.imgur.com/C8AklnO.png" width="50px">
+</p>
 
-![](https://i.imgur.com/C8AklnO.png)
+<p align="center">
+  <b>Make state easy with <a href="https://reimjs.gitbook.io/">Reim</a></b>
+</p>
 
- **Make state easy with** [**Reim**](https://reimjs.gitbook.io/)
+<p align="center">
+  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/v/reim.svg"></a>
+  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/dm/reim.svg"></a>
+  <a href="https://travis-ci.org/IniZio/reim"><img src="https://travis-ci.org/IniZio/reim.svg?branch=master"></a>
+  <a href="https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20"></a>
+  <a href="https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IniZio/reim&amp;utm_campaign=Badge_Grade_Dashboard"><img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20"></a>
+  <img src="https://badgen.net/badge/license/MIT/blue" />
+</p>
 
- [![](https://img.shields.io/npm/v/reim.svg)](https://npm.im/reim) [![](https://img.shields.io/npm/dm/reim.svg)](https://npm.im/reim) [![](https://travis-ci.org/IniZio/reim.svg?branch=master)](https://travis-ci.org/IniZio/reim) [![](https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage) [![](https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Grade_Dashboard) ![](https://badgen.net/badge/license/MIT/blue)
+<p align="center">
+  <img src="https://i.imgur.com/iblGzsu.png" width="80%">
+</p>
 
-![](https://i.imgur.com/iblGzsu.png)
+### Why Reim?
 
-## Why Reim?
+<ul>
+  <li>:muscle: &nbsp; Can scale from HOC to Redux-level</li>
+  <li>:snowflake: &nbsp; Immutable state</li>
+  <li>:zap: &nbsp; Small, just 8kb minified</li>
+  <li>:book: &nbsp; <a href="https://reimjs.gitbook.io/reim">Nice Documentation</a></li>
+</ul>
 
-* :muscle:   Can scale from HOC to Redux-level
-* :snowflake:   Immutable state
-* :zap:   Small, just 8kb minified
-* :book:   [Nice Documentation](https://reimjs.gitbook.io/reim)
+### Installation
 
-## Installation
+```sh
 
 ```bash
 $ yarn add reim react-reim
