@@ -19,8 +19,9 @@ class Store {
     return this._state
   }
 
-  constructor(state) {
+  constructor(state = {}) {
     this._state = produce(state, () => {})
+    this._initial = produce(state, () => {})
     emitter(this)
     bind(this)
   }
@@ -58,6 +59,13 @@ class Store {
   }
 
   setState = this.set
+
+  reset(initial = null) {
+    if (initial) {
+      this._initial = initial
+    }
+    this.set(() => this._initial)
+  }
 
   /**
    * subscribe - Add subscriber
