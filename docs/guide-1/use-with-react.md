@@ -1,8 +1,41 @@
 # Use with React / Preact
 
-## Function as Child
+There are 3 ways to use **Reim** with **React**, and you can choose depending on scenerios.
 
-`react-reim` 's `context` function accepts `reim` 's `store` function, which adds `Consumer` component so that you can use store right in components
+## 1. Minimal way
+
+`react-reim` 's `context` plugin adds `get` function so that you can use derive component from store state
+
+```jsx
+import React from 'react'
+import reim from 'reim'
+import {context} from 'react-reim'
+
+// create a store
+const {get, set} = reim({name: 'Peter'}).plugin(context())
+
+// get state already :)
+const User = () => (
+  <div>{get(s => s.name)}</div>
+)
+
+// oh and setting state :D
+const App = () => (
+  <div>
+    <User/>
+    {get(s => (
+      <input
+        value={s.name}
+        onChange={ev => set({name: ev.target.value})}
+      />
+    ))}
+  </div>
+)
+```
+
+## 2. Unstated way
+
+`react-reim` 's `context` plugin also adds `Consumer` component so that you can use store right in components
 
 {% code-tabs %}
 {% code-tabs-item title="stores/counter.js" %}
@@ -69,9 +102,9 @@ render(<App/>, document.getElementById('app'))
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-## Connect
+## 3. Redux way
 
-The '_Function as Child_' way is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
+The **Unstated** way is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
 
 This is why Reim also provides the `connect` function
 
@@ -113,3 +146,4 @@ export default ({addTwo, count}) => (
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
+

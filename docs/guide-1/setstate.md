@@ -1,12 +1,16 @@
 # setState
 
-Reim `setState` mutates the store state, similar to React:
+## What is setState?
+
+**Reim** `set` / `setState` mutates the store state, similar to **React**:
 
 ```javascript
 store.setState({message: 'Hello world!'})
 ```
 
-But since Reim uses [Immer](https://github.com/mweststrate/immer), you can also create next immutable state by directly mutating it in `setState`
+## Difference from React
+
+Since **Reim** uses [**Immer**](https://github.com/mweststrate/immer), you can also create next immutable state by directly mutating it in `setState`
 
 ```javascript
 const example = reim({
@@ -19,9 +23,9 @@ store.setState({
     count: 12
 })
 
-// OK
+// OK, `set` is same as `setState`
 // Result: {message: 'Forever Reim', count: 12}
-store.setState(state => {
+store.set(state => {
     state.message = ' Reim'
 })
 

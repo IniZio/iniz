@@ -1,5 +1,7 @@
 # Subscribe
 
+## What is subscribe?
+
 with `subscribe` function you will be notified whenever there is a change by simply
 
 ```javascript
@@ -40,4 +42,6 @@ countStore.setState(state => {
     state.count += 10
 })
 ```
+
+
 

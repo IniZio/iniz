@@ -29,7 +29,7 @@ const sayBye(options) {
 }
 ```
 
-Note that it is a function returning an function. This enables us to accept plugin-specific options. Now to use it:
+Note that it is a function returning an function or object with `call` method. This enables us to accept plugin-specific options. Now to use it:
 
 ```javascript
 // Add plugins on store creation
@@ -43,6 +43,4 @@ someStore.setState({count: 1000})
 // logs 'Bye! Once'
 // logs 'Bye! Again!'
 ```
-
-
 

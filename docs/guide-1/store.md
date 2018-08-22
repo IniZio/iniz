@@ -1,5 +1,7 @@
 # Store
 
+## What is store?
+
 The **Store** is holds the state, and is responsible for change of state. You can also subscribe to a store for changes.
 
 ## Creating a store
@@ -20,7 +22,7 @@ export default todoStore
 
 ### Creating a named store
 
-A store is anonymous by default. You can make a named store for use with plugins e.g. reim-reporter. 
+A store is anonymous by default. You can create a named store for use with plugins e.g. **reim-reporter.**
 
 ```javascript
 const todoStore = reim({
@@ -29,4 +31,24 @@ const todoStore = reim({
     name: 'Todo-Store'
 })
 ```
+
+### Adding plugins
+
+You can easily apply plugins on store
+
+```javascript
+import {context} from 'react-reim'
+
+const store = reim({message: ''}, {
+    plugins: [context()]
+})
+```
+
+or after it is initialized
+
+```javascript
+const store = reim({}).plugin(persist())
+```
+
+
 
