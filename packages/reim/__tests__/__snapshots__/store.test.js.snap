@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should be able to reset 1`] = `
+Object {
+  "count": 123,
+}
+`;
+
+exports[`should be able to reset to give value 1`] = `
+Object {
+  "magic": "real",
+}
+`;

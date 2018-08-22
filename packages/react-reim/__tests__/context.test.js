@@ -33,6 +33,25 @@ test('Consumer should have change in store state reflected', () => {
   expect(tree).toMatchSnapshot()
 })
 
+test('Consumer should be able to set initial value', () => {
+  const store = reim().plugin(context())
+
+  const component = renderer.create(
+    <store.Consumer initial={{yer: 10}}>
+      {
+        state => (
+          <div>
+            <div id="value">{state.yer}</div>
+          </div>
+        )
+      }
+    </store.Consumer>
+  )
+
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
+})
+
 test('get should have change in store state reflected', () => {
   const {get, set} = reim({yer: 43}).plugin(context())
 

@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Consumer should be able to set initial value 1`] = `
+<div>
+  <div
+    id="value"
+  >
+    10
+  </div>
+</div>
+`;
+
 exports[`Consumer should have change in store state reflected 1`] = `
 <div>
   <div

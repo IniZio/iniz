@@ -85,6 +85,26 @@ describe('subscription', () => {
   })
 })
 
+test('should be able to reset', () => {
+  const store = reim({count: 123})
+
+  store.set({abc: 'sdf'})
+
+  store.reset()
+
+  expect(store.state).toMatchSnapshot()
+})
+
+test('should be able to reset to give value', () => {
+  const store = reim({count: 123})
+
+  store.set({abc: 'sdf'})
+
+  store.reset({magic: 'real'})
+
+  expect(store.state).toMatchSnapshot()
+})
+
 describe('observable', () => {
   test('create a stream from store', () => {
     const store = reim({count: 123})

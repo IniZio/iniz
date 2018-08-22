@@ -9,6 +9,10 @@ class Subscriber extends Component {
   }
 
   componentDidMount() {
+    if (this.props.initial) {
+      this.props.store.reset(this.props.initial)
+    }
+
     this.updateGetterCache()
     this.updateSetterCache()
   }
@@ -66,14 +70,16 @@ Subscriber.defaultProps = {
   },
   setter() {
     return {}
-  }
+  },
+  initial: null
 }
 
 Subscriber.propTypes = {
   children: PropTypes.func.isRequired,
   store: PropTypes.any.isRequired,
   getter: PropTypes.func,
-  setter: PropTypes.func
+  setter: PropTypes.func,
+  initial: PropTypes.object
 }
 
 export default Subscriber
