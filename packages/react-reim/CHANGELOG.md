@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.1"></a>
+## [1.10.1](https://github.com/IniZio/reim/compare/v1.10.0...v1.10.1) (2018-08-23)
+
+
+### Bug Fixes
+
+* **react:** adds context plugin to State ([494c408](https://github.com/IniZio/reim/commit/494c408))
+
+
+
+
 <a name="1.10.0"></a>
 # [1.10.0](https://github.com/IniZio/reim/compare/v1.8.1...v1.10.0) (2018-08-23)
 
