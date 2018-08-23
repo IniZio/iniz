@@ -7,10 +7,12 @@
   "unpkg": "dist/react-reim.js",
   "jsdelivr": "dist/react-reim.js",
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "reim": "^1.9.0"
   },
   "devDependencies": {
-    "react": "^16.4.2"
+    "react": "^16.4.2",
+    "reim": "^1.9.0"
   },
   "dependencies": {
     "lodash": "^4.17.10",

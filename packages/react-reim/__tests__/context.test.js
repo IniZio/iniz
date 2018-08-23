@@ -3,7 +3,7 @@
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
 import reim from '../../reim/src'
-import {context, connect} from '../src'
+import {context, connect, State} from '../src'
 
 test('context returns Consumer', () => {
   const store = reim({yer: 43}).plugin(context())
@@ -95,6 +95,21 @@ test('Unmount Cunsumer should unsubscribe', () => {
     state.yer *= 88
   })
   expect(getter).toBeCalledTimes(2)
+})
+
+test('State component should work', () => {
+  const component = renderer.create(
+    <State initial={{mm: 88}}>
+      {
+        ({mm}) => (
+          <h1>{mm}</h1>
+        )
+      }
+    </State>
+  )
+
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
 })
 
 test('Properties not included in getter should not trigger update', () => {

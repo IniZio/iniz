@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import reim from 'reim'
 
 import Subscriber from './components/subscriber'
 
@@ -13,6 +14,9 @@ export function pipeTo(store, mutation = (_, p) => p) {
   }
   return Piper
 }
+
+// Disposable store component
+export const State = p => <Subscriber store={reim({})} {...p}/>
 
 export const context = () =>
   ({

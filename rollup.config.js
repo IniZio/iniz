@@ -12,16 +12,17 @@ const builds = {
   'react-reim': {
     globals: {
       'react': 'React',
-      'react-dom': 'ReactDOM'
+      'react-dom': 'ReactDOM',
+      'reim': 'reim'
     },
     external: [
-      'react', 'react-dom', 'prop-types'
+      'react', 'react-dom', 'prop-types', 'reim'
     ]
   },
   'reim-persist': {},
   'reim-task': {
     globals: {
-      'reim': 'Reim'
+      'reim': 'reim'
     },
     external: [
       'reim'
