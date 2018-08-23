@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.0"></a>
+# [1.10.0](https://github.com/IniZio/reim/compare/v1.8.1...v1.10.0) (2018-08-23)
+
+
+### Features
+
+* **initial:** adds handling of initial value ([#26](https://github.com/IniZio/reim/issues/26)) ([355058e](https://github.com/IniZio/reim/commit/355058e))
+
+
+
+
 <a name="1.9.0"></a>
 # [1.9.0](https://github.com/IniZio/reim/compare/v1.8.1...v1.9.0) (2018-08-22)
 

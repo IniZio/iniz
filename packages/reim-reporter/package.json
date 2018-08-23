@@ -1,6 +1,6 @@
 {
   "name": "reim-reporter",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "license": "MIT",
   "main": "dist/reim-reporter.cjs.js",
   "module": "dist/reim-reporter.es.js",
@@ -42,7 +42,7 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^1.9.0",
+    "reim": "^1.10.0",
     "xo": "^0.21.1"
   },
   "dependencies": {
