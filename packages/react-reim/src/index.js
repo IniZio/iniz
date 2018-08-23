@@ -15,9 +15,6 @@ export function pipeTo(store, mutation = (_, p) => p) {
   return Piper
 }
 
-// Disposable store component
-export const State = p => <Subscriber store={reim({})} {...p}/>
-
 export const context = () =>
   ({
     name: 'context',
@@ -37,6 +34,9 @@ export const context = () =>
   })
 
 export const createContext = context()
+
+// Disposable store component
+export const State = p => <Subscriber store={reim({}).plugin(context())} {...p}/>
 
 export function connect(store, getter = s => s, setter = () => ({})) {
   const Context = store.__isContext ? store : store.plugin(context)
