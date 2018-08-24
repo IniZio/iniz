@@ -1,5 +1,6 @@
 import {Component} from 'react'
 import PropTypes from 'prop-types'
+import isFunction from 'lodash/isFunction'
 
 class Subscriber extends Component {
   state = {
@@ -15,12 +16,17 @@ class Subscriber extends Component {
 
     this.updateGetterCache()
     this.updateSetterCache()
+
+    if (isFunction(this.props.onChange)) {
+      this.props.store.subscribe(this.props.onChange)
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
       (nextProps.getter !== this.props.getter || nextState.getterCache !== this.state.getterCache) ||
-      (nextProps.setter !== this.props.setter || nextState.setterCache !== this.state.setterCache)
+      (nextProps.setter !== this.props.setter || nextState.setterCache !== this.state.setterCache) ||
+      (nextProps.onChange !== this.props.onChange)
     )
   }
 
@@ -50,6 +56,12 @@ class Subscriber extends Component {
     if (prevProps.setter !== this.props.setter && prevState.setterCache === this.state.setterCache) {
       this.updateSetterCache()
     }
+    if (prevProps.onChange !== this.props.onChange) {
+      this.props.store.unsubscribe(prevProps.onChange)
+      if (isFunction(this.props.onChange)) {
+        this.props.store.subscribe(this.props.onChange)
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -71,7 +83,8 @@ Subscriber.defaultProps = {
   setter() {
     return {}
   },
-  initial: null
+  initial: null,
+  onChange: null
 }
 
 Subscriber.propTypes = {
@@ -79,7 +92,8 @@ Subscriber.propTypes = {
   store: PropTypes.any.isRequired,
   getter: PropTypes.func,
   setter: PropTypes.func,
-  initial: PropTypes.object
+  initial: PropTypes.object,
+  onChange: PropTypes.func
 }
 
 export default Subscriber

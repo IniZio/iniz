@@ -26,6 +26,12 @@ exports[`State component should work 1`] = `
 </h1>
 `;
 
+exports[`State onChange should trigger on state change 1`] = `
+<h1>
+  89
+</h1>
+`;
+
 exports[`change getter 1`] = `
 <div>
   <div

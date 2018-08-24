@@ -112,6 +112,36 @@ test('State component should work', () => {
   expect(tree).toMatchSnapshot()
 })
 
+test('State onChange should trigger on state change', () => {
+  const onChange = jest.fn()
+
+  class Container extends Component {
+    render() {
+      return (
+        <State initial={{value: 88}} onChange={onChange}>
+          {
+            ({value}, {set}) => {
+              this.increment = () => set({value: value + 1})
+              return <h1>{value}</h1>
+            }
+          }
+        </State>
+      )
+    }
+  }
+
+  const component = renderer.create(<Container/>)
+
+  expect(onChange).toBeCalledTimes(0)
+
+  component.root.instance.increment()
+
+  const tree = component.toJSON()
+  expect(tree).toMatchSnapshot()
+
+  expect(onChange).toBeCalledTimes(1)
+})
+
 test('Properties not included in getter should not trigger update', () => {
   const store = reim({hel: 43, gee: 10}).plugin(context())
 
