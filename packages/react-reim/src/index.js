@@ -39,7 +39,7 @@ export const createContext = context()
 export const State = p => <Subscriber store={reim({}).plugin(context())} {...p}/>
 
 export function connect(store, getter = s => s, setter = () => ({})) {
-  const Context = store.__isContext ? store : store.plugin(context)
+  const Context = store.__isContext ? store : store.plugin(context())
   return Wrapped => p => (
     <Context.Consumer getter={getter} setter={setter}>
       {

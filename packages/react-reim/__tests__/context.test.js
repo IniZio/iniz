@@ -175,7 +175,7 @@ test('Properties not included in getter should not trigger update', () => {
 })
 
 test('use convenience method connect', () => {
-  const store = reim({bom: 19}).plugin(context())
+  const store = reim({bom: 19})
 
   const Container = connect(store, state => ({bom: state.bom}))(
     state => <div>{JSON.stringify(state)}</div>
