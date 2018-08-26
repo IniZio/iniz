@@ -71,7 +71,7 @@ import reim from 'reim'
 import {State} from 'react-reim'
 
 const Toggle = () => (
-  <State initial={{visible: false}}>
+  <State initial={{visible: false}} onChange={console.log}>
     {({visible}, {set}) => (
       <button onClick={() => set({visible: !visible})}>{visible.toString()}</button>
     )}
