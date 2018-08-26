@@ -13,6 +13,7 @@
   <a href="https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20"></a>
   <a href="https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IniZio/reim&amp;utm_campaign=Badge_Grade_Dashboard"><img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20"></a>
   <img src="https://badgen.net/badge/license/MIT/blue" />
+  <a href="https://bundlephobia.com/result?p=reim@"><img src="https://img.shields.io/bundlephobia/minzip/reim.svg"></a>
 </p>
 
 <p align="center">
@@ -23,7 +24,7 @@
 
 <p>🤟 Can scale from HOC to Redux-level</p>
 <p>❄  Immutable state</p>
-<p>⚡ Small, just <b>8kb</b> minified</p>
+<p>⚡ Small, just <b>9kb</b> gzip + minified</p>
 <p>📖 Nice Documentation // hopefully ;)</p>
 
 ### Installation
