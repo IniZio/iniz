@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.3"></a>
+## [1.10.3](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.3) (2018-08-26)
+
+
+### Bug Fixes
+
+* **connect:** connect should work when the store passed in does not have context plugin ([a35463e](https://github.com/IniZio/reim/commit/a35463e))
+
+
+
+
 <a name="1.10.2"></a>
 ## [1.10.2](https://github.com/IniZio/reim/compare/v1.10.1...v1.10.2) (2018-08-24)
 
