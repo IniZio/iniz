@@ -63,6 +63,22 @@ const App = () => (
 )
 ```
 
+### "React-Values"
+
+```jsx
+import React from 'react'
+import reim from 'reim'
+import {State} from 'react-reim'
+
+const Toggle = () => (
+  <State initial={{visible: false}} onChange={console.log}>
+    {({visible}, {set}) => (
+      <button onClick={() => set({visible: !visible})}>{visible.toString()}</button>
+    )}
+  </State>
+)
+```
+
 ### "Unstated"-like
 
 ```jsx
@@ -97,10 +113,13 @@ import {connect} from 'react-reim'
 const counter = reim({count: 10})
 
 // create a presentational component
-const Counter = ({value, increment, decrement}) => (
-  <div style={styles.container}>
+const Counter = ({visible, increment, decrement}) => (
+    {({visible}, {set}) => (
+      <button onClick={() => set({visible: !visible})}>{visible.toString()}</button>
+    )}
+  <div>
     <button onClick={decrement}>-</button>
-    <div style={styles.counter}>{value}</div>
+    <div>{value}</div>
     <button onClick={increment}>+</button>
   </div>
 )
