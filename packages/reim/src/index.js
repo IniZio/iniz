@@ -24,6 +24,7 @@ class Store {
     this._initial = produce(state, () => {})
     emitter(this)
     bind(this)
+    this.emit('init', this)
   }
 
   snapshot(getter = state => state) {

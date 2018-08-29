@@ -4,7 +4,6 @@ import isFunction from 'lodash/isFunction'
 
 class Subscriber extends Component {
   state = {
-    isInitialized: false,
     getterCache: {},
     setterCache: {}
   }
@@ -26,7 +25,8 @@ class Subscriber extends Component {
     return (
       (nextProps.getter !== this.props.getter || nextState.getterCache !== this.state.getterCache) ||
       (nextProps.setter !== this.props.setter || nextState.setterCache !== this.state.setterCache) ||
-      (nextProps.onChange !== this.props.onChange)
+      (nextProps.onChange !== this.props.onChange) ||
+      (nextProps.children !== this.props.children)
     )
   }
 
@@ -35,7 +35,7 @@ class Subscriber extends Component {
       this.props.store.unsubscribe(this._handler)
     }
     this._handler = this.props.store.subscribe(getterCache => {
-      this.setState({isInitialized: true, getterCache})
+      this.setState({getterCache})
     }, {
       immediate: true,
       getter: this.props.getter
@@ -70,9 +70,9 @@ class Subscriber extends Component {
 
   render() {
     const {children, store} = this.props
-    const {getterCache, setterCache, isInitialized} = this.state
+    const {getterCache, setterCache} = this.state
 
-    return isInitialized ? (typeof children === 'function' ? children({...setterCache, ...getterCache}, store) : children) : null
+    return (typeof children === 'function' ? children({...setterCache, ...getterCache}, store) : children)
   }
 }
 
