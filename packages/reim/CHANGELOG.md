@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.4"></a>
+## [1.10.4](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.4) (2018-08-29)
+
+
+### Bug Fixes
+
+* **react:** subscriber should update when children changes ([d4edf26](https://github.com/IniZio/reim/commit/d4edf26))
+
+
+
+
 <a name="1.10.0"></a>
 # [1.10.0](https://github.com/IniZio/reim/compare/v1.8.1...v1.10.0) (2018-08-23)
 

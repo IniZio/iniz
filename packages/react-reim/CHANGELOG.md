@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.4"></a>
+## [1.10.4](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.4) (2018-08-29)
+
+
+### Bug Fixes
+
+* **connect:** connect should work when the store did not have context ([#28](https://github.com/IniZio/reim/issues/28)) ([2b2f193](https://github.com/IniZio/reim/commit/2b2f193)), closes [#27](https://github.com/IniZio/reim/issues/27)
+* **react:** subscriber should update when children changes ([d4edf26](https://github.com/IniZio/reim/commit/d4edf26))
+
+
+
+
 <a name="1.10.3"></a>
 ## [1.10.3](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.3) (2018-08-26)
 
