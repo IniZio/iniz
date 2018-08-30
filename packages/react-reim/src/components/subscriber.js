@@ -1,23 +1,27 @@
 import {Component} from 'react'
 import PropTypes from 'prop-types'
+import reim from 'reim'
+import {context} from '..'
 import isFunction from 'lodash/isFunction'
 
 class Subscriber extends Component {
   state = {
+    isInitialized: false,
     getterCache: {},
     setterCache: {}
   }
 
   componentDidMount() {
+    this.store = this.props.store || reim({}).plugin(context())
     if (this.props.initial) {
-      this.props.store.reset(this.props.initial)
+      this.store.reset(this.props.initial)
     }
 
     this.updateGetterCache()
     this.updateSetterCache()
 
     if (isFunction(this.props.onChange)) {
-      this.props.store.subscribe(this.props.onChange)
+      this.store.subscribe(this.props.onChange)
     }
   }
 
@@ -32,10 +36,10 @@ class Subscriber extends Component {
 
   updateGetterCache() {
     if (this._handler) {
-      this.props.store.unsubscribe(this._handler)
+      this.store.unsubscribe(this._handler)
     }
-    this._handler = this.props.store.subscribe(getterCache => {
-      this.setState({getterCache})
+    this._handler = this.store.subscribe(getterCache => {
+      this.setState({isInitialized: true, getterCache})
     }, {
       immediate: true,
       getter: this.props.getter
@@ -44,7 +48,7 @@ class Subscriber extends Component {
 
   updateSetterCache() {
     this.setState({
-      setterCache: this.props.setter(this.props.store)
+      setterCache: this.props.setter(this.store)
     })
   }
 
@@ -57,26 +61,27 @@ class Subscriber extends Component {
       this.updateSetterCache()
     }
     if (prevProps.onChange !== this.props.onChange) {
-      this.props.store.unsubscribe(prevProps.onChange)
+      this.store.unsubscribe(prevProps.onChange)
       if (isFunction(this.props.onChange)) {
-        this.props.store.subscribe(this.props.onChange)
+        this.store.subscribe(this.props.onChange)
       }
     }
   }
 
   componentWillUnmount() {
-    this.props.store.unsubscribe(this._handler)
+    this.store.unsubscribe(this._handler)
   }
 
   render() {
-    const {children, store} = this.props
-    const {getterCache, setterCache} = this.state
+    const {children} = this.props
+    const {getterCache, setterCache, isInitialized} = this.state
 
-    return (typeof children === 'function' ? children({...setterCache, ...getterCache}, store) : children)
+    return isInitialized ? (typeof children === 'function' ? children({...setterCache, ...getterCache}, this.store) : children) : null
   }
 }
 
 Subscriber.defaultProps = {
+  store: null,
   getter(s) {
     return s
   },
@@ -89,7 +94,7 @@ Subscriber.defaultProps = {
 
 Subscriber.propTypes = {
   children: PropTypes.func.isRequired,
-  store: PropTypes.any.isRequired,
+  store: PropTypes.any,
   getter: PropTypes.func,
   setter: PropTypes.func,
   initial: PropTypes.object,

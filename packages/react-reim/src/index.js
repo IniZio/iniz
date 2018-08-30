@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react'
-import reim from 'reim'
 
 import Subscriber from './components/subscriber'
 
@@ -36,7 +35,7 @@ export const context = () =>
 export const createContext = context()
 
 // Disposable store component
-export const State = p => <Subscriber store={reim({}).plugin(context())} {...p}/>
+export const State = p => <Subscriber {...p}/>
 
 export function connect(store, getter = s => s, setter = () => ({})) {
   const Context = store.__isContext ? store : store.plugin(context())

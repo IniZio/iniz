@@ -57,9 +57,9 @@ test('get should have change in store state reflected', () => {
 
   const component = renderer.create(
     get(state => (
-        <div>
-          <div id="value">{state.yer}</div>
-        </div>
+      <div>
+        <div id="value">{state.yer}</div>
+      </div>
     ))
   )
   set(state => {
