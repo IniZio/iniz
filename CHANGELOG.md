@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.10.5"></a>
+## [1.10.5](https://github.com/IniZio/reim/compare/v1.10.4...v1.10.5) (2018-08-30)
+
+
+### Bug Fixes
+
+* **react:** store should be fixed at component mount ([b656b65](https://github.com/IniZio/reim/commit/b656b65))
+
+
+
+
 <a name="1.10.4"></a>
 ## [1.10.4](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.4) (2018-08-29)
 
