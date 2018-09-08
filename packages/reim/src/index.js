@@ -1,11 +1,12 @@
 import {produce, setAutoFreeze} from 'immer'
 import bind from 'auto-bind'
 import emitter from 'event-emitter'
-import isEqual from 'lodash/isEqual'
+import equal from 'fast-deep-equal'
 import isFunction from 'lodash/isFunction'
 
-setAutoFreeze(true)
+// const isPrimitive = value => ((typeof value !== 'object' && typeof value !== 'function') || value === null)
 
+setAutoFreeze(true)
 class Store {
   _state = {}
 
@@ -20,15 +21,14 @@ class Store {
   }
 
   constructor(state = {}) {
-    this._state = produce(state, () => {})
-    this._initial = produce(state, () => {})
     emitter(this)
-    bind(this)
+    this.reset(state)
     this.emit('init', this)
+    bind(this)
   }
 
   snapshot(getter = state => state) {
-    return produce(this.state, getter)
+    return getter(this._state)
   }
 
   getState = this.snapshot
@@ -45,12 +45,12 @@ class Store {
   }
 
   // Immutable way to update state
-  set(mutation, ...args) {
+  set = (mutation, ...args) => {
     this._state = produce(
-      this.state, (
+      this._state, (
         isFunction(mutation) ?
-          state => (mutation(state, ...args) || undefined) :
-          () => ({...this.state, ...mutation})
+          (state => (mutation(state, ...args) || undefined)) :
+          (state => {Object.assign(state, mutation)})
       )
     )
 
@@ -109,8 +109,9 @@ class Store {
   _notify() {
     this._subscribers.forEach(sub => {
       // Notify if getterCache is updated
-      const getterCache = sub.getter(this.state)
-      if (!isEqual(getterCache, sub.getterCache)) {
+      const getterCache = this.snapshot(sub.getter)
+
+      if (!equal(getterCache, sub.getterCache)) {
         sub.getterCache = getterCache
         sub.handler(getterCache)
       }

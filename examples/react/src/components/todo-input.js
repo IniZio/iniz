@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-reim'
+import skygear from 'skygear'
 
 import TodoStore, {effects, mutations} from '../stores/todo'
 
@@ -48,7 +49,7 @@ export default connect(
   ({setState}) => ({
     onAddTodo: todo => {
       setState(({todos}) => {
-        todos.push(todo)
+        todos.push(new (skygear.Record.extend('todo'))(todo))
       })
     }
   })
