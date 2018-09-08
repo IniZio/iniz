@@ -52,7 +52,8 @@
   "dependencies": {
     "auto-bind": "^1.2.1",
     "event-emitter": "^0.3.5",
-    "immer": "^1.5.0",
+    "fast-deep-equal": "^2.0.1",
+    "immer": "^1.6.0",
     "lodash": "^4.17.10"
   },
   "gitHead": "419591f08507517258271f77077dc7a1d5c1f7af"

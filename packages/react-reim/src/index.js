@@ -1,6 +1,8 @@
 import React, {PureComponent} from 'react'
 
-import Subscriber from './components/subscriber'
+import State from './components/state'
+
+export {default as State} from './components/state'
 
 // Syncs props to store
 export function pipeTo(store, mutation = (_, p) => p) {
@@ -23,19 +25,16 @@ export const context = () =>
           value: true
         },
         Consumer: {
-          value: props => <Subscriber store={store} {...props}/>
+          value: props => <State store={store} {...props}/>
         },
         get: {
-          value: fn => <Subscriber store={store}>{fn}</Subscriber>
+          value: fn => <State store={store}>{fn}</State>
         }
       })
     }
   })
 
 export const createContext = context()
-
-// Disposable store component
-export const State = p => <Subscriber {...p}/>
 
 export function connect(store, getter = s => s, setter = () => ({})) {
   const Context = store.__isContext ? store : store.plugin(context())
