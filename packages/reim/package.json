@@ -6,6 +6,7 @@
   "module": "dist/reim.es.js",
   "unpkg": "dist/reim.js",
   "jsdelivr": "dist/reim.js",
+  "types": "dist/reim.d.ts",
   "files": [
     "dist",
     "lib",
@@ -14,7 +15,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "bili --no-babel.babelrc --watch",
-    "build": "npm run build:dist",
+    "build": "npm run build:dist && cpx \"src/immer.{d.ts,js.flow}\" dist",
     "build:dist": "rimraf dist && bili --no-babel.babelrc"
   },
   "xo": {
