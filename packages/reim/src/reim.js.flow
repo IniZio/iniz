@@ -1,0 +1,66 @@
+// @flow
+
+type State = Object
+type Mutation = {(state: State): void | any} | Object
+type Getter = {(state: State): any}
+
+interface Subscriber {
+  handler(Object): void,
+  getter(Object): any
+}
+
+interface SubscribeOption {
+  immediate?: boolean,
+  getter?: (state: State) => any
+}
+
+type PluginFunction = (store: Store, store1: Store) => any
+interface PluginObject {
+  name?: string,
+  call: PluginFunction
+}
+
+type Plugin = PluginObject | PluginFunction
+
+interface storeOption {
+  name?: string,
+  plugins?: Plugin[]
+}
+
+declare class Store {
+  constructor(state?: Object): void;
+
+  _state: State;
+  _subscribers: Subscriber[];
+
+  __isStore: boolean;
+  state: State;
+
+  _notify(): void;
+
+  snapshot(getter?: Getter): any;
+  getState(getter?: Getter): any;
+
+  commit(mutation?: Mutation, ...args: any[]): State;
+  set(mutation?: Mutation, ...args: any[]): State;
+  setState(mutation?: Mutation, ...args: any[]): State;
+
+  reset(initial?: Object): State;
+
+  subscribe(handler: {(state: State | any): void}, option?: SubscribeOption): {(handler: {(): void}): void};
+  unsubscribe(handler: {(): void}): void;
+
+  plugin(...plugins: Plugin[]): Store;
+}
+
+declare export function store(state?: State, option?: storeOption): Store;
+declare export default store;
+declare export function register(state?: State, option?: storeOption): Store;
+
+interface Stream {
+  subscribe(observer: {(): void}): {
+    unsubscribe(): void
+  }
+}
+
+declare export function toStream(store: Store, option: Object): Stream
