@@ -3,6 +3,7 @@ import toPascal from 'to-pascal-case'
 import babel from 'rollup-plugin-babel'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
+import copy from 'rollup-plugin-copy-glob'
 import {uglify} from 'rollup-plugin-uglify'
 import {minify} from 'uglify-es'
 import getLernaPackages from 'get-lerna-packages'
@@ -76,8 +77,12 @@ export default Object.keys(builds).reduce((tasks, name) => {
         ),
         isProduction && (
           uglify({}, minify)
-        )
-
+        ),
+        copy([
+          { files: `packages/${name}/src/${name}.{d.ts,js.flow}`, dest: `packages/${name}/dist` },
+        ], {
+          verbose: true
+        })
       ].filter(Boolean),
       input: INPUT_FILE,
       external: isBrowserBundle(format) ? build.external : [...ALL_MODULES, ...(build.external || [])],

@@ -6,6 +6,7 @@
   "module": "dist/react-reim.es.js",
   "unpkg": "dist/react-reim.js",
   "jsdelivr": "dist/react-reim.js",
+  "types": "dist/react-reim.d.ts",
   "peerDependencies": {
     "react": "*",
     "reim": "^1.9.0"
@@ -15,6 +16,7 @@
     "reim": "^1.10.4"
   },
   "dependencies": {
+    "@types/react": "^16.4.14",
     "lodash": "^4.17.10",
     "prop-types": "^15.6.2"
   },

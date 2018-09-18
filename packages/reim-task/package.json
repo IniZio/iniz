@@ -6,6 +6,7 @@
   "module": "dist/reim-task.es.js",
   "unpkg": "dist/reim-task.js",
   "jsdelivr": "dist/reim-task.js",
+  "types": "dist/reim-task.d.ts",
   "files": [
     "dist",
     "lib",

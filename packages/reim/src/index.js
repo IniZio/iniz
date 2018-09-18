@@ -65,7 +65,7 @@ class Store {
     if (initial) {
       this._initial = initial
     }
-    this.set(() => this._initial)
+    return this.set(() => this._initial)
   }
 
   /**
