@@ -26,6 +26,7 @@
 <p>❄  Immutable state</p>
 <p>⚡ Small, just <b>9kb</b> gzip + minified</p>
 <p>📖 Nice Documentation // hopefully ;)</p>
+<p>🌟 Typing support for Typescript & Flow</p>
 
 ### Installation
 
