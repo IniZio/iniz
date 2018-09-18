@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.11.0"></a>
+# [1.11.0](https://github.com/IniZio/reim/compare/v1.10.5...v1.11.0) (2018-09-18)
+
+
+
+
+**Note:** Version bump only for package reim-reporter
+
 <a name="1.10.4"></a>
 ## [1.10.4](https://github.com/IniZio/reim/compare/v1.10.2...v1.10.4) (2018-08-29)
 
