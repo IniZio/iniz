@@ -1,8 +1,8 @@
 // @flow
 
-type State = Object
-type Mutation = {(state: State): void | any} | Object
-type Getter = {(state: State): any}
+export type State = Object
+export type Mutation = {(state: State): void | any} | Object
+export type Getter = {(state: State): any}
 
 interface Subscriber {
   handler(Object): void,
@@ -20,14 +20,14 @@ interface PluginObject {
   call: PluginFunction
 }
 
-type Plugin = PluginObject | PluginFunction
+export type Plugin = PluginObject | PluginFunction
 
 interface storeOption {
   name?: string,
   plugins?: Plugin[]
 }
 
-declare class Store {
+export declare class Store {
   constructor(state?: Object): void;
 
   _state: State;

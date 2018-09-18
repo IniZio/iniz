@@ -1,6 +1,6 @@
-type State = object
-type Mutation = {(state: State): void | any} | object
-type Getter = {(state: State):  any}
+export type State = object
+export type Mutation = {(state: State): void | any} | object
+export type Getter = {(state: State):  any}
 
 interface Subscriber {
   handler(object): void
@@ -18,14 +18,14 @@ interface PluginObject {
   call: PluginFunction
 }
 
-type Plugin = PluginObject | PluginFunction
+export type Plugin = PluginObject | PluginFunction
 
 interface storeOption {
   name?: string
   plugins?: Plugin[]
 }
 
-declare class Store {
+export class Store {
   constructor(state?: object)
 
   private _state: State
@@ -51,9 +51,9 @@ declare class Store {
   public plugin(...plugins: Plugin[]): Store
 }
 
-export function store(state?: State, option?: storeOption)
+export function store(state?: State, option?: storeOption): Store
 export default store
-export function register(state?: State, option?: storeOption)
+export function register(state?: State, option?: storeOption): Store
 
 interface Stream {
   subscribe(observer: {(): void}): {

@@ -6,6 +6,7 @@
   "module": "dist/reim-reporter.es.js",
   "unpkg": "dist/reim-reporter.js",
   "jsdelivr": "dist/reim-reporter.js",
+  "types": "dist/reim-reporter.d.ts",
   "files": [
     "dist",
     "lib",

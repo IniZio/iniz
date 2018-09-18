@@ -6,6 +6,7 @@
   "module": "dist/reim-persist.es.js",
   "unpkg": "dist/reim-persist.js",
   "jsdelivr": "dist/reim-persist.js",
+  "types": "dist/reim-persist.d.ts",
   "files": [
     "dist",
     "lib",
