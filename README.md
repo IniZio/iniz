@@ -86,21 +86,21 @@ const Toggle = () => (
 ```jsx
 import React from 'react'
 import reim from 'reim'
-import {context} from 'react-reim'
+import {State} from 'react-reim'
 
 // create a store
-const store = reim({visible: true}).plugin(context())
+const store = reim({visible: true})
 
 // use our component 8)
 const App = () => (
-  <store.Consumer>
+  <State store={store}>
     {s => (
       <div>
         <h1>{s.visible ? 'ON' : 'OFF'}</h1>
         <button onClick={() => store.set({visible: !s.visible})}>Toggle</button>
       </div>
     )}
-  </store.Consumer>
+  </State>
 )
 ```
 
