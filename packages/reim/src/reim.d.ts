@@ -3,8 +3,8 @@ export type Mutation = {(state: State): void | any} | object
 export type Getter = {(state: State):  any}
 
 interface Subscriber {
-  handler(object): void
-  getter(object): any
+  handler(object: any): void
+  getter(object: any): any
 }
 
 interface SubscribeOption {
