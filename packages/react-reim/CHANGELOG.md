@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.11.0"></a>
+# [1.11.0](https://github.com/IniZio/reim/compare/v1.10.5...v1.11.0) (2018-09-25)
+
+
+### Features
+
+* **diff:** use different lib for faster deep diff ([549340d](https://github.com/IniZio/reim/commit/549340d))
+* **typing:** adds typescript and flow typing ([#31](https://github.com/IniZio/reim/issues/31)) ([f342ba4](https://github.com/IniZio/reim/commit/f342ba4)), closes [#29](https://github.com/IniZio/reim/issues/29)
+
+
+
+
 <a name="1.10.5"></a>
 ## [1.10.5](https://github.com/IniZio/reim/compare/v1.10.4...v1.10.5) (2018-08-30)
 
