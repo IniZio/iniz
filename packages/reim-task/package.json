@@ -1,6 +1,6 @@
 {
   "name": "reim-task",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "license": "MIT",
   "main": "dist/reim-task.cjs.js",
   "module": "dist/reim-task.es.js",
@@ -45,7 +45,7 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^1.11.0",
+    "reim": "^1.12.0",
     "xo": "^0.21.1"
   },
   "dependencies": {
