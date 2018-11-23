@@ -11,8 +11,8 @@ module.exports = {
     'lcov'
   ],
   'projects': [
-    '<rootDir>',
-    '<rootDir>/examples/*/'
+    '<rootDir>'
+    // '<rootDir>/examples/*/'
   ],
   'snapshotSerializers': [],
   'testPathIgnorePatterns': [

@@ -46,3 +46,19 @@ export function connect(store, getter = s => s, setter = () => ({})) {
     </Context.Consumer>
   )
 }
+
+export function useReim(store, getter = s => s) {
+  const {useState, useEffect} = require('react')
+
+  if (!useState) {
+    throw new Error('React@16.7+ is required to use Hooks')
+  }
+
+  const [state, setState] = useState(store.snapshot(getter))
+
+  useEffect(() => () => store.unsubscribe(setState))
+
+  store.subscribe(setState, {getter})
+
+  return [state, store.set]
+}
