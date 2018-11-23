@@ -36,6 +36,28 @@ $ yarn add reim react-reim
 
 ## How Reim looks
 
+## "Hook" (React 16.7+)
+
+```jsx
+import React from 'react'
+import reim from 'reim'
+import {useReim} from 'react-reim'
+
+const store = reim({count: 8})
+
+function Counter() {
+  const [state, setState] = useReim(store, /* getter */)
+  const increment = () => setState(s => {s.count++})
+
+  return (
+    <div>
+      <button onClick={increment}>+</button>
+      <div id="count">{state.count}</div>
+    </div>
+  )
+}
+```
+
 ### "Minimal"
 
 ```jsx

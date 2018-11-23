@@ -2,6 +2,28 @@
 
 There are 3 ways to use **Reim** with **React**, and you can choose depending on scenerios.
 
+## 0. 'Hook' way (React 16.7+)
+
+```jsx
+import React from 'react'
+import reim from 'reim'
+import {useReim} from 'react-reim'
+
+const store = reim({count: 8})
+
+function Counter() {
+  const [state, setState] = useReim(store, /* getter */)
+  const increment = () => setState(s => {s.count++})
+
+  return (
+    <div>
+      <button onClick={increment}>+</button>
+      <div id="count">{state.count}</div>
+    </div>
+  )
+}
+```
+
 ## 1. Minimal way
 
 `react-reim` 's `context` plugin adds `get` function so that you can use derive component from store state
