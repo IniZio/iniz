@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hook should return store value on component mount 1`] = `
+<div>
+  <div
+    id="level"
+  >
+    12
+  </div>
+</div>
+`;

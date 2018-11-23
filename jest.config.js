@@ -12,7 +12,7 @@ module.exports = {
   ],
   'projects': [
     '<rootDir>',
-    '<rootDir>/examples/*/'
+    // '<rootDir>/examples/*/'
   ],
   'snapshotSerializers': [],
   'testPathIgnorePatterns': [
