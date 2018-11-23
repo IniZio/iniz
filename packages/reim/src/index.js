@@ -50,7 +50,9 @@ class Store {
       this._state, (
         isFunction(mutation) ?
           (state => (mutation(state, ...args) || undefined)) :
-          (state => {Object.assign(state, mutation)})
+          (state => {
+            Object.assign(state, mutation)
+          })
       )
     )
 

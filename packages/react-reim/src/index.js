@@ -56,7 +56,7 @@ export function useReim(store, getter = s => s) {
 
   const [state, setState] = useState(store.snapshot(getter))
 
-  useEffect(() => () => store.unsubscribe(setState), [store]);
+  useEffect(() => () => store.unsubscribe(setState), [store])
 
   store.subscribe(setState, getter)
 

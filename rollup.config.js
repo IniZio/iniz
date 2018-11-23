@@ -79,7 +79,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
           uglify({}, minify)
         ),
         copy([
-          { files: `packages/${name}/src/${name}.{d.ts,js.flow}`, dest: `packages/${name}/dist` },
+          {files: `packages/${name}/src/${name}.{d.ts,js.flow}`, dest: `packages/${name}/dist`}
         ], {
           verbose: true
         })

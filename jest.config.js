@@ -11,7 +11,7 @@ module.exports = {
     'lcov'
   ],
   'projects': [
-    '<rootDir>',
+    '<rootDir>'
     // '<rootDir>/examples/*/'
   ],
   'snapshotSerializers': [],
