@@ -56,8 +56,23 @@ class State extends Component {
   }
 
   setSetter() {
+    const setters = typeof this.props.setter === 'function' ? this.props.setter(this.store) : this.props.setter
+
+    const cache = Object.keys(setters)
+      .reduce((acc, k) => ({...acc, [k]: (...args) => {
+        const v = setters[k](...args)
+        if (typeof v === 'function') {
+          try {
+            this.store.set(v)
+          } catch (e) {
+            return v
+          }
+        }
+        return v
+      }}), {})
+
     this.setState({
-      setterCache: this.props.setter(this.store)
+      setterCache: cache
     })
   }
 
@@ -85,7 +100,7 @@ State.propTypes = {
   children: PropTypes.func.isRequired,
   store: PropTypes.any,
   getter: PropTypes.func,
-  setter: PropTypes.func,
+  setter: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   initial: PropTypes.object,
   onChange: PropTypes.func
 }
