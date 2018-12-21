@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.13.0"></a>
+# [1.13.0](https://github.com/IniZio/reim/compare/v1.12.1...v1.13.0) (2018-12-21)
+
+
+### Features
+
+* **hook:** adds hook support for react-reim ([#36](https://github.com/IniZio/reim/issues/36)) ([1496771](https://github.com/IniZio/reim/commit/1496771)), closes [#34](https://github.com/IniZio/reim/issues/34)
+
+
+
+
 <a name="1.12.1"></a>
 ## [1.12.1](https://github.com/IniZio/reim/compare/v1.12.0...v1.12.1) (2018-09-27)
 
