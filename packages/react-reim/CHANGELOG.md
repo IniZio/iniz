@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.14.0"></a>
+# [1.14.0](https://github.com/IniZio/reim/compare/v1.13.0...v1.14.0) (2018-12-22)
+
+
+### Features
+
+* **react:** enable array in setter prop ([f3c2510](https://github.com/IniZio/reim/commit/f3c2510))
+
+
+
+
 <a name="1.13.0"></a>
 # [1.13.0](https://github.com/IniZio/reim/compare/v1.12.1...v1.13.0) (2018-12-21)
 
