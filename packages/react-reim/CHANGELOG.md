@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.14.1"></a>
+## [1.14.1](https://github.com/IniZio/reim/compare/v1.14.0...v1.14.1) (2018-12-22)
+
+
+### Bug Fixes
+
+* **react:** non-array setter ([ca9f229](https://github.com/IniZio/reim/commit/ca9f229))
+
+
+
+
 <a name="1.14.0"></a>
 # [1.14.0](https://github.com/IniZio/reim/compare/v1.13.0...v1.14.0) (2018-12-22)
 
