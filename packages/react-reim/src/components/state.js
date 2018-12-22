@@ -56,7 +56,7 @@ class State extends Component {
   }
 
   setSetter() {
-    const setters = typeof this.props.setter === 'function' ? this.props.setter(this.store) : this.props.setter
+    const setters = this.props.setter.reduce((acc, val) => ({...acc, ...(typeof val === 'function' ? val(this.store) : val)}), {})
 
     const cache = Object.keys(setters)
       .reduce((acc, k) => ({...acc, [k]: (...args) => {
