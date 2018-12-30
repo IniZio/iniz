@@ -36,7 +36,7 @@ $ yarn add reim react-reim
 
 ## How Reim looks
 
-## "Hook" (React 16.7+)
+## "Hook" (React 16.7.0-alpha+)
 
 ```jsx
 import React from 'react'
