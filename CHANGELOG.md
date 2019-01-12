@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.15.0"></a>
+# [1.15.0](https://github.com/IniZio/reim/compare/v1.14.1...v1.15.0) (2019-01-12)
+
+
+### Features
+
+* **hook:** adds concerned variables in hook ([#39](https://github.com/IniZio/reim/issues/39)) ([433707f](https://github.com/IniZio/reim/commit/433707f)), closes [#38](https://github.com/IniZio/reim/issues/38)
+
+
+
+
 <a name="1.14.1"></a>
 ## [1.14.1](https://github.com/IniZio/reim/compare/v1.14.0...v1.14.1) (2018-12-22)
 
