@@ -11,5 +11,5 @@ export const createContext: Plugin
 
 export const State: Component
 
-export function connect(store: Store, getter: Getter): {(Wrapped: Component): Component}
-export function useReim(store: Store, getter: Getter): [State, (mutation?: Mutation, ...args: any[]) => State, Store]
+export function connect(store: Store, getter?: Getter): {(Wrapped: Component): Component}
+export function useReim(store: Store, getter?: Getter): [State, (mutation?: Mutation, ...args: any[]) => State, Store]
