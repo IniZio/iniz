@@ -2,7 +2,7 @@
 
 There are 3 ways to use **Reim** with **React**, and you can choose depending on scenerios.
 
-## 0. 'Hook' way (React 16.7+)
+## 0. 'Hook' way (React 16.8+)
 
 ```jsx
 import React from 'react'
