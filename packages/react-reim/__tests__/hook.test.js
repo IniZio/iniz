@@ -42,17 +42,23 @@ test('Hook should only cause rerender on getter cache miss', () => {
   }
 
   const component = renderer.create(<TestComponent/>)
-  loc.setState(state => {state.c++})
+  loc.setState(state => {
+    state.c++
+  })
   expect(didUpdate).toBeCalledTimes(0)
   expect(component.toJSON()).toMatchSnapshot()
-  loc.setState(state => {state.b++})
+  loc.setState(state => {
+    state.b++
+  })
   expect(didUpdate).toBeCalledTimes(1)
   expect(component.toJSON()).toMatchSnapshot()
 })
 
 test('Hook should refresh according to dependencies', () => {
   const store = reim({count: 40})
-  let set, finalState1, finalState2
+  let set
+  let finalState1
+  let finalState2
 
   function TestComponent() {
     const [state, setState] = React.useState(5)
