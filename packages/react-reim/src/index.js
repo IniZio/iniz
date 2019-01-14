@@ -17,9 +17,9 @@ export function pipeTo(store, mutation = (_, p) => p) {
   return Piper
 }
 
-export const context = () =>
+export const react = () =>
   ({
-    name: 'context',
+    name: 'react',
     call(store) {
       Object.defineProperties(store, {
         __isContext: {
@@ -35,6 +35,9 @@ export const context = () =>
     }
   })
 
+export default react
+
+export const context = react
 export const createContext = context()
 
 export function connect(store, getter = s => s, setter = () => ({})) {

@@ -1,18 +1,42 @@
 /* eslint react/prop-types: 0 */
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
-import React, {Component} from 'react'
+import React, {Component, useState} from 'react'
 import reim from '../../reim/src'
-import {context, connect, State} from '../src'
+import {react, connect, State} from '../src'
 
 test('context returns Consumer', () => {
-  const store = reim({yer: 43}).plugin(context())
+  const store = reim({yer: 43}).plugin(react())
 
   expect(store.Consumer).toBeDefined()
 })
 
+test('Storeless State should reset on initial prop change', () => {
+  let changeInitial
+
+  function TestComponent() {
+    const [initial, setInitial] = useState({level: 10})
+
+    changeInitial = () => setInitial({level: 10000})
+
+    return (
+      <State initial={initial}>
+        {({level}) => (
+          <h1>{level}</h1>
+        )}
+      </State>
+    )
+  }
+
+  const component = renderer.create(<TestComponent/>)
+  expect(component.toJSON()).toMatchSnapshot()
+
+  changeInitial()
+  expect(component.toJSON()).toMatchSnapshot()
+})
+
 test('Consumer should have change in store state reflected', () => {
-  const store = reim({yer: 43}).plugin(context())
+  const store = reim({yer: 43}).plugin(react())
 
   const component = renderer.create(
     <store.Consumer>
@@ -34,7 +58,7 @@ test('Consumer should have change in store state reflected', () => {
 })
 
 test('Existing store Consumer should NOT be able to set initial value', () => {
-  const store = reim({yer: 9}).plugin(context())
+  const store = reim({yer: 9}).plugin(react())
 
   const component = renderer.create(
     <store.Consumer initial={{yer: 10}}>
@@ -53,7 +77,7 @@ test('Existing store Consumer should NOT be able to set initial value', () => {
 })
 
 test('get should have change in store state reflected', () => {
-  const {get, set} = reim({yer: 43}).plugin(context())
+  const {get, set} = reim({yer: 43}).plugin(react())
 
   const component = renderer.create(
     get(state => (
@@ -71,7 +95,7 @@ test('get should have change in store state reflected', () => {
 })
 
 test('Unmount Cunsumer should unsubscribe', () => {
-  const store = reim({yer: 43}).plugin(context())
+  const store = reim({yer: 43}).plugin(react())
 
   const getter = jest.fn()
 
@@ -144,7 +168,7 @@ test('State onChange should trigger on state change', () => {
 })
 
 test('Properties not included in getter should not trigger update', () => {
-  const store = reim({hel: 43, gee: 10}).plugin(context())
+  const store = reim({hel: 43, gee: 10}).plugin(react())
 
   const updated = jest.fn()
 
@@ -193,7 +217,7 @@ test('use convenience method connect', () => {
 })
 
 test('change getter', () => {
-  const store = reim({dui: 12, geo: 'tie'}).plugin(context())
+  const store = reim({dui: 12, geo: 'tie'}).plugin(react())
 
   class Getter extends Component {
     state = {

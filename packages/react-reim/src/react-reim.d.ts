@@ -6,6 +6,8 @@ export type Setter = State | {(state: State):  void | State}
 
 export function pipeTo(store: Store, mutation: Mutation): Component
 
+export function react(): Plugin
+export default react
 export function context(): Plugin
 export const createContext: Plugin
 

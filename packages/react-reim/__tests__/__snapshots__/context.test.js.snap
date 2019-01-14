@@ -32,6 +32,18 @@ exports[`State onChange should trigger on state change 1`] = `
 </h1>
 `;
 
+exports[`Storeless State should reset on initial prop change 1`] = `
+<h1>
+  10
+</h1>
+`;
+
+exports[`Storeless State should reset on initial prop change 2`] = `
+<h1>
+  10000
+</h1>
+`;
+
 exports[`change getter 1`] = `
 <div>
   <div

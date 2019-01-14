@@ -17,6 +17,10 @@ class State extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (!this.props.store && prevProps.initial !== this.props.initial) {
+      this.store.reset(this.props.initial)
+    }
+
     // User changed getter / setter functions
     if (prevProps.getter !== this.props.getter && prevState.getterCache === this.state.getterCache) {
       this.setGetter()
