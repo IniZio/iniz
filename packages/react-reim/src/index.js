@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import reim from 'reim'
 
 import State from './components/state'
 
@@ -47,17 +48,24 @@ export function connect(store, getter = s => s, setter = () => ({})) {
   )
 }
 
-export function useReim(store, getter = s => s, dependencies = []) {
-  const {useState, useEffect} = require('react')
-
-  if (!useState) {
+export function useReim(initial, getter = s => s, dependencies = []) {
+  if (!React.useState) {
     throw new Error('React@16.7-alpha.2 is required to use Hooks')
   }
 
+  const store = initial.__isStore ? initial : reim(initial)
+
+  const {useState, useEffect, useRef} = React
+
+  const mountRef = useRef()
   const [state, setState] = useState(store.snapshot(getter))
 
   useEffect(() => {
-    setState(store.snapshot(getter))
+    if (mountRef.current) {
+      setState(() => store.snapshot(getter))
+    } else {
+      mountRef.current = true
+    }
   }, dependencies)
 
   useEffect(() => () => store.unsubscribe(setState))

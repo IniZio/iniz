@@ -114,6 +114,7 @@ test('State component should work', () => {
 
 test('State onChange should trigger on state change', () => {
   const onChange = jest.fn()
+  let increment
 
   class Container extends Component {
     render() {
@@ -121,7 +122,7 @@ test('State onChange should trigger on state change', () => {
         <State initial={{value: 88}} onChange={onChange}>
           {
             ({value}, {set}) => {
-              this.increment = () => set({value: value + 1})
+              increment = () => set({value: value + 1})
               return <h1>{value}</h1>
             }
           }
@@ -134,7 +135,7 @@ test('State onChange should trigger on state change', () => {
 
   expect(onChange).toBeCalledTimes(0)
 
-  component.root.instance.increment()
+  increment()
 
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
