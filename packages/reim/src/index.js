@@ -4,7 +4,12 @@ import emitter from 'event-emitter'
 import equal from 'fast-deep-equal'
 import isFunction from 'lodash/isFunction'
 
-// const isPrimitive = value => ((typeof value !== 'object' && typeof value !== 'function') || value === null)
+const withDevTools = (
+  process.env.NODE_ENV === 'development' &&
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__
+)
+
+const devInstances = []
 
 setAutoFreeze(true)
 class Store {
@@ -20,11 +25,37 @@ class Store {
     return this._state
   }
 
-  constructor(state = {}) {
+  constructor(state = {}, {name} = {}) {
     emitter(this)
+    this.name = name
     this.reset(state)
     this.emit('init', this)
     bind(this)
+
+    if (withDevTools && this.name) {
+      if (devInstances.includes(this.name)) {
+        console.error(`There is already an instance named ${this.name}, please ensure your stores have unique names`)
+        return
+      }
+
+      this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({instanceId: this.name, shouldStringify: false})
+
+      devInstances.push(this.name)
+
+      this.devTools.subscribe(message => {
+        if (message.id !== this.name) {
+          return
+        }
+
+        if (message.type === 'DISPATCH' && (message.payload.type === 'JUMP_TO_STATE' || message.payload.type === 'JUMP_TO_ACTION')) {
+          this.reset(typeof message.state === 'string' ? JSON.parse(message.state) : message.state)
+        }
+      })
+    }
+
+    if (this.devTools) {
+      this.devTools.init(this.state)
+    }
   }
 
   snapshot(getter = state => state) {
@@ -39,13 +70,15 @@ class Store {
     Object.assign(this._state, newState)
 
     this.emit('set', mutation, ...args)
+    if (this.devTools) {
+      this.devTools.send(mutation.name || 'ANONYMOUS', this.state)
+    }
     this._notify()
 
     return this.state
   }
 
-  // Immutable way to update state
-  set = (mutation, ...args) => {
+  _set = (mutation, ...args) => {
     this._state = produce(
       this._state, (
         isFunction(mutation) ?
@@ -56,18 +89,31 @@ class Store {
       )
     )
 
-    this.emit('set', mutation, ...args)
     this._notify()
+  }
+
+  // Immutable way to update state
+  set = (mutation, ...args) => {
+    this._set(mutation, ...args)
+
+    this.emit('set', mutation, ...args)
+    if (this.devTools) {
+      this.devTools.send(mutation.name || 'ANONYMOUS', this.state)
+    }
     return this.state
   }
 
   setState = this.set
 
-  reset(initial = null) {
+  reset(initial = null, ...args) {
     if (initial) {
       this._initial = initial
     }
-    return this.set(() => this._initial)
+
+    this._set(() => initial)
+
+    this.emit('reset', initial, ...args)
+    return this.state
   }
 
   /**
@@ -122,13 +168,7 @@ class Store {
   }
 }
 
-export const store = (state, {name, plugins = []} = {}) => {
-  const store = new Store(state)
-  store.name = name
-
-  store.plugin(...plugins)
-  return store
-}
+export const store = (...args) => new Store(...args)
 
 export const register = store
 
