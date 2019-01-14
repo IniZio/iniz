@@ -22,11 +22,13 @@
 
 ### Why Reim?
 
-<p>🤟 Can scale from HOC to Redux-level</p>
-<p>❄  Immutable state</p>
-<p>⚡ Small, just <b>9kb</b> gzip + minified</p>
-<p>📖 Nice Documentation // hopefully ;)</p>
-<p>🌟 Typing support for Typescript & Flow</p>
+<ul>
+  <li>🤟 Can scale from HOC to Redux-level</li>
+  <li>🔐  Immutable state</li>
+  <li>⚡ Small, just <b>9kb</b> gzip + minified</li>
+  <li>🌟 Typing support for <b>Typescript</b> & <b>Flow</b></li>
+  <li>⚛ Supports Redux Dev Tools</li>
+</ul>
 
 ### Installation
 
