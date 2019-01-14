@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.15.1"></a>
+## [1.15.1](https://github.com/IniZio/reim/compare/v1.15.0...v1.15.1) (2019-01-14)
+
+
+### Bug Fixes
+
+* **react-hook:** unnecessary rerender on mount and store update ([#42](https://github.com/IniZio/reim/issues/42)) ([c85e4df](https://github.com/IniZio/reim/commit/c85e4df)), closes [#41](https://github.com/IniZio/reim/issues/41)
+
+
+
+
 <a name="1.13.0"></a>
 # [1.13.0](https://github.com/IniZio/reim/compare/v1.12.1...v1.13.0) (2018-12-21)
 

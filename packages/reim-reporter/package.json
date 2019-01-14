@@ -1,6 +1,6 @@
 {
   "name": "reim-reporter",
-  "version": "1.13.0",
+  "version": "1.15.1",
   "license": "MIT",
   "keywords": [
     "reim",
@@ -49,7 +49,7 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^1.13.0",
+    "reim": "^1.15.1",
     "xo": "^0.21.1"
   },
   "dependencies": {
