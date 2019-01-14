@@ -82,9 +82,10 @@ class Store {
    */
   subscribe(handler, {immediate = false, getter = state => state} = {}) {
     // TODO: check if the getter is not cachable here
-    this._subscribers.push({handler, getter})
+    const getterCache = this.snapshot(getter)
+    this._subscribers.push({handler, getter, getterCache})
     if (immediate) {
-      this._notify()
+      handler(getterCache)
     }
     return () => this.unsubscribe(handler)
   }
