@@ -57,11 +57,17 @@ import React from 'react'
 import reim from 'reim'
 import {useReim} from 'react-reim'
 
-const store = reim({count: 8})
+function useCounter() {
+  const [count, set] = useReim({count: 10}, state => state.count)
+
+  const increment = () => set(s => {s.count++})
+  const decrement = () => set(s => {s.count--})
+  
+  return [count, {incremnt, decrement}]
+}
 
 function Counter() {
-  const [count, setState] = useReim(store, state => state.count)
-  const increment = () => setState(s => {s.count++})
+  const [count, {increment}] = useCounter()
 
   return (
     <div>
