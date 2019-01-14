@@ -60,13 +60,13 @@ import {useReim} from 'react-reim'
 const store = reim({count: 8})
 
 function Counter() {
-  const [state, setState] = useReim(store, /* getter */)
+  const [count, setState] = useReim(store, state => state.count)
   const increment = () => setState(s => {s.count++})
 
   return (
     <div>
       <button onClick={increment}>+</button>
-      <div id="count">{state.count}</div>
+      <div id="count">{count}</div>
     </div>
   )
 }
