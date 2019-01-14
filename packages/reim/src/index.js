@@ -25,12 +25,15 @@ class Store {
     return this._state
   }
 
-  constructor(state = {}, {name} = {}) {
+  constructor(state = {}, {name, plugins = []} = {}) {
     emitter(this)
     this.name = name
+    this.plugin(...plugins)
+
     this.reset(state)
     this.emit('init', this)
     bind(this)
+
 
     if (withDevTools && this.name) {
       if (devInstances.includes(this.name)) {
@@ -110,7 +113,7 @@ class Store {
       this._initial = initial
     }
 
-    this._set(() => initial)
+    this._set(() => this._initial)
 
     this.emit('reset', initial, ...args)
     return this.state
