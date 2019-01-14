@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.16.0"></a>
+# [1.16.0](https://github.com/IniZio/reim/compare/v1.15.1...v1.16.0) (2019-01-14)
+
+
+### Features
+
+* **devtool:** supports redux devtool ([#43](https://github.com/IniZio/reim/issues/43)) ([80a78a2](https://github.com/IniZio/reim/commit/80a78a2)), closes [#40](https://github.com/IniZio/reim/issues/40)
+* **State:** make State reset on initial prop change ([#44](https://github.com/IniZio/reim/issues/44)) ([3fc2b3c](https://github.com/IniZio/reim/commit/3fc2b3c))
+
+
+
+
 <a name="1.15.1"></a>
 ## [1.15.1](https://github.com/IniZio/reim/compare/v1.15.0...v1.15.1) (2019-01-14)
 
