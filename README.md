@@ -23,8 +23,9 @@
 ### Why Reim?
 
 <ul>
-  <li>🤟 Can scale from HOC to Redux-level</li>
-  <li>🔐  Immutable state</li>
+  <li>🤟 Update state by simply mutating it, thanks to <a href="https://github.com/mweststrate/immer">immer</a></li>
+  <li>📏 Can scale from HOC to Redux-level</li>
+  <li>🔐 <b>Immutable</b> state</li>
   <li>⚡ Small, just <b>9kb</b> gzip + minified</li>
   <li>🌟 Typing support for <b>Typescript</b> & <b>Flow</b></li>
   <li>⚛ Supports Redux Dev Tools</li>
