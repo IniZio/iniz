@@ -2,9 +2,7 @@
   <img src="https://i.imgur.com/C8AklnO.png" width="50px">
 </p>
 
-<p align="center">
-  <b>Make state easy with <a href="https://reimjs.gitbook.io/">Reim</a></b>
-</p>
+<h3 align="center">Make state easy with <a href="https://reimjs.gitbook.io/">Reim</a></h3>
 
 <p align="center">
   <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/v/reim.svg"></a>
@@ -20,15 +18,15 @@
   <img src="https://i.imgur.com/iblGzsu.png" width="80%">
 </p>
 
-### Why Reim?
+### Features
 
 <ul>
   <li>🤟 Update state by simply mutating it, thanks to <a href="https://github.com/mweststrate/immer">immer</a></li>
-  <li>📏 Can scale from HOC to Redux-level</li>
+  <li>📏 All possible ways to use state in one: <b>Unstated</b>, <b>React Hook</b>, <b>Redux</b>, <b>React-Values</b>...</li>
   <li>🔐 <b>Immutable</b> state</li>
-  <li>⚡ Small, just <b>9kb</b> gzip + minified</li>
+  <li>⚡ Small, <b> < 9kb</b> gzip + minified</li>
   <li>🌟 Typing support for <b>Typescript</b> & <b>Flow</b></li>
-  <li>⚛ Supports Redux Dev Tools</li>
+  <li>⚛ Supports <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW">Redux Dev Tools</a></li>
 </ul>
 
 ### Installation
@@ -37,9 +35,22 @@
 $ yarn add reim react-reim
 ```
 
-## How Reim looks
+<table>
+  <thead>
+    <tr>
+      <th colspan="5"><center>🕹 CodeSandbox demos 🕹</center></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://codesandbox.io/s/480xmrxy74">Todo List</a></td>
+    </tr>
+  </tbody>
+</table>
 
-## "Hook" (React 16.7.0-alpha2+)
+### How Reim looks
+
+#### "Hook" (React 16.7.0-alpha2+)
 
 ```jsx
 import React from 'react'
@@ -61,7 +72,7 @@ function Counter() {
 }
 ```
 
-### "Minimal"
+#### "Minimal"
 
 ```jsx
 import React from 'react'
@@ -90,7 +101,7 @@ const App = () => (
 )
 ```
 
-### "React-Values"
+#### "React-Values"
 
 ```jsx
 import React from 'react'
@@ -106,7 +117,7 @@ const Toggle = () => (
 )
 ```
 
-### "Unstated"-like
+#### "Unstated"-like
 
 ```jsx
 import React from 'react'
@@ -129,7 +140,7 @@ const App = () => (
 )
 ```
 
-### "Redux"-like
+#### "Redux"-like
 
 ```jsx
 import React from 'react'
