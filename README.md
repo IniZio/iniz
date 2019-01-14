@@ -77,10 +77,10 @@ function Counter() {
 ```jsx
 import React from 'react'
 import reim from 'reim'
-import {context} from 'react-reim'
+import react from 'react-reim'
 
 // create a store
-const {get, set} = reim({name: 'Peter'}).plugin(context())
+const {get, set} = reim({name: 'Peter'}).plugin(react())
 
 // get state already :)
 const User = () => (
@@ -179,7 +179,11 @@ const ConnectedCounter = connect(
 export default ConnectedCounter
 ```
 
-### Demo
+## Contributing
 
-[https://codesandbox.io/s/480xmrxy74](https://codesandbox.io/s/480xmrxy74)
+Please read [CONTRIBUTING.md](https://github.com/IniZio/reim/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
+
+### License
+
+MIT © [IniZio](https://github.com/IniZio)
