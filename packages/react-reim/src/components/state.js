@@ -84,7 +84,7 @@ class State extends Component {
     const {children} = this.props
     const {getterCache, setterCache, isInitialized} = this.state
 
-    if (!isInitialized || children === null || children === undefined) {
+    if (!isInitialized) {
       return null
     }
 
