@@ -84,7 +84,11 @@ class State extends Component {
     const {children} = this.props
     const {getterCache, setterCache, isInitialized} = this.state
 
-    return (typeof children === 'function' ? (isInitialized ? children({...setterCache, ...getterCache}, this.store) : null) : children)
+    if (!isInitialized || children === null || children === undefined) {
+      return null
+    }
+
+    return (typeof children === 'function' ? children({...setterCache, ...getterCache}, this.store) : (children || getterCache))
   }
 }
 

@@ -34,7 +34,6 @@ class Store {
     this.emit('init', this)
     bind(this)
 
-
     if (withDevTools && this.name) {
       if (devInstances.includes(this.name)) {
         console.error(`There is already an instance named ${this.name}, please ensure your stores have unique names`)
@@ -62,7 +61,7 @@ class Store {
   }
 
   snapshot(getter = state => state) {
-    return getter(this._state)
+    return typeof getter === 'string' ? this.state[getter] : getter(this.state)
   }
 
   getState = this.snapshot

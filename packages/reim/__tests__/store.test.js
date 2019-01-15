@@ -21,37 +21,12 @@ test('set', () => {
   expect(store.state.bb).toBe(100)
 })
 
-// test('primitives Map & Set support', async () => {
-//   const store = reim({
-//     deep: {
-//       foo: {
-//         bar: {
-//           baz: true
-//         }
-//       },
-//       set: new Set([{ one: "two" }, { two: "three" }]),
-//       map: new Map([["one", { foo: "bar" }]]),
-//       array: [{ i: 1 }, { i: 2 }, { i: 3 }, { i: 4 }, { i: 5 }]
-//     }
-//   })
+test('getState', () => {
+  const store = reim({par: '123', bam: 942})
 
-//   const updated = jest.fn()
-
-//   store.subscribe(updated)
-
-//   expect(updated).toBeCalledTimes(1)
-
-//   store.setState(draft => {
-//     const one = draft.deep.map.get('one');
-//     if (one) {
-//       one.foo = 1;
-//     }
-//     draft.deep.set.clear();
-//     draft.deep.set.add({ some: "obj" });
-//   })()
-
-//   expect(updated).toBeCalledTimes(2)
-// })
+  expect(store.getState('par')).toBe('123')
+  expect(store.getState(state => state.bam)).toBe(942)
+})
 
 describe('subscription', () => {
   test('subscribe to store', () => {

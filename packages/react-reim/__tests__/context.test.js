@@ -86,12 +86,18 @@ test('get should have change in store state reflected', () => {
       </div>
     ))
   )
+
+  const component1 = renderer.create(get('yer'))
+
   set(state => {
     state.yer += 88
   })
 
+
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
+
+  expect(component1.toJSON()).toMatchSnapshot()
 })
 
 test('Unmount Cunsumer should unsubscribe', () => {

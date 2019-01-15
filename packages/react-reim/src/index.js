@@ -29,7 +29,7 @@ export const react = () =>
           value: props => <State store={store} {...props}/>
         },
         get: {
-          value: fn => <State store={store}>{fn}</State>
+          value: fn => <State store={store} getter={fn}/>
         }
       })
     }

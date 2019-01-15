@@ -74,6 +74,8 @@ exports[`get should have change in store state reflected 1`] = `
 </div>
 `;
 
+exports[`get should have change in store state reflected 2`] = `"131"`;
+
 exports[`use convenience method connect 1`] = `
 <div>
   {"bom":509}
