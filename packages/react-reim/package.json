@@ -1,6 +1,6 @@
 {
   "name": "react-reim",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "license": "MIT",
   "keywords": [
     "reim",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "react": "^16.7.0-alpha.2",
-    "reim": "^1.16.0"
+    "reim": "^1.17.0"
   },
   "dependencies": {
     "@types/react": "^16.4.14",

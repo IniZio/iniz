@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.17.0"></a>
+# [1.17.0](https://github.com/IniZio/reim/compare/v1.16.0...v1.17.0) (2019-01-15)
+
+
+### Bug Fixes
+
+* **react:** return getterCache if children null ([63db428](https://github.com/IniZio/reim/commit/63db428))
+
+
+### Features
+
+* **getter:** allow string as getter ([98c4483](https://github.com/IniZio/reim/commit/98c4483))
+
+
+
+
 <a name="1.16.0"></a>
 # [1.16.0](https://github.com/IniZio/reim/compare/v1.15.1...v1.16.0) (2019-01-14)
 
