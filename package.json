@@ -37,6 +37,11 @@
     "semicolon": false,
     "esnext": true,
     "space": 2,
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
     "envs": [
       "node",
       "browser",

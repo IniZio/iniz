@@ -1,8 +1,8 @@
-import {Component} from 'react'
+import {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import reim from 'reim'
 
-class State extends Component {
+class State extends PureComponent {
   state = {
     isInitialized: false,
     getterCache: {},
@@ -16,16 +16,16 @@ class State extends Component {
     this.setSetter()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (!this.props.store && prevProps.initial !== this.props.initial) {
       this.store.reset(this.props.initial)
     }
 
     // User changed getter / setter functions
-    if (prevProps.getter !== this.props.getter && prevState.getterCache === this.state.getterCache) {
+    if (prevProps.getter !== this.props.getter) {
       this.setGetter()
     }
-    if (prevProps.setter !== this.props.setter && prevState.setterCache === this.state.setterCache) {
+    if (prevProps.setter !== this.props.setter) {
       this.setSetter()
     }
   }
@@ -34,22 +34,13 @@ class State extends Component {
     this.store.unsubscribe(this._handler)
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      (nextProps.getter !== this.props.getter || nextState.getterCache !== this.state.getterCache) ||
-      (nextProps.setter !== this.props.setter || nextState.setterCache !== this.state.setterCache) ||
-      (nextProps.onChange !== this.props.onChange) ||
-      (nextProps.children !== this.props.children)
-    )
-  }
-
   setGetter() {
     if (this._handler) {
       this.store.unsubscribe(this._handler)
     }
     this._handler = this.store.subscribe(getterCache => {
       this.setState({getterCache})
-      if (typeof this.props.onChange === 'function' && this.state.isInitialized) {
+      if (this.state.isInitialized) {
         this.props.onChange(getterCache)
       }
       this.setState({isInitialized: true})
@@ -60,23 +51,28 @@ class State extends Component {
   }
 
   setSetter() {
-    const setters = [].concat(this.props.setter).reduce((acc, val) => ({...acc, ...(typeof val === 'function' ? val(this.store) : val)}), {})
-
-    const cache = Object.keys(setters)
-      .reduce((acc, k) => ({...acc, [k]: (...args) => {
-        const v = setters[k](...args)
-        if (typeof v === 'function') {
-          try {
-            this.store.set(v)
-          } catch (e) {
-            return v
-          }
-        }
-        return v
-      }}), {})
+    const setters = [].concat(this.props.setter)
+      .reduce((acc, val) => ({
+        ...acc,
+        ...(typeof val === 'function' ? val(this.store) : val)
+      }), {})
 
     this.setState({
-      setterCache: cache
+      setterCache: Object.keys(setters)
+        .reduce((acc, k) => ({
+          ...acc,
+          [k]: (...args) => {
+            const v = setters[k](...args)
+            if (typeof v === 'function') {
+              try {
+                this.store.set(v)
+              } catch (e) {
+                return v
+              }
+            }
+            return v
+          }
+        }), {})
     })
   }
 
@@ -93,6 +89,7 @@ class State extends Component {
 }
 
 State.defaultProps = {
+  children: null,
   store: null,
   getter(s) {
     return s
@@ -101,13 +98,13 @@ State.defaultProps = {
     return {}
   },
   initial: null,
-  onChange: null
+  onChange() {}
 }
 
 State.propTypes = {
-  children: PropTypes.func.isRequired,
+  children: PropTypes.func,
   store: PropTypes.any,
-  getter: PropTypes.func,
+  getter: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   setter: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   initial: PropTypes.object,
   onChange: PropTypes.func

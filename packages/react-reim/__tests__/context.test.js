@@ -93,7 +93,6 @@ test('get should have change in store state reflected', () => {
     state.yer += 88
   })
 
-
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 
