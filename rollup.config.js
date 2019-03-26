@@ -1,6 +1,7 @@
 import path from 'path'
 import toPascal from 'to-pascal-case'
 import babel from 'rollup-plugin-babel'
+import typescript from 'rollup-plugin-typescript2'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import copy from 'rollup-plugin-copy-glob'
@@ -58,6 +59,11 @@ export default Object.keys(builds).reduce((tasks, name) => {
         babel({
           include: '**/*.js',
           exclude: 'node_modules/**'
+        }),
+        typescript({
+          rollupCommonJSResolveHack: true,
+          tsconfig: `packages/${name}/tsconfig.json`,
+          typescript: require('typescript')
         }),
         commonjs({
           ignoreGlobal: true,

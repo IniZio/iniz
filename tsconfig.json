@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "lib": ["es7"],
+    "allowJs": false,
+    "target": "es5",
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [],
+  "exclude": ["node_modules/**"]
+}

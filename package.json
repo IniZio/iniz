@@ -96,8 +96,10 @@
     "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-copy-glob": "^0.2.2",
     "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-typescript2": "^0.20.1",
     "rollup-plugin-uglify": "^4.0.0",
     "to-pascal-case": "^1.0.0",
+    "typescript": "^3.3.4000",
     "uglify-es": "^3.3.9",
     "xo": "^0.21.1"
   }
