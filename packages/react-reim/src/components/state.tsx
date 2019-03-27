@@ -1,7 +1,7 @@
 import {PureComponent} from 'react'
 import reim, {Store, Getter, Mutation} from 'reim'
 
-export interface StateProps extends React.Props<any> {
+export interface StateProps extends React.Props<State> {
   children?: (cache: any, store: Store) => React.ReactElement<any> | React.ReactElement<any>;
   store?: Store;
   getter?: Getter;

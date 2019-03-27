@@ -3,6 +3,7 @@ import bind from 'auto-bind'
 import emitter from 'event-emitter'
 import equal from 'fast-deep-equal'
 import isFunction from 'lodash/isFunction'
+import isPlainObject from 'lodash/isPlainObject'
 
 import {ReimOptions, Mutation, State, Getter, Plugin} from './types'
 
@@ -85,36 +86,27 @@ export class Store {
     return typeof getter === 'string' ? this.state[getter] : getter(this.state)
   }
 
-  // Mutatable way to update state
-  commit(mutation: Mutation, ...args: any[]) {
-    const newState = typeof mutation === 'function' ? mutation(this._state, ...args) : mutation
-    Object.assign(this._state, newState)
-
-    this.emit('set', mutation, ...args)
-    if (this._devTools) {
-      this._devTools.send(isFunction(mutation) && mutation.name || 'ANONYMOUS', this.state)
-    }
-    this._notify()
-
-    return this.state
-  }
-
-  _set = (mutation: Mutation, ...args: any[]) => {
-    this._state = produce(
-      this._state, (
-        isFunction(mutation) ?
-          (state => (mutation(state, ...args) || undefined)) :
-          (state => {
-            Object.assign(state, mutation)
-          })
+  _set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? Parameters<M> : []) =>  {
+    this._state = isPlainObject(this.state) ? (
+      produce(
+        this._state, (
+          isFunction(mutation) ?
+            (state => {
+              const res = mutation(state, ...args)
+              return (isFunction(res) ? res(...args) : res) || undefined
+            }) :
+            (state => {
+              Object.assign(state, mutation)
+            })
+        )
       )
-    )
+    ) : mutation
 
     this._notify()
   }
 
   // Immutable way to update state
-  set = (mutation: Mutation, ...args: any[]) => {
+  set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? Parameters<M> : []) => {
     this._set(mutation, ...args)
 
     this.emit('set', mutation, ...args)
@@ -167,7 +159,15 @@ export class Store {
   }
 }
 
-export default (state = {}, options: ReimOptions = {plugins: []}) => new Store(state, options)
+function reim<
+  X extends {[index: string]: any},
+  T extends {[index: string]: (s: State) => (...args: any[]) => void | Partial<State>},
+>(state: X = {} as X, {actions, ...options}: ReimOptions & {actions?: T} = {}): Store & {[k in keyof typeof actions]: ReturnType<T[k]>} {
+  const store = new Store(state, options)
+  return Object.assign(store, Object.keys(actions).reduce((acc, key) => ({...acc, [key]: (...args: any[]) => store.set(actions[key], ...args)}), {})) as Store & {[k in keyof typeof actions]: ReturnType<T[k]>}
+}
+
+export default reim
 
 // @ts-ignore
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
