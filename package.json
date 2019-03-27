@@ -9,6 +9,7 @@
     "packages/*"
   ],
   "scripts": {
+    "types": "typesync ./package.json && yarn",
     "link": "lerna exec yarn link",
     "lint": "xo --fix",
     "dev": "yarn watch",
@@ -33,7 +34,14 @@
   },
   "xo": {
     "parser": "babel-eslint",
-    "extends": "xo-react",
+    "extends": [
+      "xo-react",
+      "xo-typescript"
+    ],
+    "extensions": [
+      "ts",
+      "js"
+    ],
     "semicolon": false,
     "esnext": true,
     "space": 2,
@@ -68,6 +76,14 @@
     ]
   },
   "devDependencies": {
+    "@types/babel-core": "^6.25.6",
+    "@types/eslint": "^4.16.6",
+    "@types/jest": "^24.0.11",
+    "@types/react-test-renderer": "^16.8.1",
+    "@types/rollup-plugin-commonjs": "^9.2.0",
+    "@types/rollup-plugin-node-resolve": "^4.0.0",
+    "@types/uglify-es": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.4.2",
@@ -83,7 +99,9 @@
     "cross-env": "^5.2.0",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
+    "eslint-config-xo-typescript": "^0.9.0",
     "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-typescript": "^0.14.0",
     "get-lerna-packages": "^0.1.0",
     "husky": "^0.14.3",
     "jest": "^23.4.2",
@@ -100,6 +118,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "to-pascal-case": "^1.0.0",
     "typescript": "^3.3.4000",
+    "typesync": "^0.5.1",
     "uglify-es": "^3.3.9",
     "xo": "^0.21.1"
   }

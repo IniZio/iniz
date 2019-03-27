@@ -2,7 +2,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component, useState} from 'react'
-import reim from '../../reim/src'
+import reim from '../../reim'
 import {react, connect, State} from '../src'
 
 test('context returns Consumer', () => {
@@ -49,7 +49,7 @@ test('Consumer should have change in store state reflected', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.yer += 88
   })
 
@@ -115,12 +115,12 @@ test('Unmount Cunsumer should unsubscribe', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.yer += 88
   })
   expect(getter).toBeCalledTimes(2)
   component.unmount()
-  store.setState(state => {
+  store.set(state => {
     state.yer *= 88
   })
   expect(getter).toBeCalledTimes(2)
@@ -194,11 +194,11 @@ test('Properties not included in getter should not trigger update', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.hel -= 22
   })
   expect(updated).toBeCalledTimes(1)
-  store.setState(state => {
+  store.set(state => {
     state.gee += 88
   })
   expect(updated).toBeCalledTimes(1)
@@ -214,7 +214,7 @@ test('use convenience method connect', () => {
   const component = renderer.create(
     <Container/>
   )
-  store.setState(state => {
+  store.set(state => {
     state.bom += 490
   })
   const tree = component.toJSON()

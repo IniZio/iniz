@@ -4,20 +4,36 @@ import emitter from 'event-emitter'
 import equal from 'fast-deep-equal'
 import isFunction from 'lodash/isFunction'
 
+import {ReimOptions, Mutation, State, Getter, Plugin} from './types'
+
 const withDevTools = (
+  // @ts-ignore
   process.env.NODE_ENV === 'development' &&
+  // @ts-ignore
   typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__
 )
 
 const devInstances = []
 
+type EventListener = (...args: any[]) => void;
+type EmitterMethod = (type: string, listener: EventListener) => void
+
 setAutoFreeze(true)
-class Store {
+
+export class Store {
+  private _name = ''
+  private _initial = {}
   _state = {}
+  private _devTools: any
+  private _subscribers = []
 
-  _subscribers = []
+  emit: (type: string, ...args: any[]) => void
+  off: EmitterMethod
+  on: EmitterMethod
+  once: EmitterMethod
 
-  get __isStore() {
+
+  get __isReim() {
     return true
   }
 
@@ -25,27 +41,32 @@ class Store {
     return this._state
   }
 
-  constructor(state = {}, {name, plugins = []} = {}) {
+  get name() {
+    return this._name
+  }
+
+  constructor(state = {}, {name, plugins = []}: ReimOptions = {plugins: []}) {
     emitter(this)
-    this.name = name
+    this._name = name
     this.plugin(...plugins)
 
     this.reset(state)
     this.emit('init', this)
     bind(this)
 
-    if (withDevTools && this.name) {
-      if (devInstances.includes(this.name)) {
-        console.error(`There is already an instance named ${this.name}, please ensure your stores have unique names`)
+    if (withDevTools && this._name) {
+      if (devInstances.includes(this._name)) {
+        console.error(`There is already an instance named ${this._name}, please ensure your stores have unique names`)
         return
       }
 
-      this.devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({instanceId: this.name, shouldStringify: false})
+      // @ts-ignore
+      this._devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({instanceId: this._name, shouldStringify: false})
 
-      devInstances.push(this.name)
+      devInstances.push(this._name)
 
-      this.devTools.subscribe(message => {
-        if (message.id !== this.name) {
+      this._devTools.subscribe((message: any) => {
+        if (message.id !== this._name) {
           return
         }
 
@@ -55,32 +76,30 @@ class Store {
       })
     }
 
-    if (this.devTools) {
-      this.devTools.init(this.state)
+    if (this._devTools) {
+      this._devTools.init(this.state)
     }
   }
 
-  snapshot(getter = state => state) {
+  snapshot(getter: Getter = s => s) {
     return typeof getter === 'string' ? this.state[getter] : getter(this.state)
   }
 
-  getState = this.snapshot
-
   // Mutatable way to update state
-  commit(mutation, ...args) {
-    const newState = mutation(this._state, ...args)
+  commit(mutation: Mutation, ...args: any[]) {
+    const newState = typeof mutation === 'function' ? mutation(this._state, ...args) : mutation
     Object.assign(this._state, newState)
 
     this.emit('set', mutation, ...args)
-    if (this.devTools) {
-      this.devTools.send(mutation.name || 'ANONYMOUS', this.state)
+    if (this._devTools) {
+      this._devTools.send(isFunction(mutation) && mutation.name || 'ANONYMOUS', this.state)
     }
     this._notify()
 
     return this.state
   }
 
-  _set = (mutation, ...args) => {
+  _set = (mutation: Mutation, ...args: any[]) => {
     this._state = produce(
       this._state, (
         isFunction(mutation) ?
@@ -95,17 +114,15 @@ class Store {
   }
 
   // Immutable way to update state
-  set = (mutation, ...args) => {
+  set = (mutation: Mutation, ...args: any[]) => {
     this._set(mutation, ...args)
 
     this.emit('set', mutation, ...args)
-    if (this.devTools) {
-      this.devTools.send(mutation.name || 'ANONYMOUS', this.state)
+    if (this._devTools) {
+      this._devTools.send(isFunction(mutation) && mutation.name || 'ANONYMOUS', this.state)
     }
     return this.state
   }
-
-  setState = this.set
 
   reset(initial = null, ...args) {
     if (initial) {
@@ -118,17 +135,7 @@ class Store {
     return this.state
   }
 
-  /**
-   * subscribe - Add subscriber
-   *
-   * @param {Function} handler subscriber callback
-   * @param {Object} option Options for subscription
-   * @param {boolean} option.immediate Whether to run sub
-   * @param {Function} option.getter getters for data subscription
-   *
-   * @returns {Function} unsubscriber
-   */
-  subscribe(handler, {immediate = false, getter = state => state} = {}) {
+  subscribe(handler: (s: State) => any, {immediate = false, getter = s => s}: {immediate?: boolean; getter: Getter} = {getter: s => s}) {
     // TODO: check if the getter is not cachable here
     const getterCache = this.snapshot(getter)
     this._subscribers.push({handler, getter, getterCache})
@@ -138,26 +145,16 @@ class Store {
     return () => this.unsubscribe(handler)
   }
 
-  /**
-   * unsubscribe - Remove subscriber
-   *
-   * @param {Function} handler subscriber to remvoe
-   *
-   */
-  unsubscribe(handler) {
+  unsubscribe(handler: (s: State) => any) {
     this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
   }
 
-  plugin(...plugins) {
-    plugins.forEach(
-      plugin => {
-        plugin.call(this, this)
-      }
-    )
+  plugin(...plugins: Plugin[]) {
+    plugins.forEach(plugin => (isFunction(plugin) ? plugin(this) : plugin.call(this, this)))
     return this
   }
 
-  _notify() {
+  private _notify() {
     this._subscribers.forEach(sub => {
       // Notify if getterCache is updated
       const getterCache = this.snapshot(sub.getter)
@@ -170,22 +167,19 @@ class Store {
   }
 }
 
-export const store = (...args) => new Store(...args)
+export default (state = {}, options: ReimOptions = {plugins: []}) => new Store(state, options)
 
-export const register = store
-
-export default store
-
+// @ts-ignore
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
 
 // Returns an observable stream
-export const toStream = (store, options = {}) => {
+export const toStream = (store: Store, options: any = {}) => {
   return {
-    subscribe: (observer = () => {}) => ({
+    subscribe: (observer: ((s: any) => any) | {next: (s: any) => any} = () => {}) => ({
       unsubscribe: store.subscribe((
-        typeof observer === 'function' ?
-          selected => observer(selected) :
-          selected => observer.next(selected)
+        isFunction(observer) ?
+          observer.bind(this) :
+          observer.next.bind(this)
       ), {...options, immediate: true})
     }),
     [observableSymbol()]() {

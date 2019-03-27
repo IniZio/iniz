@@ -10,7 +10,7 @@ function canWriteStorage(storage) {
   return false
 }
 
-function getState(key, storage, value) {
+function snapshot(key, storage, value) {
   try {
     value = storage.getItem(key)
     return typeof value === 'undefined' ?
@@ -21,7 +21,7 @@ function getState(key, storage, value) {
   return undefined
 }
 
-function setState(key, state, storage) {
+function set(key, state, storage) {
   return storage.setItem(key, JSON.stringify(state))
 }
 
@@ -40,13 +40,13 @@ export default function persist(options = {}) {
       }
 
       const key = `reim/${store.name}`
-      const saved = getState(key, storage)
+      const saved = snapshot(key, storage)
       if (typeof saved === 'object' && saved !== null) {
-        store.setState(merge({}, store.state, saved))
+        store.set(merge({}, store.state, saved))
       }
 
       store.subscribe(state => {
-        setState(key, state, storage)
+        set(key, state, storage)
       }, {...options.subscriber, immediate: true})
 
       return store

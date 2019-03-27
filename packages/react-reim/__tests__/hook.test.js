@@ -3,7 +3,7 @@
 import renderer from 'react-test-renderer'
 
 import React from 'react'
-import reim from '../../reim/src'
+import reim from '../../reim'
 import {useReim} from '../src'
 
 test('Hook should return store value on component mount', () => {
@@ -42,12 +42,12 @@ test('Hook should only cause rerender on getter cache miss', () => {
   }
 
   const component = renderer.create(<TestComponent/>)
-  loc.setState(state => {
+  loc.set(state => {
     state.c++
   })
   expect(didUpdate).toBeCalledTimes(0)
   expect(component.toJSON()).toMatchSnapshot()
-  loc.setState(state => {
+  loc.set(state => {
     state.b++
   })
   expect(didUpdate).toBeCalledTimes(1)

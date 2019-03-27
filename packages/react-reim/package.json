@@ -19,6 +19,8 @@
     "reim": "^1.9.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.123",
+    "@types/prop-types": "^15.7.0",
     "react": "^16.7.0-alpha.2",
     "reim": "^1.17.0"
   },

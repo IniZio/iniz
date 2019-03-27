@@ -1,5 +1,5 @@
 import Storage from 'dom-storage'
-import reim from '../../reim/src'
+import reim from '../../reim'
 import persist from '../src'
 
 test('can be created', () => {
@@ -12,7 +12,7 @@ test('can be created', () => {
     ]
   })
 
-  tstore.setState(state => {
+  tstore.set(state => {
     state.abc += 100
   })
 
@@ -51,13 +51,13 @@ test('should not replace store state when saved state is invalid', () => {
   }, {name: 'abc'})
 
   st.subscribe = jest.fn()
-  st.setState = jest.fn()
+  st.set = jest.fn()
 
   const plugin = persist({storage})
 
   plugin.call(st)
 
-  expect(st.setState).not.toBeCalled()
+  expect(st.set).not.toBeCalled()
   expect(st.subscribe).toBeCalled()
 })
 

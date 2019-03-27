@@ -4,7 +4,7 @@ export function reporter(callback = () => {}) {
     call(store) {
       store.on('set', (mutation, ...args) => {
         const {name} = mutation
-        const snapshot = store.getState()
+        const snapshot = store.snapshot()
 
         const meta = {name, snapshot, payload: args}
 

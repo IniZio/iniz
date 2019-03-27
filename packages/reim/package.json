@@ -52,6 +52,10 @@
     }
   },
   "devDependencies": {
+    "@types/auto-bind": "^1.2.0",
+    "@types/eslint": "^4.16.6",
+    "@types/event-emitter": "^0.3.3",
+    "@types/lodash": "^4.14.123",
     "babel-eslint": "^8.2.6",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",

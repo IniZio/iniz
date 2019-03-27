@@ -19,13 +19,13 @@ const counter = mapPropsStream(props$ => {
     props$,
     from(toStream(counterStore))
   ).pipe(
-    map(([props, {count}]) => ({...props, count, decrement: () => counterStore.setState(state => {state.count--})}))
+    map(([props, {count}]) => ({...props, count, decrement: () => counterStore.set(state => {state.count--})}))
   )
 })
 
 export default compose(
   withHandlers({
-    increment: props => e => counterStore.setState(state => {state.count++})
+    increment: props => e => counterStore.set(state => {state.count++})
   }),
   counter
 )(App)

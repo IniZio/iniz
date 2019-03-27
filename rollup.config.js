@@ -10,7 +10,9 @@ import {minify} from 'uglify-es'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  'reim': {},
+  'reim': {
+    entry: 'src/index.ts'
+  },
   'react-reim': {
     globals: {
       'react': 'React',
@@ -48,7 +50,8 @@ export default Object.keys(builds).reduce((tasks, name) => {
   const build = builds[name]
 
   const PACKAGE_ROOT_PATH = path.join(process.cwd(), 'packages', name)
-  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, 'src/index.js')
+  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, build.entry || 'src/index.js')
+
   const OUTPUT_DIR = path.join(PACKAGE_ROOT_PATH, 'dist')
   // const PKG_JSON = require(path.join(PACKAGE_ROOT_PATH, 'package.json'))
 

@@ -31,13 +31,13 @@ export class Store {
   private _state: State
   private _subscribers: Subscriber[]
 
-  public __isStore: boolean
+  public __isReim: boolean
   public state: State
 
   private _notify(): void
 
   public snapshot(getter?: Getter): any
-  public getState(getter?: Getter): any
+  public snapshot(getter?: Getter): any
 
   public commit(mutation?: Mutation, ...args: any[]): State
   public set(mutation?: Mutation, ...args: any[]): State

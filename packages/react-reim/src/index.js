@@ -9,7 +9,7 @@ export {default as State} from './components/state'
 export function pipeTo(store, mutation = (_, p) => p) {
   class Piper extends PureComponent {
     componentDidUpdate() {
-      store.setState(mutation, this.props)
+      store.set(mutation, this.props)
     }
 
     render = () => null
@@ -56,24 +56,24 @@ export function useReim(initial, getter = s => s, dependencies = []) {
     throw new Error('React@16.7-alpha.2 is required to use Hooks')
   }
 
-  const store = initial.__isStore ? initial : reim(initial)
+  const store = initial.__isReim ? initial : reim(initial)
 
   const {useState, useEffect, useRef} = React
 
   const mountRef = useRef()
-  const [state, setState] = useState(store.snapshot(getter))
+  const [state, set] = useState(store.snapshot(getter))
 
   useEffect(() => {
     if (mountRef.current) {
-      setState(() => store.snapshot(getter))
+      set(() => store.snapshot(getter))
     } else {
       mountRef.current = true
     }
   }, dependencies)
 
-  useEffect(() => () => store.unsubscribe(setState))
+  useEffect(() => () => store.unsubscribe(set))
 
-  store.subscribe(setState, {getter})
+  store.subscribe(set, {getter})
 
   return [state, store.set]
 }

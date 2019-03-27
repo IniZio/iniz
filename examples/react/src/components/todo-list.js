@@ -36,9 +36,9 @@ TodoList.propTypes = {
 export default connect(
   TodoStore,
   state => ({todos: state.todos}),
-  ({setState}) => ({
+  ({set}) => ({
     removeTodo: index => {
-      setState(mutations.removeTodo(index))
+      set(mutations.removeTodo(index))
     }
   })
 )(TodoList)

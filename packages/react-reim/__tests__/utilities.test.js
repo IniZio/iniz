@@ -2,7 +2,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
-import reim from '../../reim/src'
+import reim from '../../reim'
 import {context, pipeTo} from '../src'
 
 test('pipeTo should pipe props to store', () => {

@@ -13,12 +13,12 @@ export const task = (func, subscriber) => {
   const task = async (...args) => {
     let result = null
     try {
-      store.setState(() => ({status: 'pending'}))
+      store.set(() => ({status: 'pending'}))
       result = await func(...args)
-      store.setState(() => ({status: 'resolved', result}))
+      store.set(() => ({status: 'resolved', result}))
       return result
     } catch (error) {
-      store.setState(() => ({status: 'rejected', error}))
+      store.set(() => ({status: 'rejected', error}))
       throw error
     }
   }
