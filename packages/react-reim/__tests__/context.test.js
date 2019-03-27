@@ -3,9 +3,9 @@
 import renderer from 'react-test-renderer'
 import React, {Component, useState} from 'react'
 import reim from '../../reim'
-import {react, connect, State} from '../src'
+import {react, connect, State} from '..'
 
-test('context returns Consumer', () => {
+test('react returns Consumer', () => {
   const store = reim({yer: 43}).plugin(react())
 
   expect(store.Consumer).toBeDefined()

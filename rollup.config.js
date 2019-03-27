@@ -14,6 +14,7 @@ const builds = {
     entry: 'src/index.ts'
   },
   'react-reim': {
+    entry: 'src/index.tsx',
     globals: {
       'react': 'React',
       'react-dom': 'ReactDOM',

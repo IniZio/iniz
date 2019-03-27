@@ -4,7 +4,7 @@ import renderer from 'react-test-renderer'
 
 import React from 'react'
 import reim from '../../reim'
-import {useReim} from '../src'
+import {useReim} from '..'
 
 test('Hook should return store value on component mount', () => {
   const store = reim({level: 10})

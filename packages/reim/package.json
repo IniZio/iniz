@@ -14,7 +14,7 @@
   "module": "dist/reim.es.js",
   "unpkg": "dist/reim.js",
   "jsdelivr": "dist/reim.js",
-  "types": "dist/reim.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "lib",

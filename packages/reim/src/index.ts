@@ -187,3 +187,5 @@ export const toStream = (store: Store, options: any = {}) => {
     }
   }
 }
+
+export * from './types'

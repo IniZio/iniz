@@ -1,12 +1,18 @@
 import React, {PureComponent} from 'react'
-import reim from 'reim'
+import reim, {Store, Mutation, Getter} from 'reim'
 
-import State from './components/state'
+import State, {StateProps} from './components/state'
 
 export {default as State} from './components/state'
 
+class ReactStore extends Store {
+  get __isReactReim() {return true}
+  Consumer: (props: StateProps) => React.ReactElement<StateProps>;
+  get: (fn: Getter) => React.ReactElement<StateProps>;
+}
+
 // Syncs props to store
-export function pipeTo(store, mutation = (_, p) => p) {
+export function pipeTo(store: Store, mutation: Mutation = (_: any, p: any) => p): React.ComponentClass {
   class Piper extends PureComponent {
     componentDidUpdate() {
       store.set(mutation, this.props)
@@ -20,29 +26,24 @@ export function pipeTo(store, mutation = (_, p) => p) {
 export const react = () =>
   ({
     name: 'react',
-    call(store) {
+    call(store: Store) {
       Object.defineProperties(store, {
-        __isContext: {
+        __isReactReim: {
           value: true
         },
         Consumer: {
-          value: props => <State store={store} {...props}/>
+          value: (props: any) => <State store={store} {...props}/>
         },
         get: {
-          value: fn => <State store={store} getter={fn}/>
+          value: (fn: Getter) => <State store={store} getter={fn}/>
         }
       })
     }
   })
 
-export default react
-
-export const context = react
-export const createContext = context()
-
-export function connect(store, getter = s => s, setter = () => ({})) {
-  const Context = store.__isContext ? store : store.plugin(context())
-  return Wrapped => p => (
+export function connect(store: ReactStore, getter: Getter = s => s, setter: Mutation = () => ({})) {
+  const Context = store.__isReactReim ? store : store.plugin(react())
+  return (Wrapped: React.ComponentClass) => (p: any) => (
     <Context.Consumer getter={getter} setter={setter}>
       {
         selected => <Wrapped {...selected} {...p}/>
@@ -51,13 +52,15 @@ export function connect(store, getter = s => s, setter = () => ({})) {
   )
 }
 
-export function useReim(initial, getter = s => s, dependencies = []) {
+export function useReim(initial: any, getter: Getter = s => s, dependencies: string[] = []) {
+  // @ts-ignore
   if (!React.useState) {
     throw new Error('React@16.7-alpha.2 is required to use Hooks')
   }
 
   const store = initial.__isReim ? initial : reim(initial)
 
+  // @ts-ignore
   const {useState, useEffect, useRef} = React
 
   const mountRef = useRef()
@@ -77,3 +80,5 @@ export function useReim(initial, getter = s => s, dependencies = []) {
 
   return [state, store.set]
 }
+
+export default react
