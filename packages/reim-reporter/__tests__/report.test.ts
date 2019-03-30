@@ -1,4 +1,4 @@
-import reim from '../../reim'
+import reim from '../../reim/src'
 import {reporter} from '../src'
 
 test('can be created', () => {

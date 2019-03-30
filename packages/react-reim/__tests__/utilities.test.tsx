@@ -2,8 +2,8 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component} from 'react'
-import reim from '../../reim'
-import {react, pipeTo} from '..'
+import reim from 'reim/src'
+import {react, pipeTo} from '../dist'
 
 test('pipeTo should pipe props to store', () => {
   const store = reim({yer: 43}).plugin(react())

@@ -1,4 +1,4 @@
-import reim, {toStream} from '..'
+import reim, {toStream} from '../src'
 
 test('store a store', () => {
   const tstore = reim({abc: 12})

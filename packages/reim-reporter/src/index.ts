@@ -1,4 +1,4 @@
-export function reporter(callback = () => {}) {
+export function reporter(callback = (...args: any[]) => {}) {
   return {
     name: 'reporter',
     call(store) {

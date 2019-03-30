@@ -24,7 +24,7 @@ setAutoFreeze(true)
 export class Store {
   private _name = ''
   private _initial = {}
-  _state = {}
+  _state: {[index: string]: any} = {}
   private _devTools: any
   private _subscribers = []
 
@@ -86,7 +86,7 @@ export class Store {
     return typeof getter === 'string' ? this.state[getter] : getter(this.state)
   }
 
-  _set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? Parameters<M> : []) =>  {
+  _set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? any[] : []) =>  {
     this._state = isPlainObject(this.state) ? (
       produce(
         this._state, (
@@ -106,7 +106,7 @@ export class Store {
   }
 
   // Immutable way to update state
-  set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? Parameters<M> : []) => {
+  set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? any[] : []) => {
     this._set(mutation, ...args)
 
     this.emit('set', mutation, ...args)

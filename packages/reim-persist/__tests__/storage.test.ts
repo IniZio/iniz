@@ -1,5 +1,5 @@
 import Storage from 'dom-storage'
-import reim from '../../reim'
+import reim from '../../reim/src'
 import persist from '../src'
 
 test('can be created', () => {

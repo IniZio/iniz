@@ -51,7 +51,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
   const build = builds[name]
 
   const PACKAGE_ROOT_PATH = path.join(process.cwd(), 'packages', name)
-  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, build.entry || 'src/index.js')
+  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, build.entry || 'src/index.ts')
 
   const OUTPUT_DIR = path.join(PACKAGE_ROOT_PATH, 'dist')
   // const PKG_JSON = require(path.join(PACKAGE_ROOT_PATH, 'package.json'))

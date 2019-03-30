@@ -1,13 +1,13 @@
 import {Store} from '.'
 
-type PluginFunction = (store: Store, store1?: Store) => any
+type PluginFunction<S extends Store> = (store: S, store1?: S) => any
 
 interface PluginObject {
-  name?: string
-  call: PluginFunction
+  name?: string;
+  call: PluginFunction<Store>;
 }
 
-export type Plugin = PluginObject | PluginFunction
+export type Plugin = PluginObject | PluginFunction<Store>
 
 export interface ReimOptions {
   name?: string;

@@ -10,7 +10,7 @@ function canWriteStorage(storage) {
   return false
 }
 
-function snapshot(key, storage, value) {
+function snapshot(key, storage, value?: any) {
   try {
     value = storage.getItem(key)
     return typeof value === 'undefined' ?
@@ -25,7 +25,7 @@ function set(key, state, storage) {
   return storage.setItem(key, JSON.stringify(state))
 }
 
-export default function persist(options = {}) {
+export default function persist(options: any = {}) {
   const storage = options.storage || (window && window.localStorage)
 
   if (!canWriteStorage(storage)) {

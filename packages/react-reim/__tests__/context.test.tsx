@@ -2,8 +2,8 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import renderer from 'react-test-renderer'
 import React, {Component, useState} from 'react'
-import reim from '../../reim'
-import {react, connect, State} from '..'
+import reim from 'reim/src'
+import {react, connect, State} from '../src'
 
 test('react returns Consumer', () => {
   const store = reim({yer: 43}).plugin(react())
