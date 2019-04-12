@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`should report anonymous store trying to use persist plugin 1`] = `"You cannot persist an anonymous store, use \`name\` option in store"`;
-
-exports[`should report invalid storage 1`] = `"Invalid storage given"`;

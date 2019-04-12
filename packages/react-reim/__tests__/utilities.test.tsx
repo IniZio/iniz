@@ -1,16 +1,16 @@
 /* eslint react/prop-types: 0 */
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
-import renderer from 'react-test-renderer'
-import React, {Component} from 'react'
-import reim from 'reim/src'
-import {react, pipeTo} from '../dist'
+import * as renderer from 'react-test-renderer'
+import * as React from 'react'
+import reim from 'reim'
+import {react, pipeTo} from '..'
 
 test('pipeTo should pipe props to store', () => {
   const store = reim({yer: 43}).plugin(react())
 
   const PipeToStore = pipeTo(store)
 
-  class PipeSource extends Component {
+  class PipeSource extends React.Component {
     state = {
       magic: 100,
       deeply: {

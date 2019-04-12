@@ -1,9 +1,8 @@
 import {produce, setAutoFreeze} from 'immer'
-import bind from 'auto-bind'
-import emitter from 'event-emitter'
-import equal from 'fast-deep-equal'
-import isFunction from 'lodash/isFunction'
-import isPlainObject from 'lodash/isPlainObject'
+import * as emitter from 'event-emitter'
+import * as bind from 'auto-bind'
+import * as equal from 'fast-deep-equal'
+import {isFunction, isPlainObject} from 'lodash'
 
 import {ReimOptions, Mutation, State, Getter, Plugin} from './types'
 
@@ -159,15 +158,11 @@ export class Store {
   }
 }
 
-function reim<
+export default function reim<
   X extends {[index: string]: any},
-  T extends {[index: string]: (s: State) => (...args: any[]) => void | Partial<State>},
->(state: X = {} as X, {actions, ...options}: ReimOptions & {actions?: T} = {}): Store & {[k in keyof typeof actions]: ReturnType<T[k]>} {
-  const store = new Store(state, options)
-  return Object.assign(store, Object.keys(actions).reduce((acc, key) => ({...acc, [key]: (...args: any[]) => store.set(actions[key], ...args)}), {})) as Store & {[k in keyof typeof actions]: ReturnType<T[k]>}
+>(state: X = {} as X, options: ReimOptions = {}): Store {
+  return new Store(state, options)
 }
-
-export default reim
 
 // @ts-ignore
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')

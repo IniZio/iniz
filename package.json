@@ -80,6 +80,7 @@
     "@types/babel-core": "^6.25.6",
     "@types/eslint": "^4.16.6",
     "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.4",
     "@types/react-test-renderer": "^16.8.1",
     "@types/rollup-plugin-commonjs": "^9.2.0",
     "@types/rollup-plugin-node-resolve": "^4.0.0",

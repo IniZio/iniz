@@ -1,4 +1,4 @@
-import merge from 'lodash/merge'
+import {merge} from 'lodash'
 
 function canWriteStorage(storage) {
   try {
@@ -26,7 +26,7 @@ function set(key, state, storage) {
 }
 
 export default function persist(options: any = {}) {
-  const storage = options.storage || (window && window.localStorage)
+  const storage = options.storage || (typeof window !== 'undefined' ? window && window.localStorage : null)
 
   if (!canWriteStorage(storage)) {
     throw new Error('Invalid storage given')

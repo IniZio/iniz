@@ -1,10 +1,10 @@
 /* eslint react/prop-types: 0 */
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
-import renderer from 'react-test-renderer'
+import * as renderer from 'react-test-renderer'
 
-import React from 'react'
-import reim from 'reim/src'
-import {useReim} from '../dist'
+import * as React from 'react'
+import reim from 'reim'
+import {useReim} from '..'
 
 test('Hook should return store value on component mount', () => {
   const store = reim({level: 10})
@@ -77,7 +77,7 @@ test('Hook should refresh according to dependencies', () => {
   expect(finalState1.final).toEqual(45)
 
   set(30)
-  component.update()
+  component.update(<TestComponent/>)
   expect(finalState1.final).toEqual(45)
   expect(finalState2.final).toEqual(70)
 })

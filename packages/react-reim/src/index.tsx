@@ -41,8 +41,8 @@ export const react = () =>
     }
   })
 
-export function connect(store: ReactStore, getter: Getter = s => s, setter: Mutation = () => ({})) {
-  const Context = store.__isReactReim ? store : store.plugin(react())
+export function connect(store: Store & {__isReactReim?: any}, getter: Getter = s => s, setter: Mutation = () => ({})) {
+  const Context = (store.__isReactReim ? store : store.plugin(react())) as ReactStore
   return (Wrapped: React.ComponentClass) => (p: any) => (
     <Context.Consumer getter={getter} setter={setter}>
       {

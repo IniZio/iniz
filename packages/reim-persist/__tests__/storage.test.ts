@@ -1,14 +1,16 @@
-import Storage from 'dom-storage'
 import reim from '../../reim/src'
 import persist from '../src'
 
+const Storage = require('dom-storage')
+
 test('can be created', () => {
+  const storage = new Storage()
   const tstore = reim({
     abc: 12
   }, {
     name: 'xyz',
     plugins: [
-      persist()
+      persist({storage})
     ]
   })
 

@@ -9,8 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules/**"]
 }

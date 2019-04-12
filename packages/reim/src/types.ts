@@ -17,4 +17,4 @@ export interface ReimOptions {
 
 export type State = {[index: string]: any}
 export type Mutation = {(state: State, ...args: any[]): void | State} | State
-export type Getter = {(state: State):  any}
+export type Getter = string | {(state: State):  any}
