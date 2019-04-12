@@ -1,4 +1,4 @@
-import merge from 'lodash/merge'
+import {merge} from 'lodash'
 
 function canWriteStorage(storage) {
   try {
@@ -10,7 +10,7 @@ function canWriteStorage(storage) {
   return false
 }
 
-function getState(key, storage, value) {
+function snapshot(key, storage, value?: any) {
   try {
     value = storage.getItem(key)
     return typeof value === 'undefined' ?
@@ -21,12 +21,12 @@ function getState(key, storage, value) {
   return undefined
 }
 
-function setState(key, state, storage) {
+function set(key, state, storage) {
   return storage.setItem(key, JSON.stringify(state))
 }
 
-export default function persist(options = {}) {
-  const storage = options.storage || (window && window.localStorage)
+export default function persist(options: any = {}) {
+  const storage = options.storage || (typeof window !== 'undefined' ? window && window.localStorage : null)
 
   if (!canWriteStorage(storage)) {
     throw new Error('Invalid storage given')
@@ -40,13 +40,13 @@ export default function persist(options = {}) {
       }
 
       const key = `reim/${store.name}`
-      const saved = getState(key, storage)
+      const saved = snapshot(key, storage)
       if (typeof saved === 'object' && saved !== null) {
-        store.setState(merge({}, store.state, saved))
+        store.set(merge({}, store.state, saved))
       }
 
       store.subscribe(state => {
-        setState(key, state, storage)
+        set(key, state, storage)
       }, {...options.subscriber, immediate: true})
 
       return store

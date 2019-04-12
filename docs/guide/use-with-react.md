@@ -26,15 +26,15 @@ function Counter() {
 
 ## 1. Minimal way
 
-`react-reim` 's `context` plugin adds `get` function so that you can use derive component from store state
+`react-reim` 's `react` plugin adds `get` function so that you can use derive component from store state
 
 ```jsx
 import React from 'react'
 import reim from 'reim'
-import {context} from 'react-reim'
+import react from 'react-reim'
 
 // create a store
-const {get, set} = reim({name: 'Peter'}).plugin(context())
+const {get, set} = reim({name: 'Peter'}).plugin(react())
 
 // get state already :)
 const User = () => (
@@ -57,18 +57,18 @@ const App = () => (
 
 ## 2. Unstated way
 
-`react-reim` 's `context` plugin also adds `Consumer` component so that you can use store right in components
+`react-reim` 's `react` plugin also adds `Consumer` component so that you can use store right in components
 
 {% code-tabs %}
 {% code-tabs-item title="stores/counter.js" %}
 ```javascript
 import reim from 'reim'
-import {context} from 'react-reim'
+import react from 'react-reim'
 
 const counterStore = reim({
     count: 0
 }, {
-  plugins: [context()]
+  plugins: [react()]
 })
 
 export const mutations = {

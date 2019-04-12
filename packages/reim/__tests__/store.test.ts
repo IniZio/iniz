@@ -9,23 +9,23 @@ test('store a store', () => {
 test('set', () => {
   const store = reim({foo: 17})
 
-  store.setState(state => {
+  store.set(state => {
     state.foo += 11
   })
   expect(store.state.foo).toBe(28)
 
-  store.setState({
+  store.set({
     bb: 100
   })
   expect(store.state.foo).toBe(28)
   expect(store.state.bb).toBe(100)
 })
 
-test('getState', () => {
+test('snapshot', () => {
   const store = reim({par: '123', bam: 942})
 
-  expect(store.getState('par')).toBe('123')
-  expect(store.getState(state => state.bam)).toBe(942)
+  expect(store.snapshot('par')).toBe('123')
+  expect(store.snapshot(state => state.bam)).toBe(942)
 })
 
 describe('subscription', () => {
@@ -35,7 +35,7 @@ describe('subscription', () => {
     const updated = jest.fn()
     // Should be called on subscribe also for initial fetch
     store.subscribe(updated)
-    store.setState(state => {
+    store.set(state => {
       state.mag -= 10
     })
     expect(updated).toBeCalledTimes(1)
@@ -47,13 +47,13 @@ describe('subscription', () => {
     const updated = jest.fn()
 
     const handler = store.subscribe(updated)
-    store.setState(state => {
+    store.set(state => {
       state.poi += 30
     })
     expect(updated).toBeCalledTimes(1)
 
     store.unsubscribe(handler)
-    store.setState(state => {
+    store.set(state => {
       state.poi *= 10
     })
     expect(updated).toBeCalledTimes(1)

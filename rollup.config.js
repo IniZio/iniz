@@ -1,6 +1,7 @@
 import path from 'path'
 import toPascal from 'to-pascal-case'
 import babel from 'rollup-plugin-babel'
+import typescript from 'rollup-plugin-typescript2'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import copy from 'rollup-plugin-copy-glob'
@@ -9,8 +10,11 @@ import {minify} from 'uglify-es'
 import getLernaPackages from 'get-lerna-packages'
 
 const builds = {
-  'reim': {},
+  'reim': {
+    entry: 'src/index.ts'
+  },
   'react-reim': {
+    entry: 'src/index.tsx',
     globals: {
       'react': 'React',
       'react-dom': 'ReactDOM',
@@ -47,7 +51,8 @@ export default Object.keys(builds).reduce((tasks, name) => {
   const build = builds[name]
 
   const PACKAGE_ROOT_PATH = path.join(process.cwd(), 'packages', name)
-  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, 'src/index.js')
+  const INPUT_FILE = path.join(PACKAGE_ROOT_PATH, build.entry || 'src/index.ts')
+
   const OUTPUT_DIR = path.join(PACKAGE_ROOT_PATH, 'dist')
   // const PKG_JSON = require(path.join(PACKAGE_ROOT_PATH, 'package.json'))
 
@@ -58,6 +63,11 @@ export default Object.keys(builds).reduce((tasks, name) => {
         babel({
           include: '**/*.js',
           exclude: 'node_modules/**'
+        }),
+        typescript({
+          rollupCommonJSResolveHack: true,
+          tsconfig: `packages/${name}/tsconfig.json`,
+          typescript: require('typescript')
         }),
         commonjs({
           ignoreGlobal: true,

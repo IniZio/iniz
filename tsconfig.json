@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": ["es7", "dom"],
+    "jsx": "react",
+    "allowJs": false,
+    "target": "es5",
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true
+  },
+  "exclude": ["node_modules/**"]
+}

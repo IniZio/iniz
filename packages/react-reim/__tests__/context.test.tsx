@@ -1,11 +1,11 @@
 /* eslint react/prop-types: 0 */
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
-import renderer from 'react-test-renderer'
-import React, {Component, useState} from 'react'
-import reim from '../../reim/src'
+import * as renderer from 'react-test-renderer'
+import * as React from 'react'
+import reim from 'reim'
 import {react, connect, State} from '../src'
 
-test('context returns Consumer', () => {
+test('react returns Consumer', () => {
   const store = reim({yer: 43}).plugin(react())
 
   expect(store.Consumer).toBeDefined()
@@ -15,7 +15,7 @@ test('Storeless State should reset on initial prop change', () => {
   let changeInitial
 
   function TestComponent() {
-    const [initial, setInitial] = useState({level: 10})
+    const [initial, setInitial] = React.useState({level: 10})
 
     changeInitial = () => setInitial({level: 10000})
 
@@ -49,7 +49,7 @@ test('Consumer should have change in store state reflected', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.yer += 88
   })
 
@@ -115,12 +115,12 @@ test('Unmount Cunsumer should unsubscribe', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.yer += 88
   })
   expect(getter).toBeCalledTimes(2)
   component.unmount()
-  store.setState(state => {
+  store.set(state => {
     state.yer *= 88
   })
   expect(getter).toBeCalledTimes(2)
@@ -145,7 +145,7 @@ test('State onChange should trigger on state change', () => {
   const onChange = jest.fn()
   let increment
 
-  class Container extends Component {
+  class Container extends React.Component {
     render() {
       return (
         <State initial={{value: 88}} onChange={onChange}>
@@ -177,7 +177,7 @@ test('Properties not included in getter should not trigger update', () => {
 
   const updated = jest.fn()
 
-  class Listen extends Component {
+  class Listen extends React.Component<{hel: any}> {
     componentDidUpdate = updated
 
     render() {
@@ -194,11 +194,11 @@ test('Properties not included in getter should not trigger update', () => {
       }
     </store.Consumer>
   )
-  store.setState(state => {
+  store.set(state => {
     state.hel -= 22
   })
   expect(updated).toBeCalledTimes(1)
-  store.setState(state => {
+  store.set(state => {
     state.gee += 88
   })
   expect(updated).toBeCalledTimes(1)
@@ -214,7 +214,7 @@ test('use convenience method connect', () => {
   const component = renderer.create(
     <Container/>
   )
-  store.setState(state => {
+  store.set(state => {
     state.bom += 490
   })
   const tree = component.toJSON()
@@ -224,7 +224,7 @@ test('use convenience method connect', () => {
 test('change getter', () => {
   const store = reim({dui: 12, geo: 'tie'}).plugin(react())
 
-  class Getter extends Component {
+  class Getter extends React.Component {
     state = {
       getter: state => ({dui: state.dui})
     }

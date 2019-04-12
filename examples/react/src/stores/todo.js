@@ -1,11 +1,11 @@
 import reim from 'reim'
-import {context} from 'react-reim'
+import react from 'react-reim'
 
 const store = reim({
   todos: [],
   currTodo: {value: ''}
 }, {
-  plugins: [context()]
+  plugins: [react()]
 })
 
 export const mutations = {
