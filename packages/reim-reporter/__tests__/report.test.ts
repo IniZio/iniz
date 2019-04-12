@@ -15,12 +15,12 @@ test('can be created', () => {
     state.abc += 100
   }
 
-  tstore.setState(addHundred)
+  tstore.set(addHundred)
 
   expect(tstore.state.abc).toBe(112)
 })
 
-test('should trigger callback on setState with correct meta', () => {
+test('should trigger callback on set with correct meta', () => {
   const report = jest.fn(meta => meta)
 
   const tstore = reim({
@@ -38,7 +38,7 @@ test('should trigger callback on setState with correct meta', () => {
     state.abc += amount
   }
 
-  tstore.setState(addAmount, 6)
+  tstore.set(addAmount, 6)
 
   expect(report).toHaveBeenCalledTimes(1)
 

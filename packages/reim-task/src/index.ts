@@ -1,10 +1,10 @@
-import nanoid from 'nanoid'
-import isFunction from 'lodash/isFunction'
+import {isFunction} from 'lodash'
 import reim from 'reim'
 
+let id = 0
+
 export const task = (func, subscriber) => {
-  const id = nanoid()
-  const store = reim({status: 'initialized'}, {name: `$task/${id}`})
+  const store = reim({status: 'initialized'}, {name: `$task/${id++}`})
 
   if (isFunction(subscriber)) {
     store.subscribe(subscriber)
@@ -13,12 +13,12 @@ export const task = (func, subscriber) => {
   const task = async (...args) => {
     let result = null
     try {
-      store.setState(() => ({status: 'pending'}))
+      store.set(() => ({status: 'pending'}))
       result = await func(...args)
-      store.setState(() => ({status: 'resolved', result}))
+      store.set(() => ({status: 'resolved', result}))
       return result
     } catch (error) {
-      store.setState(() => ({status: 'rejected', error}))
+      store.set(() => ({status: 'rejected', error}))
       throw error
     }
   }

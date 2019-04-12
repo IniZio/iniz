@@ -47,6 +47,9 @@
     "reim": "*"
   },
   "devDependencies": {
+    "@types/eslint": "^4.16.6",
+    "@types/lodash": "^4.14.123",
+    "@types/nanoid": "^1.2.1",
     "babel-eslint": "^8.2.6",
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",

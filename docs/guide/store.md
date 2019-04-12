@@ -37,10 +37,10 @@ const todoStore = reim({
 You can easily apply plugins on store
 
 ```javascript
-import {context} from 'react-reim'
+import react from 'react-reim'
 
 const store = reim({message: ''}, {
-    plugins: [context()]
+    plugins: [react()]
 })
 ```
 

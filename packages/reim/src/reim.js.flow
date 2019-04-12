@@ -33,13 +33,13 @@ export declare class Store {
   _state: State;
   _subscribers: Subscriber[];
 
-  __isStore: boolean;
+  __isReim: boolean;
   state: State;
 
   _notify(): void;
 
   snapshot(getter?: Getter): any;
-  getState(getter?: Getter): any;
+  snapshot(getter?: Getter): any;
 
   commit(mutation?: Mutation, ...args: any[]): State;
   set(mutation?: Mutation, ...args: any[]): State;

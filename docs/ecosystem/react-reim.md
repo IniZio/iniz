@@ -1,19 +1,19 @@
 # react-reim
 
 ```javascript
-import {context, connect, pipeTo} from 'react-reim'
+import react, {connect, pipeTo} from 'react-reim'
 ```
 
 react-reim allows you to use **Reim** with **React**.
 
 ## Exports
 
-### `context`
+### `react`
 
 The plugin for creating HOC from a **Reim** store.
 
 ```javascript
-const store = reim({}).plugin(context())
+const store = reim({}).plugin(react())
 ```
 
 ### `connect`

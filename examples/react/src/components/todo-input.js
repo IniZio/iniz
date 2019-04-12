@@ -8,13 +8,13 @@ import TodoStore, {effects, mutations} from '../stores/todo'
 class TodoInput extends PureComponent {
   handleTodoChange = e => {
     e.preventDefault()
-    TodoStore.setState(mutations.changeCurrTodo({value: e.target.value}))
+    TodoStore.set(mutations.changeCurrTodo({value: e.target.value}))
   }
 
   handleAddTodo = () => {
     this.props.onAddTodo(this.props.currTodo)
 
-    TodoStore.setState(state => {
+    TodoStore.set(state => {
       state.currTodo = {value: ''}
     })
   }
@@ -46,9 +46,9 @@ TodoInput.propTypes = {
 export default connect(
   TodoStore,
   state => ({currTodo: state.currTodo}),
-  ({setState}) => ({
+  ({set}) => ({
     onAddTodo: todo => {
-      setState(({todos}) => {
+      set(({todos}) => {
         todos.push(new (skygear.Record.extend('todo'))(todo))
       })
     }

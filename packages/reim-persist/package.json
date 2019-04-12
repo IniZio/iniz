@@ -43,6 +43,8 @@
     }
   },
   "devDependencies": {
+    "@types/eslint": "^4.16.6",
+    "@types/lodash": "^4.14.123",
     "babel-eslint": "^8.2.6",
     "dom-storage": "^2.1.0",
     "eslint": "^5.2.0",

@@ -1,4 +1,6 @@
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   'modulePathIgnorePatterns': [
     'examples/.*',
     'packages/.*/dist'
@@ -22,4 +24,4 @@ module.exports = {
     '\\.snap$',
     '/packages/.*/dist'
   ]
-}
+};

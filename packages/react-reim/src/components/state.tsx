@@ -1,8 +1,26 @@
 import {PureComponent} from 'react'
-import PropTypes from 'prop-types'
-import reim from 'reim'
+import reim, {Store, Getter, Mutation} from 'reim'
 
-class State extends PureComponent {
+export interface StateProps extends React.Props<State> {
+  children?: (cache: any, store: Store) => React.ReactElement<any> | React.ReactElement<any>;
+  store?: Store;
+  getter?: Getter;
+  setter?: Mutation;
+  initial?: object;
+  onChange?: (cache: any) => any;
+}
+
+export interface StateState {
+  isInitialized: boolean;
+  getterCache: object;
+  setterCache: object;
+}
+
+class State extends PureComponent<StateProps, StateState> {
+  private _handler: any
+
+  store: Store
+
   state = {
     isInitialized: false,
     getterCache: {},
@@ -16,7 +34,7 @@ class State extends PureComponent {
     this.setSetter()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: StateProps) {
     if (!this.props.store && prevProps.initial !== this.props.initial) {
       this.store.reset(this.props.initial)
     }
@@ -59,7 +77,7 @@ class State extends PureComponent {
 
     this.setState({
       setterCache: Object.keys(setters)
-        .reduce((acc, k) => ({
+        .reduce((acc: object, k: string) => ({
           ...acc,
           [k]: (...args) => {
             const v = setters[k](...args)
@@ -88,26 +106,14 @@ class State extends PureComponent {
   }
 }
 
+// @ts-ignore
 State.defaultProps = {
   children: null,
   store: null,
-  getter(s) {
-    return s
-  },
-  setter() {
-    return {}
-  },
+  getter: (s: State) => s,
+  setter: () => {},
   initial: null,
   onChange() {}
-}
-
-State.propTypes = {
-  children: PropTypes.func,
-  store: PropTypes.any,
-  getter: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-  setter: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  initial: PropTypes.object,
-  onChange: PropTypes.func
 }
 
 export default State
