@@ -1,10 +1,13 @@
-import {produce, setAutoFreeze} from 'immer'
-import * as emitter from 'event-emitter'
-import * as bind from 'auto-bind'
+import autoBind = require('auto-bind')
 import * as equal from 'fast-deep-equal'
-import {isFunction, isPlainObject} from 'lodash'
+import {isPlainObject, isFunction} from 'lodash'
 
-import {ReimOptions, Mutation, State, Getter, Plugin} from './types'
+import {Actions, Effects, ReimOptions, Action} from './types'
+import produce from 'immer'
+
+const isReimFlag = Symbol('reim')
+
+const instances: {[name: string]: any} = {}
 
 const withDevTools = (
   // @ts-ignore
@@ -13,162 +16,170 @@ const withDevTools = (
   typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__
 )
 
-const devInstances = []
+export function isReim(store: any) {
+  return store.__isReim === isReimFlag
+}
 
-type EventListener = (...args: any[]) => void;
-type EmitterMethod = (type: string, listener: EventListener) => void
+function reim<T>(initial: T, options: ReimOptions = {}) {
+  let state = initial
+  let _initial: T
 
-setAutoFreeze(true)
+  type Filter<TS> = null | undefined | (TS extends {[index: string]: any} ? keyof TS : null) | ((s: TS) => any);
+  type SnapshotFor<TF> = (
+    // TF extends (null | undefined) ? T :
+    TF extends ((s: any) => any) ?
+      ReturnType<TF> :
+      TF extends keyof T ?
+        T[TF] :
+        T
+  )
+  type Meta = {mutation?: string, payload?: any[]}
+  type Handler = (s: T, meta?: Meta) => any
 
-export class Store {
-  private _name = ''
-  private _initial = {}
-  _state: {[index: string]: any} = {}
-  private _devTools: any
-  private _subscribers = []
+  const Reim = class {
+    _name?: string = options.name
+    get __isReim() { return isReimFlag }
+    _subscribers = []
+    _devTools: any
 
-  emit: (type: string, ...args: any[]) => void
-  off: EmitterMethod
-  on: EmitterMethod
-  once: EmitterMethod
+    constructor() {
+      autoBind(this)
 
-
-  get __isReim() {
-    return true
-  }
-
-  get state() {
-    return this._state
-  }
-
-  get name() {
-    return this._name
-  }
-
-  constructor(state = {}, {name, plugins = []}: ReimOptions = {plugins: []}) {
-    emitter(this)
-    this._name = name
-    this.plugin(...plugins)
-
-    this.reset(state)
-    this.emit('init', this)
-    bind(this)
-
-    if (withDevTools && this._name) {
-      if (devInstances.includes(this._name)) {
-        console.error(`There is already an instance named ${this._name}, please ensure your stores have unique names`)
-        return
+      if (this.name) {
+        if (instances[this.name]) {
+          throw new Error(`There is already an instance named ${this._name}, named stores must have unique names`)
+        }
+        instances[name] = {}
       }
 
-      // @ts-ignore
-      this._devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({instanceId: this._name, shouldStringify: false})
+      if (withDevTools) {
+        // @ts-ignore
+        this._devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({instanceId: this.name, shouldStringify: false})
+        this._devTools.subscribe((message: any) => {
+          if (message.id !== this._name) {
+            return
+          }
 
-      devInstances.push(this._name)
+          if (message.type === 'DISPATCH' && (message.payload.type === 'JUMP_TO_STATE' || message.payload.type === 'JUMP_TO_ACTION')) {
+            this.reset(typeof message.state === 'string' ? JSON.parse(message.state) : message.state)
+          }
+        })
+        this._devTools.init(this.snapshot())
+      }
+    }
 
-      this._devTools.subscribe((message: any) => {
-        if (message.id !== this._name) {
-          return
-        }
+    get name() { return this._name }
 
-        if (message.type === 'DISPATCH' && (message.payload.type === 'JUMP_TO_STATE' || message.payload.type === 'JUMP_TO_ACTION')) {
-          this.reset(typeof message.state === 'string' ? JSON.parse(message.state) : message.state)
+    snapshot<
+      TF extends Filter<typeof state>
+    >(filter?: TF): TF extends (null | undefined) ? typeof state : SnapshotFor<TF> {
+      if (state[filter as keyof T]) {
+        return state[filter as keyof T] as TF extends (null | undefined) ? typeof state : SnapshotFor<TF>
+      }
+
+      if (typeof filter === 'function') {
+        return (filter as (s: T) => any)(state)
+      }
+
+      return state as TF extends (null | undefined) ? typeof state : SnapshotFor<TF>
+    }
+
+    _set = (action: Action<T>, {mutation, payload}: Meta = {}) => {
+      const _mutation = action(...payload)
+
+      state = isPlainObject(state) ? (
+        produce(
+          state, (
+            isFunction(_mutation) ?
+              state => _mutation(state) :
+              state => void Object.assign(state, _mutation)
+          )
+        )
+      ) : (
+        isFunction(_mutation) ?
+          _mutation(state) as T :
+          _mutation as T
+      )
+
+      this._notify({mutation, payload})
+    }
+
+    _notify = (meta: {mutation: string, payload: any[]}) => {
+      this._subscribers.forEach(sub => {
+        // Notify if cache is updated
+        const cache = this.snapshot(sub.filter)
+
+        if (!equal(cache, sub.cache)) {
+          sub.cache = cache
+          sub.handler(cache, meta)
         }
       })
     }
 
-    if (this._devTools) {
-      this._devTools.init(this.state)
-    }
-  }
-
-  snapshot(getter: Getter = s => s) {
-    return typeof getter === 'string' ? this.state[getter] : getter(this.state)
-  }
-
-  _set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? any[] : []) =>  {
-    this._state = isPlainObject(this.state) ? (
-      produce(
-        this._state, (
-          isFunction(mutation) ?
-            (state => {
-              const res = mutation(state, ...args)
-              return (isFunction(res) ? res(...args) : res) || undefined
-            }) :
-            (state => {
-              Object.assign(state, mutation)
-            })
-        )
-      )
-    ) : mutation
-
-    this._notify()
-  }
-
-  // Immutable way to update state
-  set = <M extends Mutation>(mutation: M, ...args: M extends (...args: any[]) => (...args: any[]) => any ? Parameters<ReturnType<M>> : M extends (...args: any[]) => any ? any[] : []) => {
-    this._set(mutation, ...args)
-
-    this.emit('set', mutation, ...args)
-    if (this._devTools) {
-      this._devTools.send(isFunction(mutation) && mutation.name || 'ANONYMOUS', this.state)
-    }
-    return this.state
-  }
-
-  reset(initial = null, ...args) {
-    if (initial) {
-      this._initial = initial
-    }
-
-    this._set(() => this._initial)
-
-    this.emit('reset', initial, ...args)
-    return this.state
-  }
-
-  subscribe(handler: (s: State) => any, {immediate = false, getter = s => s}: {immediate?: boolean; getter: Getter} = {getter: s => s}) {
-    // TODO: check if the getter is not cachable here
-    const getterCache = this.snapshot(getter)
-    this._subscribers.push({handler, getter, getterCache})
-    if (immediate) {
-      handler(getterCache)
-    }
-    return () => this.unsubscribe(handler)
-  }
-
-  unsubscribe(handler: (s: State) => any) {
-    this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
-  }
-
-  plugin(...plugins: Plugin[]) {
-    plugins.forEach(plugin => (isFunction(plugin) ? plugin(this) : plugin.call(this, this)))
-    return this
-  }
-
-  private _notify() {
-    this._subscribers.forEach(sub => {
-      // Notify if getterCache is updated
-      const getterCache = this.snapshot(sub.getter)
-
-      if (!equal(getterCache, sub.getterCache)) {
-        sub.getterCache = getterCache
-        sub.handler(getterCache)
+    reset(initial: T = null) {
+      if (initial) {
+        _initial = initial
       }
-    })
+
+      this._set(() => _initial)
+      return this.snapshot()
+    }
+
+    actions<
+      TA extends Actions<T>
+    >(actions: TA): this & {[k in keyof typeof actions]: TA[k]} {
+      return Object.assign(
+        this,
+        Object.keys(actions)
+          .reduce((acc, key) => ({
+            ...acc,
+            [key]: (...args: any[]) => void (
+              this._set(actions[key], {mutation: key, payload: args})
+            )
+          }), {})
+      ) as this & {[k in keyof typeof actions]: TA[k]}
+    }
+
+    effects<
+      TR,
+      TE extends Effects<TR>
+    >(this: TR, effects: TE): this & {[k in keyof typeof effects]: TE[k]} {
+      return Object.assign(
+        this,
+        Object.keys(effects)
+          .reduce((acc, key) => ({
+            ...acc,
+            [key]: (...args: any[]) => effects[key](...args)(this)
+          }), {}) as this & {[k in keyof typeof effects]: TE[k]}
+      )
+    }
+
+    unsubscribe(handler: Handler) {
+      this._subscribers.splice(this._subscribers.findIndex(sub => sub.handler === handler), 1)
+    }
+
+    subscribe(handler: Handler, {immediate = false, filter}: {immediate?: boolean; filter?: Filter<T>} = {}) {
+      // TODO: check if the filter is not cachable here
+      const cache = this.snapshot(filter)
+
+      this._subscribers.push({handler, filter, cache})
+      if (immediate) {
+        handler(cache)
+      }
+      return () => this.unsubscribe(handler)
+    }
   }
+
+  return new Reim()
 }
 
-export default function reim<
-  X extends {[index: string]: any},
->(state: X = {} as X, options: ReimOptions = {}): Store {
-  return new Store(state, options)
-}
+export default reim
 
 // @ts-ignore
 const observableSymbol = () => ((typeof Symbol === 'function' && Symbol.observable) || '@@observable')
 
 // Returns an observable stream
-export const toStream = (store: Store, options: any = {}) => {
+export const toStream = (store: any, options: ReimOptions = {}) => {
   return {
     subscribe: (observer: ((s: any) => any) | {next: (s: any) => any} = () => {}) => ({
       unsubscribe: store.subscribe((
@@ -182,5 +193,3 @@ export const toStream = (store: Store, options: any = {}) => {
     }
   }
 }
-
-export * from './types'
