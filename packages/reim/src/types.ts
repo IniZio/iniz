@@ -1,20 +1,12 @@
-import {Store} from '.'
-
-type PluginFunction<S extends Store> = (store: S, store1?: S) => any
-
-interface PluginObject {
-  name?: string;
-  call: PluginFunction<Store>;
-}
-
-export type Plugin = PluginObject | PluginFunction<Store>
+import {Draft} from 'immer'
 
 export interface ReimOptions {
   name?: string;
-  plugins?: Plugin[];
-  actions?: {[index: string]: (s: State) => (...args: any[]) => void | Partial<State>};
 }
 
-export type State = {[index: string]: any}
-export type Mutation = {(state: State, ...args: any[]): void | State} | State
-export type Getter = string | {(state: State):  any}
+export type Mutation<TS> = {(state: Draft<TS> | TS): void | TS} | Partial<TS>
+export type Action<TS> = (...args: any[]) => Mutation<TS>
+export type Actions<TS> = {[index: string]: Action<TS>}
+
+export type Effect<TR> = (...args: any[]) => (store: TR) => any
+export type Effects<TR> = {[index: string]: Effect<TR>}
