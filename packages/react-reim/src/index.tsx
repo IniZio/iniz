@@ -5,6 +5,7 @@ import {ReimOptions} from 'reim';
 import State from './components/State'
 
 export {default as State} from './components/State'
+export {default as Partial} from './components/Partial'
 
 export function withReim<
   TR extends Reim<any>
