@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["es7", "dom"],
+    "types": ["node", "jest"],
     "jsx": "react",
     "allowJs": false,
     "target": "es5",

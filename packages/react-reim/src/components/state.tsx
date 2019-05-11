@@ -1,50 +1,55 @@
 import {PureComponent} from 'react'
-import reim, {Store, Getter, Mutation} from 'reim'
+import reim, {Reim, Filter, Actions, Cache} from 'reim'
 
-export interface StateProps extends React.Props<State> {
-  children?: (cache: any, store: Store) => React.ReactElement<any> | React.ReactElement<any>;
-  store?: Store;
-  getter?: Getter;
-  setter?: Mutation;
-  initial?: object;
-  onChange?: (cache: any) => any;
+export interface StateProps<
+  TR extends Reim<any> = Reim<{}>,
+  TS extends (TR["_state"] extends (null | undefined) ? any : TR["_state"]) = (TR["_state"] extends (null | undefined) ? any : TR["_state"]),
+  TF extends Filter<TS> = (s: TS) => TS,
+  TA extends Actions<TS> = Actions<TS>
+> {
+  children: (
+    cache: Cache<TS, TF>,
+    actions?: TA
+  ) => React.ReactElement<any>;
+  store?: TR;
+  filter?: TF;
+  actions?: Actions<TS>;
+  initial?: TS;
+  onChange?: (cache: Cache<TS, TF>) => any;
 }
 
-export interface StateState {
-  isInitialized: boolean;
-  getterCache: object;
-  setterCache: object;
+export interface StateState<TS, TF> {
+  cache: Cache<TS, TF>;
 }
 
-class State extends PureComponent<StateProps, StateState> {
+class State<
+  TR extends Reim<any> = Reim<{}>,
+  TS extends (TR["_state"] extends (null | undefined) ? any : TR["_state"]) = (TR["_state"] extends (null | undefined) ? any : TR["_state"]),
+  TF extends Filter<TS> = (s: TS) => TS,
+  TA extends Actions<TS> = Actions<TS>
+> extends PureComponent<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
   private _handler: any
+  private firstBlood: boolean = true
+  store: TR
 
-  store: Store
-
-  state = {
-    isInitialized: false,
-    getterCache: {},
-    setterCache: {}
+  state: StateState<TS, TF> = {
+    cache: null
   }
 
   componentDidMount() {
-    this.store = this.props.store || reim(this.props.initial || {})
+    this.store = this.props.store || reim(this.props.initial) as TR
 
-    this.setGetter()
-    this.setSetter()
+    this.setFilter()
   }
 
-  componentDidUpdate(prevProps: StateProps) {
-    if (!this.props.store && prevProps.initial !== this.props.initial) {
+  componentDidUpdate(prevProps: StateProps<TR, TS, TF, TA>) {
+    if (prevProps.initial !== this.props.initial) {
       this.store.reset(this.props.initial)
     }
 
-    // User changed getter / setter functions
-    if (prevProps.getter !== this.props.getter) {
-      this.setGetter()
-    }
-    if (prevProps.setter !== this.props.setter) {
-      this.setSetter()
+    // User changed filter functions
+    if (prevProps.filter !== this.props.filter) {
+      this.setFilter()
     }
   }
 
@@ -52,66 +57,39 @@ class State extends PureComponent<StateProps, StateState> {
     this.store.unsubscribe(this._handler)
   }
 
-  setGetter() {
+  setFilter() {
     if (this._handler) {
       this.store.unsubscribe(this._handler)
     }
-    this._handler = this.store.subscribe(getterCache => {
-      this.setState({getterCache})
-      if (this.state.isInitialized) {
-        this.props.onChange(getterCache)
+    this._handler = cache => {
+      this.setState({cache})
+      if (!this.firstBlood) {
+        this.props.onChange(cache)
+      } else {
+        this.firstBlood = false
       }
-      this.setState({isInitialized: true})
-    }, {
+    }
+
+    this.store.subscribe(this._handler, {
       immediate: true,
-      getter: this.props.getter
-    })
-  }
-
-  setSetter() {
-    const setters = [].concat(this.props.setter)
-      .reduce((acc, val) => ({
-        ...acc,
-        ...(typeof val === 'function' ? val(this.store) : val)
-      }), {})
-
-    this.setState({
-      setterCache: Object.keys(setters)
-        .reduce((acc: object, k: string) => ({
-          ...acc,
-          [k]: (...args) => {
-            const v = setters[k](...args)
-            if (typeof v === 'function') {
-              try {
-                this.store.set(v)
-              } catch (e) {
-                return v
-              }
-            }
-            return v
-          }
-        }), {})
+      filter: this.props.filter
     })
   }
 
   render() {
     const {children} = this.props
-    const {getterCache, setterCache, isInitialized} = this.state
+    const {cache} = this.state
 
-    if (!isInitialized) {
-      return null
-    }
-
-    return (typeof children === 'function' ? children({...setterCache, ...getterCache}, this.store) : (children || getterCache))
+    return this.store ? children(cache, this.store.actions(this.props.actions) as TA) : null
   }
 }
 
 // @ts-ignore
 State.defaultProps = {
-  children: null,
+  children() {},
   store: null,
-  getter: (s: State) => s,
-  setter: () => {},
+  filter: s => s,
+  actions: () => {},
   initial: null,
   onChange() {}
 }

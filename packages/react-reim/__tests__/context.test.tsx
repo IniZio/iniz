@@ -2,30 +2,34 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies  */
 import * as renderer from 'react-test-renderer'
 import * as React from 'react'
-import reim from 'reim'
-import {react, connect, State} from '../src'
-
-test('react returns Consumer', () => {
-  const store = reim({yer: 43}).plugin(react())
-
-  expect(store.Consumer).toBeDefined()
-})
+import reim, {Actions, Filter} from 'reim'
+import {withReim, State} from '../src'
 
 test('Storeless State should reset on initial prop change', () => {
   let changeInitial
 
-  function TestComponent() {
-    const [initial, setInitial] = React.useState({level: 10})
+  const initial = {level: 10}
+  const filter: Filter<typeof initial> = s => s.level
+  const actions: Actions<typeof initial> = {increment: (count: number) => state => {state.level+=count}}
 
-    changeInitial = () => setInitial({level: 10000})
+  class TestComponent extends React.Component {
+    state = initial
 
-    return (
-      <State initial={initial}>
-        {({level}) => (
-          <h1>{level}</h1>
-        )}
-      </State>
-    )
+    changeInitial = () => this.setState({level: 10000})
+
+    componentDidMount() {
+      changeInitial = this.changeInitial
+    }
+
+    render() {
+      return (
+        <State<null, typeof initial, typeof filter, typeof actions> initial={initial} filter={filter} actions={actions}>
+          {(level, {increment}) => (
+            <h1 onClick={() => increment(10)}>{level}</h1>
+          )}
+        </State>
+      )
+    }
   }
 
   const component = renderer.create(<TestComponent/>)
@@ -36,10 +40,10 @@ test('Storeless State should reset on initial prop change', () => {
 })
 
 test('Consumer should have change in store state reflected', () => {
-  const store = reim({yer: 43}).plugin(react())
+  const store = reim({yer: 43}, {actions: {add88: () => state => {state.yer += 88}}})
 
   const component = renderer.create(
-    <store.Consumer>
+    <State<typeof store> store={store}>
       {
         state => (
           <div>
@@ -47,21 +51,19 @@ test('Consumer should have change in store state reflected', () => {
           </div>
         )
       }
-    </store.Consumer>
+    </State>
   )
-  store.set(state => {
-    state.yer += 88
-  })
+  store.add88()
 
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
 test('Existing store Consumer should NOT be able to set initial value', () => {
-  const store = reim({yer: 9}).plugin(react())
+  const store = reim({yer: 9})
 
   const component = renderer.create(
-    <store.Consumer initial={{yer: 10}}>
+    <State<typeof store> store={store} initial={{yer: 10}}>
       {
         state => (
           <div>
@@ -69,43 +71,21 @@ test('Existing store Consumer should NOT be able to set initial value', () => {
           </div>
         )
       }
-    </store.Consumer>
+    </State>
   )
 
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
-})
-
-test('get should have change in store state reflected', () => {
-  const {get, set} = reim({yer: 43}).plugin(react())
-
-  const component = renderer.create(
-    get(state => (
-      <div>
-        <div id="value">{state.yer}</div>
-      </div>
-    ))
-  )
-
-  const component1 = renderer.create(get('yer'))
-
-  set(state => {
-    state.yer += 88
-  })
-
-  const tree = component.toJSON()
-  expect(tree).toMatchSnapshot()
-
-  expect(component1.toJSON()).toMatchSnapshot()
 })
 
 test('Unmount Cunsumer should unsubscribe', () => {
-  const store = reim({yer: 43}).plugin(react())
+  const store = reim({yer: 43}, {actions: {add88: () => state => {state.yer += 88}}})
 
-  const getter = jest.fn()
+  const filter = s => {updated(); return s}
+  const updated = jest.fn()
 
   const component = renderer.create(
-    <store.Consumer getter={getter}>
+    <State store={store} filter={filter}>
       {
         state => (
           <div>
@@ -113,17 +93,13 @@ test('Unmount Cunsumer should unsubscribe', () => {
           </div>
         )
       }
-    </store.Consumer>
+    </State>
   )
-  store.set(state => {
-    state.yer += 88
-  })
-  expect(getter).toBeCalledTimes(2)
+  store.add88()
+  expect(updated).toBeCalledTimes(2)
   component.unmount()
-  store.set(state => {
-    state.yer *= 88
-  })
-  expect(getter).toBeCalledTimes(2)
+  store.add88()
+  expect(updated).toBeCalledTimes(2)
 })
 
 test('State component should work', () => {
@@ -148,10 +124,10 @@ test('State onChange should trigger on state change', () => {
   class Container extends React.Component {
     render() {
       return (
-        <State initial={{value: 88}} onChange={onChange}>
+        <State initial={{value: 88}} actions={{add: () => state => ({value: state.value + 1})}} onChange={onChange}>
           {
-            ({value}, {set}) => {
-              increment = () => set({value: value + 1})
+            ({value}, {add}) => {
+              increment = add
               return <h1>{value}</h1>
             }
           }
@@ -172,8 +148,8 @@ test('State onChange should trigger on state change', () => {
   expect(onChange).toBeCalledTimes(1)
 })
 
-test('Properties not included in getter should not trigger update', () => {
-  const store = reim({hel: 43, gee: 10}).plugin(react())
+test('Properties not included in filter should not trigger update', () => {
+  const store = reim({hel: 43, gee: 10}, {actions: {minusHel: () => state => {state.hel -= 22}, addGee: () => state => {state.gee += 22}}})
 
   const updated = jest.fn()
 
@@ -186,52 +162,48 @@ test('Properties not included in getter should not trigger update', () => {
   }
 
   renderer.create(
-    <store.Consumer getter={state => ({hel: state.hel})}>
+    <State store={store} filter={state => ({hel: state.hel})}>
       {
         state => (
           <Listen {...state}/>
         )
       }
-    </store.Consumer>
+    </State>
   )
-  store.set(state => {
-    state.hel -= 22
-  })
+  store.minusHel()
   expect(updated).toBeCalledTimes(1)
-  store.set(state => {
-    state.gee += 88
-  })
+  store.addGee()
   expect(updated).toBeCalledTimes(1)
 })
 
 test('use convenience method connect', () => {
-  const store = reim({bom: 19})
+  const store = reim({bom: 19}, {actions: {add490: () => state => {
+    state.bom += 490
+  }}})
 
-  const Container = connect(store, state => ({bom: state.bom}))(
+  const Container = withReim(store, {filter: state => ({bom: state.bom})})(
     state => <div>{JSON.stringify(state)}</div>
   )
 
   const component = renderer.create(
     <Container/>
   )
-  store.set(state => {
-    state.bom += 490
-  })
+  store.add490()
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
-test('change getter', () => {
-  const store = reim({dui: 12, geo: 'tie'}).plugin(react())
+test('change filter', () => {
+  const store = reim({dui: 12, geo: 'tie'})
 
   class Getter extends React.Component {
     state = {
-      getter: state => ({dui: state.dui})
+      filter: state => ({dui: state.dui})
     }
 
     render() {
       return (
-        <store.Consumer getter={this.state.getter}>
+        <State store={store} filter={this.state.filter}>
           {
             state => (
               <div>
@@ -239,7 +211,7 @@ test('change getter', () => {
               </div>
             )
           }
-        </store.Consumer>
+        </State>
       )
     }
   }
@@ -247,8 +219,8 @@ test('change getter', () => {
   const component = renderer.create(<Getter/>)
   expect(component.toJSON()).toMatchSnapshot()
 
-  // Change in getter should change passed in state
+  // Change in filter should change passed in state
   const {instance} = component.root
-  instance.setState({getter: s => s})
+  instance.setState({filter: s => s})
   expect(component.toJSON()).toMatchSnapshot()
 })
