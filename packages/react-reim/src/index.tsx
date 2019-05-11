@@ -2,9 +2,9 @@ import * as React from 'react'
 import reim, {Reim, Filter, Actions, isReim} from 'reim'
 
 import {ReimOptions} from 'reim';
-import State from './components/state'
+import State from './components/State'
 
-export {default as State} from './components/state'
+export {default as State} from './components/State'
 
 export function withReim<
   TR extends Reim<any>
@@ -25,7 +25,7 @@ export function useReim<TS>(initial: TS | Reim<TS>, {filter = s => s, actions = 
     throw new Error('At least React@16.7-alpha.2 is required to use Hooks')
   }
 
-  const store = isReim(initial) ? initial : reim(initial)
+  let store = isReim(initial) ? initial : reim(initial)
 
   // @ts-ignore
   const {useState, useEffect, useRef} = React
