@@ -4,7 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "declarationDir": "./dist",
-    "typeRoots" : ["./typings"]
+    "typeRoots" : ["./typings"],
+    "types": ["node", "jest"]
   },
   "include": [
     "./src",

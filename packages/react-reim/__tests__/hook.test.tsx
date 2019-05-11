@@ -4,10 +4,10 @@ import * as renderer from 'react-test-renderer'
 
 import * as React from 'react'
 import reim from 'reim'
-import {useReim} from '..'
+import {useReim} from '../src'
 
 test('Hook should return store value on component mount', () => {
-  const store = reim({level: 10})
+  const store = reim({level: 10}, {actions: {levelup: () => s => {s.level += 2}}})
 
   function TestComponent() {
     const [state] = useReim(store)
@@ -20,21 +20,19 @@ test('Hook should return store value on component mount', () => {
   }
 
   const component = renderer.create(<TestComponent/>)
-  store.set(s => {
-    s.level += 2
-  })
+  store.levelup()
 
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
 })
 
 test('Hook should only cause rerender on getter cache miss', () => {
-  const loc = reim({a: 1, b: 2, c: 3})
+  const loc = reim({a: 1, b: 2, c: 3}, {actions: {addC: () => state => {state.c++}, addB: () => state => {state.b++}}})
 
   const didUpdate = jest.fn()
 
   function TestComponent() {
-    const [d] = useReim(loc, state => state.a + state.b)
+    const [d] = useReim(loc, {filter: state => state.a + state.b})
 
     React.useEffect(didUpdate)
 
@@ -42,14 +40,10 @@ test('Hook should only cause rerender on getter cache miss', () => {
   }
 
   const component = renderer.create(<TestComponent/>)
-  loc.set(state => {
-    state.c++
-  })
+  loc.addC()
   expect(didUpdate).toBeCalledTimes(0)
   expect(component.toJSON()).toMatchSnapshot()
-  loc.set(state => {
-    state.b++
-  })
+  loc.addB()
   expect(didUpdate).toBeCalledTimes(1)
   expect(component.toJSON()).toMatchSnapshot()
 })
@@ -63,8 +57,8 @@ test('Hook should refresh according to dependencies', () => {
   function TestComponent() {
     const [state, setState] = React.useState(5)
     set = setState
-    const [reimState1] = useReim(store, s => ({final: s.count + state}))
-    const [reimState2] = useReim(store, s => ({final: s.count + state}), [state])
+    const [reimState1] = useReim(store, {filter: s => ({final: s.count + state})})
+    const [reimState2] = useReim(store, {filter: s => ({final: s.count + state})}, [state])
     finalState1 = reimState1
     finalState2 = reimState2
 

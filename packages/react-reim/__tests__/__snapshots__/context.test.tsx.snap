@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Consumer should have change in store state reflected 1`] = `
+<div>
+  <div
+    id="value"
+  >
+    131
+  </div>
+</div>
+`;
+
+exports[`Existing store Consumer should NOT be able to set initial value 1`] = `
+<div>
+  <div
+    id="value"
+  >
+    9
+  </div>
+</div>
+`;
+
+exports[`State component should work 1`] = `
+<h1>
+  88
+</h1>
+`;
+
+exports[`State onChange should trigger on state change 1`] = `
+<h1>
+  89
+</h1>
+`;
+
+exports[`Storeless State should reset on initial prop change 1`] = `
+<h1
+  onClick={[Function]}
+>
+  10
+</h1>
+`;
+
+exports[`Storeless State should reset on initial prop change 2`] = `
+<h1
+  onClick={[Function]}
+>
+  10
+</h1>
+`;
+
+exports[`change filter 1`] = `
+<div>
+  <div
+    id="selected"
+  >
+    {"dui":12}
+  </div>
+</div>
+`;
+
+exports[`change filter 2`] = `
+<div>
+  <div
+    id="selected"
+  >
+    {"dui":12,"geo":"tie"}
+  </div>
+</div>
+`;
+
+exports[`use convenience method connect 1`] = `
+<div>
+  {"bom":509}
+</div>
+`;

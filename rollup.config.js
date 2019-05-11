@@ -72,7 +72,8 @@ export default Object.keys(builds).reduce((tasks, name) => {
         commonjs({
           ignoreGlobal: true,
           namedExports: {
-            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component']
+            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component'],
+            'node_modules/lodash/lodash.js': ['isPlainObject', 'isFunction']
           }
         }),
         isBrowserBundle(format) && (
