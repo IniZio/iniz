@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Partial should only update their own cache is invalid 1`] = `"43"`;
+
+exports[`Partial should only update their own cache is invalid 2`] = `"21"`;

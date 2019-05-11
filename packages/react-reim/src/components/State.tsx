@@ -1,19 +1,18 @@
-import {PureComponent} from 'react'
+import * as React from 'react'
 import reim, {Reim, Filter, Actions, Cache} from 'reim'
 
+import context from '../context'
+
 export interface StateProps<
-  TR extends Reim<any> = Reim<{}>,
+  TR extends Reim<any> = Reim<any>,
   TS extends (TR["_state"] extends (null | undefined) ? any : TR["_state"]) = (TR["_state"] extends (null | undefined) ? any : TR["_state"]),
   TF extends Filter<TS> = (s: TS) => TS,
   TA extends Actions<TS> = Actions<TS>
 > {
-  children: (
-    cache: Cache<TS, TF>,
-    actions?: TA
-  ) => React.ReactElement<any>;
+  children: ((cache: Cache<TS, TF>, actions?: TA) => JSX.Element)| JSX.Element;
   store?: TR;
   filter?: TF;
-  actions?: Actions<TS>;
+  actions?: TA;
   initial?: TS;
   onChange?: (cache: Cache<TS, TF>) => any;
 }
@@ -27,7 +26,7 @@ class State<
   TS extends (TR["_state"] extends (null | undefined) ? any : TR["_state"]) = (TR["_state"] extends (null | undefined) ? any : TR["_state"]),
   TF extends Filter<TS> = (s: TS) => TS,
   TA extends Actions<TS> = Actions<TS>
-> extends PureComponent<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
+> extends React.PureComponent<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
   private _handler: any
   private firstBlood: boolean = true
   store: TR
@@ -37,7 +36,7 @@ class State<
   }
 
   componentDidMount() {
-    this.store = this.props.store || reim(this.props.initial) as TR
+    this.store = this.props.store || reim(this.props.initial) as TR || this.context
 
     this.setFilter()
   }
@@ -80,7 +79,7 @@ class State<
     const {children} = this.props
     const {cache} = this.state
 
-    return this.store ? children(cache, this.store.actions(this.props.actions) as TA) : null
+    return <context.Provider value={this.store}>{this.store ? (typeof children === 'function' ? children(cache, this.store.actions(this.props.actions)) : children) : null}</context.Provider>
   }
 }
 
