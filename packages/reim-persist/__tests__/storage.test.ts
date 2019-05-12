@@ -9,16 +9,13 @@ test('can be created', () => {
     abc: 12
   }, {
     name: 'xyz',
-    plugins: [
-      persist({storage})
-    ]
-  })
+  }).plugin(persist({storage}))
 
-  tstore.set(state => {
+  tstore.set(() => state => {
     state.abc += 100
   })
 
-  expect(tstore.state.abc).toBe(112)
+  expect(tstore._state.abc).toBe(112)
 })
 
 test('replace store state and should subscribe to change when initialized', () => {
@@ -35,9 +32,9 @@ test('replace store state and should subscribe to change when initialized', () =
 
   const plugin = persist({storage})
 
-  plugin.call(st)
+  plugin(st)
 
-  expect(st.state).toEqual({
+  expect(st._state).toEqual({
     xx: 234,
     persisted: 'json'
   })
@@ -50,14 +47,14 @@ test('should not replace store state when saved state is invalid', () => {
 
   const st = reim({
     xx: 234
-  }, {name: 'abc'})
+  }, {name: 'abcd'})
 
   st.subscribe = jest.fn()
   st.set = jest.fn()
 
   const plugin = persist({storage})
 
-  plugin.call(st)
+  plugin(st)
 
   expect(st.set).not.toBeCalled()
   expect(st.subscribe).toBeCalled()
@@ -65,7 +62,7 @@ test('should not replace store state when saved state is invalid', () => {
 
 test('should merge saved and current store recursively and replace values', () => {
   const storage = new Storage()
-  storage.setItem('reim/abc', JSON.stringify({xx: [12, 33], zz: {ee: 38}}))
+  storage.setItem('reim/xabc', JSON.stringify({xx: [12, 33], zz: {ee: 38}}))
 
   const st = reim({
     xx: [234],
@@ -73,15 +70,15 @@ test('should merge saved and current store recursively and replace values', () =
     zz: {
       mag: 11
     }
-  }, {name: 'abc'})
+  }, {name: 'xabc'})
 
   st.subscribe = jest.fn()
 
   const plugin = persist({storage})
 
-  plugin.call(st)
+  plugin(st)
 
-  expect(st.state).toEqual({xx: [12, 33], y: 'as', zz: {mag: 11, ee: 38}})
+  expect(st._state).toEqual({xx: [12, 33], y: 'as', zz: {mag: 11, ee: 38}})
 
   expect(st.subscribe).toBeCalled()
 })

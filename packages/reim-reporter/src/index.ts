@@ -1,16 +1,13 @@
 export function reporter(callback = (...args: any[]) => {}) {
-  return {
-    name: 'reporter',
-    call(store) {
-      store.on('set', (mutation, ...args) => {
-        const {name} = mutation
-        const snapshot = store.snapshot()
+  return (store) => {
+    store.subscribe((snapshot, {action, payload}) => {
+      const {name} = action
 
-        const meta = {name, snapshot, payload: args}
+      const meta = {name, snapshot, payload}
 
-        callback(meta, store)
-      })
-    }
+      callback(meta, store)
+      return store
+    })
   }
 }
 
