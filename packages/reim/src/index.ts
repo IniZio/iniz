@@ -167,9 +167,7 @@ export class Reim<T = any> {
       const cache = this.filter(sub.filter)
 
       if (!equal(cache, sub.cache)) {
-        sub.cache = cache(
-          isFunction(sub.handler) ? sub.handler : sub.handler.next
-        )(cache, meta)
+        sub.cache = (isFunction(sub.handler) ? sub.handler : sub.handler.next)(cache, meta)
       }
     })
   }
@@ -201,7 +199,7 @@ export class Reim<T = any> {
   plugin<TR extends Reim<T>, TP extends((a?: TR, b?: TR) => any)>(
     this: TR,
     plugin: TP
-  ) {
+  ): ReturnType<TP> extends (null | undefined | void) ? TR : ReturnType<TP> {
     return plugin.call(this, this) || this
   }
 
