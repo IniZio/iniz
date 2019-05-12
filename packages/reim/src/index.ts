@@ -8,7 +8,8 @@ import {
   Handler,
   Filter,
   SnapshotFor,
-  Meta
+  Meta,
+  Mutation
 } from './types'
 
 // @ts-ignore
@@ -138,9 +139,9 @@ export class Reim<T = any> {
   set<T, TR extends Reim<T>, TA extends Action<T>>(
     this: TR & {_state: T},
     action: TA,
-    ...args: Parameters<TA>
+    ...args: TA extends ((...args: any[]) => Mutation<T>) ? Parameters<TA> : []
   ) {
-    const _mutation = action(...args)
+    const _mutation = args && args.length > 0 ? (action as ((...args: any[]) => Mutation<T>))(...args) : action
 
     this._state = isPlainObject(this._state) ?
       produce(

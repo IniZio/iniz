@@ -15,7 +15,7 @@ test('can be created', () => {
     }
   ).plugin(persist({storage}))
 
-  tstore.set(() => state => {
+  tstore.set(state => {
     state.abc += 100
   })
 
