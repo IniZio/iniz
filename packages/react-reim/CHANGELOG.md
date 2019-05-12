@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/IniZio/reim/compare/v1.17.0...v2.0.0) (2019-05-12)
+
+
+### Bug Fixes
+
+* **plugin:** make plugins work again ([f3512f9](https://github.com/IniZio/reim/commit/f3512f9))
+* **react:** wrong proptypes and default prop ([4cd3771](https://github.com/IniZio/reim/commit/4cd3771))
+* **State:** Replace getter/setter with filter/actions in State ([0178477](https://github.com/IniZio/reim/commit/0178477))
+* **useReim:** remove unnecessary rerender ([843f200](https://github.com/IniZio/reim/commit/843f200))
+
+
+
+
 <a name="1.17.0"></a>
 # [1.17.0](https://github.com/IniZio/reim/compare/v1.16.0...v1.17.0) (2019-01-15)
 
