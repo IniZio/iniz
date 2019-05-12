@@ -10,7 +10,11 @@ test('Storeless State should reset on initial prop change', () => {
 
   const initial = {level: 10}
   const filter: Filter<typeof initial> = s => s.level
-  const actions: Actions<typeof initial> = {increment: (count: number) => state => {state.level+=count}}
+  const actions: Actions<typeof initial> = {
+    increment: (count: number) => state => {
+      state.level += count
+    }
+  }
 
   class TestComponent extends React.Component {
     state = initial
@@ -23,7 +27,11 @@ test('Storeless State should reset on initial prop change', () => {
 
     render() {
       return (
-        <State<null, typeof initial, typeof filter, typeof actions> initial={initial} filter={filter} actions={actions}>
+        <State<null, typeof initial, typeof filter, typeof actions>
+          initial={initial}
+          filter={filter}
+          actions={actions}
+        >
           {(level, {increment}) => (
             <h1 onClick={() => increment(10)}>{level}</h1>
           )}
@@ -40,17 +48,24 @@ test('Storeless State should reset on initial prop change', () => {
 })
 
 test('Consumer should have change in store state reflected', () => {
-  const store = reim({yer: 43}, {actions: {add88: () => state => {state.yer += 88}}})
+  const store = reim(
+    {yer: 43},
+    {
+      actions: {
+        add88: () => state => {
+          state.yer += 88
+        }
+      }
+    }
+  )
 
   const component = renderer.create(
     <State<typeof store> store={store}>
-      {
-        state => (
-          <div>
-            <div id="value">{state.yer}</div>
-          </div>
-        )
-      }
+      {state => (
+        <div>
+          <div id="value">{state.yer}</div>
+        </div>
+      )}
     </State>
   )
   store.add88()
@@ -64,13 +79,11 @@ test('Existing store Consumer should NOT be able to set initial value', () => {
 
   const component = renderer.create(
     <State<typeof store> store={store} initial={{yer: 10}}>
-      {
-        state => (
-          <div>
-            <div id="value">{state.yer}</div>
-          </div>
-        )
-      }
+      {state => (
+        <div>
+          <div id="value">{state.yer}</div>
+        </div>
+      )}
     </State>
   )
 
@@ -79,20 +92,31 @@ test('Existing store Consumer should NOT be able to set initial value', () => {
 })
 
 test('Unmount Cunsumer should unsubscribe', () => {
-  const store = reim({yer: 43}, {actions: {add88: () => state => {state.yer += 88}}})
+  const store = reim(
+    {yer: 43},
+    {
+      actions: {
+        add88: () => state => {
+          state.yer += 88
+        }
+      }
+    }
+  )
 
-  const filter = s => {updated(); return s}
+  const filter = s => {
+    updated()
+    return s
+  }
+
   const updated = jest.fn()
 
   const component = renderer.create(
     <State store={store} filter={filter}>
-      {
-        state => (
-          <div>
-            <div id="value">{state.yer}</div>
-          </div>
-        )
-      }
+      {state => (
+        <div>
+          <div id="value">{state.yer}</div>
+        </div>
+      )}
     </State>
   )
   store.add88()
@@ -104,13 +128,7 @@ test('Unmount Cunsumer should unsubscribe', () => {
 
 test('State component should work', () => {
   const component = renderer.create(
-    <State initial={{mm: 88}}>
-      {
-        ({mm}) => (
-          <h1>{mm}</h1>
-        )
-      }
-    </State>
+    <State initial={{mm: 88}}>{({mm}) => <h1>{mm}</h1>}</State>
   )
 
   const tree = component.toJSON()
@@ -124,13 +142,15 @@ test('State onChange should trigger on state change', () => {
   class Container extends React.Component {
     render() {
       return (
-        <State initial={{value: 88}} actions={{add: () => state => ({value: state.value + 1})}} onChange={onChange}>
-          {
-            ({value}, {add}) => {
-              increment = add
-              return <h1>{value}</h1>
-            }
-          }
+        <State
+          initial={{value: 88}}
+          actions={{add: () => state => ({value: state.value + 1})}}
+          onChange={onChange}
+        >
+          {({value}, {add}) => {
+            increment = add
+            return <h1>{value}</h1>
+          }}
         </State>
       )
     }
@@ -149,7 +169,19 @@ test('State onChange should trigger on state change', () => {
 })
 
 test('Properties not included in filter should not trigger update', () => {
-  const store = reim({hel: 43, gee: 10}, {actions: {minusHel: () => state => {state.hel -= 22}, addGee: () => state => {state.gee += 22}}})
+  const store = reim(
+    {hel: 43, gee: 10},
+    {
+      actions: {
+        minusHel: () => state => {
+          state.hel -= 22
+        },
+        addGee: () => state => {
+          state.gee += 22
+        }
+      }
+    }
+  )
 
   const updated = jest.fn()
 
@@ -163,11 +195,7 @@ test('Properties not included in filter should not trigger update', () => {
 
   renderer.create(
     <State store={store} filter={state => ({hel: state.hel})}>
-      {
-        state => (
-          <Listen {...state}/>
-        )
-      }
+      {state => <Listen {...state}/>}
     </State>
   )
   store.minusHel()
@@ -177,17 +205,22 @@ test('Properties not included in filter should not trigger update', () => {
 })
 
 test('use convenience method connect', () => {
-  const store = reim({bom: 19}, {actions: {add490: () => state => {
-    state.bom += 490
-  }}})
+  const store = reim(
+    {bom: 19},
+    {
+      actions: {
+        add490: () => state => {
+          state.bom += 490
+        }
+      }
+    }
+  )
 
   const Container = withReim(store, {filter: state => ({bom: state.bom})})(
     state => <div>{JSON.stringify(state)}</div>
   )
 
-  const component = renderer.create(
-    <Container/>
-  )
+  const component = renderer.create(<Container/>)
   store.add490()
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
@@ -204,13 +237,11 @@ test('change filter', () => {
     render() {
       return (
         <State store={store} filter={this.state.filter}>
-          {
-            state => (
-              <div>
-                <div id="selected">{JSON.stringify(state)}</div>
-              </div>
-            )
-          }
+          {state => (
+            <div>
+              <div id="selected">{JSON.stringify(state)}</div>
+            </div>
+          )}
         </State>
       )
     }

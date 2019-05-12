@@ -2,16 +2,19 @@ import reim from '../../reim/src'
 import {reporter} from '../src'
 
 test('can be created', () => {
-  const tstore = reim({
-    abc: 12
-  }, {
-    name: 'pxyz',
-    actions: {
-      addHundred: () => state => {
-        state.abc += 100
+  const tstore = reim(
+    {
+      abc: 12
+    },
+    {
+      name: 'pxyz',
+      actions: {
+        addHundred: () => state => {
+          state.abc += 100
+        }
       }
     }
-  }).plugin(reporter());
+  ).plugin(reporter())
 
   tstore.addHundred()
 
@@ -21,11 +24,14 @@ test('can be created', () => {
 test('should trigger callback on set with correct meta', () => {
   const report = jest.fn(meta => meta)
 
-  const tstore = reim({
-    abc: 12
-  }, {
-    name: 'wxyz'
-  }).plugin(reporter(report))
+  const tstore = reim(
+    {
+      abc: 12
+    },
+    {
+      name: 'wxyz'
+    }
+  ).plugin(reporter(report))
 
   expect(report).toHaveBeenCalledTimes(0)
 
