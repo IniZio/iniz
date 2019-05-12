@@ -32,7 +32,7 @@ export default function persist(options: any = {}) {
     throw new Error('Invalid storage given')
   }
 
-  return store => {
+  return (store): void => {
     // console.log('persist store? ', store)
 
     if (!store.name || store.name.length <= 0) {
@@ -53,7 +53,5 @@ export default function persist(options: any = {}) {
       },
       {...options.subscriber, immediate: true}
     )
-
-    return store
   }
 }
