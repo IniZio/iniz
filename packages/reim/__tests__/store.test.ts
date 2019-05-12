@@ -8,14 +8,13 @@ test('store a store', () => {
 
 test('set', () => {
   const actions = {
-    add: () => state => void (state.foo += 11),
+    add: () => state => {
+      state.foo += 11
+    },
     withbb: () => ({bb: 100})
   }
 
-  const store = reim(
-    {foo: 17, bb: 2},
-    {actions}
-  )
+  const store = reim({foo: 17, bb: 2}, {actions})
 
   store.add()
 
@@ -37,7 +36,9 @@ test('snapshot', () => {
 describe('subscription', () => {
   test('subscribe to store', () => {
     const actions = {
-      minus: () => state => void (state.mag -= 10)
+      minus: () => state => {
+        state.mag -= 10
+      }
     }
 
     const store = reim({mag: 75}, {actions})
@@ -51,8 +52,12 @@ describe('subscription', () => {
 
   test('unsubscribe from store', () => {
     const actions = {
-      add: () => state => void (state.poi += 30),
-      little: () => state => void (state.poi += 10)
+      add: () => state => {
+        state.poi += 30
+      },
+      little: () => state => {
+        state.poi += 10
+      }
     }
 
     const store = reim({poi: 500}, {actions})

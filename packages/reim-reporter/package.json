@@ -57,5 +57,8 @@
   "dependencies": {
     "lodash": "^4.17.10"
   },
+  "peerDependencies": {
+    "reim": "^1.17.0"
+  },
   "gitHead": "419591f08507517258271f77077dc7a1d5c1f7af"
 }

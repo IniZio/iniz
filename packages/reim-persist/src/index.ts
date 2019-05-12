@@ -5,7 +5,7 @@ function canWriteStorage(storage) {
     storage.setItem('@@', 1)
     storage.removeItem('@@')
     return true
-  } catch (e) {}
+  } catch (error) {}
 
   return false
 }
@@ -13,10 +13,8 @@ function canWriteStorage(storage) {
 function snapshot(key, storage, value?: any) {
   try {
     value = storage.getItem(key)
-    return typeof value === 'undefined' ?
-      undefined :
-      JSON.parse(value)
-  } catch (err) {}
+    return typeof value === 'undefined' ? undefined : JSON.parse(value)
+  } catch (error) {}
 
   return undefined
 }
@@ -26,17 +24,21 @@ function set(key, state, storage) {
 }
 
 export default function persist(options: any = {}) {
-  const storage = options.storage || (typeof window !== 'undefined' ? window && window.localStorage : null)
+  const storage =
+    options.storage ||
+    (typeof window === 'undefined' ? null : window && window.localStorage)
 
   if (!canWriteStorage(storage)) {
     throw new Error('Invalid storage given')
   }
 
-  return (store) => {
+  return store => {
     // console.log('persist store? ', store)
 
-    if (!store.name || (store.name.length <= 0)) {
-      throw new Error('You cannot persist an anonymous store, use `name` option in store')
+    if (!store.name || store.name.length <= 0) {
+      throw new Error(
+        'You cannot persist an anonymous store, use `name` option in store'
+      )
     }
 
     const key = `reim/${store.name}`
@@ -45,9 +47,12 @@ export default function persist(options: any = {}) {
       store.reset(merge({}, store._state, saved))
     }
 
-    store.subscribe(state => {
-      set(key, state, storage)
-    }, {...options.subscriber, immediate: true})
+    store.subscribe(
+      state => {
+        set(key, state, storage)
+      },
+      {...options.subscriber, immediate: true}
+    )
 
     return store
   }

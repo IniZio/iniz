@@ -20,30 +20,25 @@ const builds = {
       'react-dom': 'ReactDOM',
       'reim': 'reim'
     },
-    external: [
-      'react', 'react-dom', 'prop-types', 'reim'
-    ]
+    external: ['react', 'react-dom', 'prop-types', 'reim']
   },
   'reim-persist': {},
   'reim-task': {
     globals: {
-      'reim': 'reim'
+      reim: 'reim'
     },
-    external: [
-      'reim'
-    ]
+    external: ['reim']
   },
   'reim-reporter': {}
 }
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const ALL_MODULES = getLernaPackages(process.cwd()).map(
-  name => name.replace(/(.*)packages\//, '')
+const ALL_MODULES = getLernaPackages(process.cwd()).map(name =>
+  name.replace(/(.*)packages\//, '')
 )
 
-const mirror = array =>
-  array.reduce((acc, val) => ({...acc, [val]: val}), {})
+const mirror = array => array.reduce((acc, val) => ({...acc, [val]: val}), {})
 
 const isBrowserBundle = format => ['umd', 'iife'].includes(format)
 
@@ -72,11 +67,15 @@ export default Object.keys(builds).reduce((tasks, name) => {
         commonjs({
           ignoreGlobal: true,
           namedExports: {
-            'node_modules/react/index.js': ['createContext', 'PureComponent', 'Component'],
+            'node_modules/react/index.js': [
+              'createContext',
+              'PureComponent',
+              'Component'
+            ],
             'node_modules/lodash/lodash.js': ['isPlainObject', 'isFunction']
           }
         }),
-        isBrowserBundle(format) && (
+        isBrowserBundle(format) &&
           nodeResolve({
             main: false,
             module: true,
@@ -84,24 +83,31 @@ export default Object.keys(builds).reduce((tasks, name) => {
             extensions: ['.js', '.json'],
             preferBuiltIns: true,
             browser: isBrowserBundle(format)
-          })
-        ),
-        isProduction && (
-          uglify({}, minify)
-        ),
-        copy([
-          {files: `packages/${name}/src/${name}.{d.ts,js.flow}`, dest: `packages/${name}/dist`}
-        ], {
-          verbose: true
-        })
+          }),
+        isProduction && uglify({}, minify),
+        copy(
+          [
+            {
+              files: `packages/${name}/src/${name}.{d.ts,js.flow}`,
+              dest: `packages/${name}/dist`
+            }
+          ],
+          {
+            verbose: true
+          }
+        )
       ].filter(Boolean),
       input: INPUT_FILE,
-      external: isBrowserBundle(format) ? build.external : [...ALL_MODULES, ...(build.external || [])],
+      external: isBrowserBundle(format) ?
+        build.external :
+        [...ALL_MODULES, ...(build.external || [])],
       output: {
         name: toPascal(name),
         file: path.join(OUTPUT_DIR, `${name}.${format}.js`),
         format,
-        globals: isBrowserBundle(format) ? {...mirror(ALL_MODULES), ...build.globals} : build.globals,
+        globals: isBrowserBundle(format) ?
+          {...mirror(ALL_MODULES), ...build.globals} :
+          build.globals,
         sourcemap: true
       }
     }))
