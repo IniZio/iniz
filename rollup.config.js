@@ -23,12 +23,6 @@ const builds = {
     external: ['react', 'react-dom', 'prop-types', 'reim']
   },
   'reim-persist': {},
-  'reim-task': {
-    globals: {
-      reim: 'reim'
-    },
-    external: ['reim']
-  },
   'reim-reporter': {}
 }
 
@@ -72,7 +66,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
               'PureComponent',
               'Component'
             ],
-            'node_modules/lodash/lodash.js': ['isPlainObject', 'isFunction']
+            'node_modules/lodash/lodash.js': ['isPlainObject', 'isFunction', 'merge']
           }
         }),
         isBrowserBundle(format) &&
