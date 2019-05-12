@@ -198,9 +198,13 @@ test('Properties not included in filter should not trigger update', () => {
       {state => <Listen {...state}/>}
     </State>
   )
-  store.minusHel()
+  renderer.act(() => {
+    store.minusHel()
+  })
   expect(updated).toBeCalledTimes(1)
-  store.addGee()
+  renderer.act(() => {
+    store.addGee()
+  })
   expect(updated).toBeCalledTimes(1)
 })
 
