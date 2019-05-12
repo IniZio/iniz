@@ -32,24 +32,23 @@ export default function persist(options: any = {}) {
     throw new Error('Invalid storage given')
   }
 
-  return {
-    name: 'persist',
-    call(store) {
-      if (!store.name || (store.name.length <= 0)) {
-        throw new Error('You cannot persist an anonymous store, use `name` option in store')
-      }
+  return (store) => {
+    // console.log('persist store? ', store)
 
-      const key = `reim/${store.name}`
-      const saved = snapshot(key, storage)
-      if (typeof saved === 'object' && saved !== null) {
-        store.set(merge({}, store.state, saved))
-      }
-
-      store.subscribe(state => {
-        set(key, state, storage)
-      }, {...options.subscriber, immediate: true})
-
-      return store
+    if (!store.name || (store.name.length <= 0)) {
+      throw new Error('You cannot persist an anonymous store, use `name` option in store')
     }
+
+    const key = `reim/${store.name}`
+    const saved = snapshot(key, storage)
+    if (typeof saved === 'object' && saved !== null) {
+      store.reset(merge({}, store._state, saved))
+    }
+
+    store.subscribe(state => {
+      set(key, state, storage)
+    }, {...options.subscriber, immediate: true})
+
+    return store
   }
 }

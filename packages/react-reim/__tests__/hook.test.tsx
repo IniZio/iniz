@@ -20,7 +20,7 @@ test('Hook should return store value on component mount', () => {
   }
 
   const component = renderer.create(<TestComponent/>)
-  renderer.act(() => store.levelup())
+  renderer.act(() => void store.levelup())
 
   const tree = component.toJSON()
   expect(tree).toMatchSnapshot()
@@ -41,12 +41,12 @@ test('Hook should only cause rerender on getter cache miss', () => {
 
   let component;
 
-  renderer.act(() => component = renderer.create(<TestComponent/>))
+  renderer.act(() => void (component = renderer.create(<TestComponent/>)))
   expect(didUpdate).toBeCalledTimes(1)
-  renderer.act(() => loc.addC())
+  renderer.act(() => void loc.addC())
   expect(didUpdate).toBeCalledTimes(1)
   expect(component.toJSON()).toMatchSnapshot()
-  renderer.act(() => loc.addB())
+  renderer.act(() => void loc.addB())
   expect(didUpdate).toBeCalledTimes(2)
   expect(component.toJSON()).toMatchSnapshot()
 })
@@ -73,7 +73,7 @@ test('Hook should refresh according to dependencies', () => {
   const component = renderer.create(<TestComponent/>)
   expect(finalState1.final).toEqual(45)
 
-  renderer.act(() => set(30))
+  renderer.act(() => void set(30))
   component.update(<TestComponent/>)
   expect(finalState1.final).toEqual(45)
   expect(finalState2.final).toEqual(70)

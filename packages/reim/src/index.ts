@@ -90,8 +90,8 @@ export class Reim<T = any> {
     return this._state as TF extends (null | undefined) ? T : SnapshotFor<TF, T>
   }
 
-  set<T, TR extends Reim<T>>(this: TR & {_state: T}, action: Action<T>, {mutation, payload}: Meta = {}) {
-    const _mutation = action(...payload)
+  set<T, TR extends Reim<T>, TA extends Action<T>>(this: TR & {_state: T}, action: TA, ...args: Parameters<TA>) {
+    const _mutation = action(...args)
 
     this._state = isPlainObject(this._state) ? (
       produce(
@@ -107,10 +107,10 @@ export class Reim<T = any> {
         _mutation as T
     )
 
-    this._notify({mutation, payload})
+    this._notify({action, payload: args})
   }
 
-  _notify = (meta: {mutation: string, payload: any[]}) => {
+  _notify = <TA extends Action<T>, TP extends any[]>(meta: {action: TA, payload: TP}) => {
     this._subscribers.forEach(sub => {
       // Notify if cache is updated
       const cache = this.filter(sub.filter)
@@ -140,9 +140,13 @@ export class Reim<T = any> {
       .reduce((acc, key) => ({
         ...acc,
         [key]: (...args: any[]) => void (
-          this.set(actions[key], {mutation: key, payload: args})
+          this.set(actions[key], args)
         )
       }), {}) as {[k in keyof typeof actions]: TA[k]}
+  }
+
+  plugin<TR extends Reim<T>, TP extends ((a?: TR, b?: TR) => any)>(this: TR, plugin: TP) {
+    return plugin.call(this, this) || this
   }
 
   unsubscribe<TR extends Reim<T>, T>(this: TR & {_state: T}, handler: Handler<T>) {
@@ -164,7 +168,7 @@ export class Reim<T = any> {
   }
 }
 
-const reim = <T, TA>(initial: T, options: ReimOptions<T> & {actions?: TA} = {}): Reim & {[k in keyof TA]: TA[k]} => {
+const reim = <T, TA>(initial: T, options: ReimOptions<T> & {actions?: TA} = {}): Reim<T> & {[k in keyof TA]: TA[k]} => {
   const instance = new Reim<T | null | undefined>(initial, options)
 
   return Object.assign(instance, instance.actions(options.actions))

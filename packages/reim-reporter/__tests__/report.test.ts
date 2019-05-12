@@ -5,19 +5,17 @@ test('can be created', () => {
   const tstore = reim({
     abc: 12
   }, {
-    name: 'xyz',
-    plugins: [
-      reporter()
-    ]
-  })
+    name: 'pxyz',
+    actions: {
+      addHundred: () => state => {
+        state.abc += 100
+      }
+    }
+  }).plugin(reporter());
 
-  const addHundred = state => {
-    state.abc += 100
-  }
+  tstore.addHundred()
 
-  tstore.set(addHundred)
-
-  expect(tstore.state.abc).toBe(112)
+  expect(tstore._state.abc).toBe(112)
 })
 
 test('should trigger callback on set with correct meta', () => {
@@ -26,15 +24,12 @@ test('should trigger callback on set with correct meta', () => {
   const tstore = reim({
     abc: 12
   }, {
-    name: 'xyz',
-    plugins: [
-      reporter(report)
-    ]
-  })
+    name: 'wxyz'
+  }).plugin(reporter(report))
 
   expect(report).toHaveBeenCalledTimes(0)
 
-  const addAmount = (state, amount) => {
+  const addAmount = amount => state => {
     state.abc += amount
   }
 
