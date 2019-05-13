@@ -1,10 +1,9 @@
 # Reim.js
+### Makes state dead simple
 
 <p align="center">
   <img src="https://i.imgur.com/C8AklnO.png" width="50px">
 </p>
-
-### Make state easy with [Reim](https://reimjs.gitbook.io/)
 
  [![](https://img.shields.io/npm/v/reim.svg)](https://npm.im/reim) [![](https://img.shields.io/npm/dm/reim.svg)](https://npm.im/reim) [![](https://travis-ci.org/IniZio/reim.svg?branch=master)](https://travis-ci.org/IniZio/reim) [![](https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage) [![](https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Grade_Dashboard) ![](https://badgen.net/badge/license/MIT/blue) [![](https://img.shields.io/bundlephobia/minzip/reim.svg)](https://bundlephobia.com/result?p=reim@)
 
@@ -13,7 +12,7 @@
 * 🤟 Update state by simply mutating it, thanks to [immer](https://github.com/mweststrate/immer)
 * 📏 All possible ways to use state in one: **Unstated**, **React Hook**, **Redux**, **React-Values**...
 * 🔐 **Immutable** state
-* ⚡ Small, **gzip + minified**
+* ⚡ Small, **6kb** gzip + minified
 * 🌟 Typing support for **Typescript** & **Flow**
 * ⚛ Supports [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW)
 
