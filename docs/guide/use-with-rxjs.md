@@ -1,6 +1,6 @@
 # Use with Angular / Rxjs
 
-Reim store can be used as an observable by using `toStream`
+Reim store itself is an observable
 
 {% code-tabs %}
 {% code-tabs-item title="src/index.js" %}
@@ -40,7 +40,7 @@ const App = ({count, increment, decrement}) => (
 const counter = mapPropsStream(props$ => {
   return combineLatest(
     props$,
-    from(toStream(counterStore))
+    from(counterStore)
   ).pipe(
     map(([props, {count}]) => ({
       ...props,

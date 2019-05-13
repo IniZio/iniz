@@ -1,56 +1,29 @@
-<p align="center">
-  <img src="https://i.imgur.com/C8AklnO.png" width="50px">
-</p>
+# Reim.js
 
-<h3 align="center">Make state easy with <a href="https://reimjs.gitbook.io/">Reim</a></h3>
+![](https://i.imgur.com/C8AklnO.png)
 
-<p align="center">
-  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/v/reim.svg"></a>
-  <a href="https://npm.im/reim"><img src="https://img.shields.io/npm/dm/reim.svg"></a>
-  <a href="https://travis-ci.org/IniZio/reim"><img src="https://travis-ci.org/IniZio/reim.svg?branch=master"></a>
-  <a href="https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20"></a>
-  <a href="https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=IniZio/reim&amp;utm_campaign=Badge_Grade_Dashboard"><img src="https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20"></a>
-  <img src="https://badgen.net/badge/license/MIT/blue" />
-  <a href="https://bundlephobia.com/result?p=reim@"><img src="https://img.shields.io/bundlephobia/minzip/reim.svg"></a>
-</p>
+### Make state easy with [Reim](https://reimjs.gitbook.io/)
 
-<p align="center">
-  <img src="https://i.imgur.com/iblGzsu.png" width="80%">
-</p>
+ [![](https://img.shields.io/npm/v/reim.svg)](https://npm.im/reim) [![](https://img.shields.io/npm/dm/reim.svg)](https://npm.im/reim) [![](https://travis-ci.org/IniZio/reim.svg?branch=master)](https://travis-ci.org/IniZio/reim) [![](https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage) [![](https://api.codacy.com/project/badge/Grade/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/project/inizio/reim/dashboard?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Grade_Dashboard) ![](https://badgen.net/badge/license/MIT/blue) [![](https://img.shields.io/bundlephobia/minzip/reim.svg)](https://bundlephobia.com/result?p=reim@)
 
 ### Features
 
-<ul>
-  <li>🤟 Update state by simply mutating it, thanks to <a href="https://github.com/mweststrate/immer">immer</a></li>
-  <li>📏 All possible ways to use state in one: <b>Unstated</b>, <b>React Hook</b>, <b>Redux</b>, <b>React-Values</b>...</li>
-  <li>🔐 <b>Immutable</b> state</li>
-  <li>⚡ Small, <b> < 9kb</b> gzip + minified</li>
-  <li>🌟 Typing support for <b>Typescript</b> & <b>Flow</b></li>
-  <li>⚛ Supports <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW">Redux Dev Tools</a></li>
-</ul>
+* 🤟 Update state by simply mutating it, thanks to [immer](https://github.com/mweststrate/immer)
+* 📏 All possible ways to use state in one: **Unstated**, **React Hook**, **Redux**, **React-Values**...
+* 🔐 **Immutable** state
+* ⚡ Small, **gzip + minified**
+* 🌟 Typing support for **Typescript** & **Flow**
+* ⚛ Supports [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW)
 
 ### Installation
 
-```sh
+```bash
 $ yarn add reim react-reim
 ```
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="5"><center>🕹 CodeSandbox demos 🕹</center></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://codesandbox.io/s/480xmrxy74">Todo List</a></td>
-    </tr>
-  </tbody>
-</table>
-
 ### How Reim looks
 
-#### "Hook" (React 16.7.0-alpha2+)
+#### "Hook" \(React 16.7.0-alpha2+\)
 
 ```jsx
 import React from 'react'
@@ -62,7 +35,7 @@ function useCounter() {
 
   const increment = () => set(s => {s.count++})
   const decrement = () => set(s => {s.count--})
-  
+
   return [count, {incremnt, decrement}]
 }
 
@@ -78,36 +51,7 @@ function Counter() {
 }
 ```
 
-#### "Minimal"
-
-```jsx
-import React from 'react'
-import reim from 'reim'
-import react from 'react-reim'
-
-// create a store
-const {get, set} = reim({name: 'Peter'}).plugin(react())
-
-// get state already :)
-const User = () => (
-  <div>{get(s => s.name)}</div>
-)
-
-// oh and setting state :D
-const App = () => (
-  <div>
-    <User/>
-    {get(s => (
-      <input
-        value={s.name}
-        onChange={ev => set({name: ev.target.value})}
-      />
-    ))}
-  </div>
-)
-```
-
-#### "React-Values"
+#### "Unstated"
 
 ```jsx
 import React from 'react'
@@ -123,35 +67,12 @@ const Toggle = () => (
 )
 ```
 
-#### "Unstated"-like
-
-```jsx
-import React from 'react'
-import reim from 'reim'
-import {State} from 'react-reim'
-
-// create a store
-const store = reim({visible: true})
-
-// use our component 8)
-const App = () => (
-  <State store={store}>
-    {s => (
-      <div>
-        <h1>{s.visible ? 'ON' : 'OFF'}</h1>
-        <button onClick={() => store.set({visible: !s.visible})}>Toggle</button>
-      </div>
-    )}
-  </State>
-)
-```
-
 #### "Redux"-like
 
 ```jsx
 import React from 'react'
 import reim from 'reim'
-import {connect} from 'react-reim'
+import {withReim} from 'react-reim'
 
 // create a store
 const counter = reim({count: 10})
@@ -169,17 +90,10 @@ const Counter = ({visible, increment, decrement}) => (
 )
 
 // create a container component
-const ConnectedCounter = connect(
-  counter,
-  ({count}) => ({value: count}),
-  ({set}) => ({
-    increment: () => set(state => {
-      state.count++
-    }),
-    decrement: () => set(state => {
-      state.count--
-    })
-  })
+const ConnectedCounter = witReim(
+    store
+    /* Filter */({first, last}) => ({full: `${first} ${last}`}),
+    /* Actions */ {increment: amount => state => void (state.count += amount)}
 )(Counter)
 
 export default ConnectedCounter
@@ -189,7 +103,7 @@ export default ConnectedCounter
 
 Please read [CONTRIBUTING.md](https://github.com/IniZio/reim/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-
 ### License
 
 MIT © [IniZio](https://github.com/IniZio)
+

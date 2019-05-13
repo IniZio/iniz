@@ -50,5 +50,3 @@ or after it is initialized
 const store = reim({}).plugin(persist())
 ```
 
-
-
