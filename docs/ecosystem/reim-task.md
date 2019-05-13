@@ -28,5 +28,3 @@ const aTask = task(() => {
 aTask.exec() // starts fetching
 ```
 
-
-

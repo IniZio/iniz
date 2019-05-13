@@ -1,8 +1,10 @@
 # Use with React / Preact
 
+## Use with React / Preact
+
 There are 3 ways to use **Reim** with **React**, and you can choose depending on scenerios.
 
-## 0. 'Hook' way (React 16.8+)
+### 0. 'Hook' way \(React 16.8+\)
 
 ```jsx
 import React from 'react'
@@ -24,7 +26,7 @@ function Counter() {
 }
 ```
 
-## 1. Minimal way
+### 1. Minimal way
 
 `react-reim` 's `react` plugin adds `get` function so that you can use derive component from store state
 
@@ -55,7 +57,7 @@ const App = () => (
 )
 ```
 
-## 2. Unstated way
+### 2. Unstated way
 
 `react-reim` 's `react` plugin also adds `Consumer` component so that you can use store right in components
 
@@ -124,7 +126,7 @@ render(<App/>, document.getElementById('app'))
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-## 3. Redux way
+### 3. Redux way
 
 The **Unstated** way is convenient, but sometimes we want to make sure to separate **Container Component** and **Presentation Component**.
 
@@ -169,7 +171,7 @@ export default ({addTwo, count}) => (
 {% endcode-tabs-item %}
 {% endcode-tabs %}
 
-# Sync with react-router
+## Sync with react-router
 
 Just need to use pipeTo...
 
@@ -185,3 +187,4 @@ const App = () => (
   </BrowserRouter>
 )
 ```
+

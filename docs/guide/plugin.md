@@ -12,33 +12,15 @@ const sayHello(options) {
         })
     }
 }
-
-// or to make a named plugin...
-const sayBye(options) {
-    const message = options.message
-    return {
-        name: 'Bye', 
-        call(store) {
-            store.subscribe(state => {
-                console.log('Bye! ', options.message)
-                // Emit event to store
-                store.emit('said-bye', options.message)
-            })
-        }
-    }
-}
 ```
 
-Note that it is a function returning an function or object with `call` method. This enables us to accept plugin-specific options. Now to use it:
+Note that it returns a function. This enables us to accept plugin-specific options. Now to use it:
 
 ```javascript
 // Add plugins on store creation
-const someStore = reim({}, {plugins: sayHello({message: 'World'})})
+const someStore = reim({}).plugin(sayBye('Once')).plugin(sayBye('Again!'))
 
-// Add plugins in runtime
-someSore.plugin(sayBye('Once'), sayBye('Again!'))
-
-someStore.setState({count: 1000})
+someStore.increment()
 // logs 'Hello! World'
 // logs 'Bye! Once'
 // logs 'Bye! Again!'

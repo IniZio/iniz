@@ -16,7 +16,7 @@ And when you want to stop it just use the returned function
 unsubscribe()
 ```
 
-## Getter
+## Filter
 
 Sometimes you want to only be notified if some of the properties changed, you can use the `getter` option, which returns a derived state from store.
 
@@ -31,7 +31,7 @@ countStore.subscribe(state => {
     console.log(state.count) // 12
     console.log(state.messsage) // undefined
 }, {
-    getter: state => ({count: state.count})
+    filter: state => ({count: state.count})
 })
 
 // Will not trigger subscriber
