@@ -1,5 +1,7 @@
-import {isPlainObject, isFunction} from 'lodash'
+import isPlainObject from 'is-plain-object'
 import {produce} from 'immer'
+
+import {isFunction} from './util'
 
 import {
   Actions,
@@ -8,7 +10,6 @@ import {
   Handler,
   Filter,
   SnapshotFor,
-  Meta,
   Mutation
 } from './types'
 
@@ -152,7 +153,7 @@ export class Reim<T = any> {
             Object.assign(state, _mutation)
           }
       ) :
-      isFunction(_mutation) ?
+      _mutation instanceof Function ?
         (_mutation(this._state) as T) :
         (_mutation as T)
 
