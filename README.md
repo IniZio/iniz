@@ -30,17 +30,11 @@ import React from 'react'
 import reim from 'reim'
 import {useReim} from 'react-reim'
 
-function useCounter() {
-  const [count, set] = useReim({count: 10}, state => state.count)
-
-  const increment = () => set(s => {s.count++})
-  const decrement = () => set(s => {s.count--})
-
-  return [count, {incremnt, decrement}]
-}
-
 function Counter() {
-  const [count, {increment}] = useCounter()
+  const [count, {increment}] = useReim(10, {
+    increment: () => state => state++,
+    decrement: () => state => state--
+  })
 
   return (
     <div>
@@ -59,9 +53,13 @@ import reim from 'reim'
 import {State} from 'react-reim'
 
 const Toggle = () => (
-  <State initial={{visible: false}} onChange={console.log}>
-    {({visible}, {set}) => (
-      <button onClick={() => set({visible: !visible})}>{visible.toString()}</button>
+  <State
+    initial={false}
+    actions={{toggle: () => state => !state}}
+    onChange={console.log}
+  >
+    {(visible, {toggle}) => (
+      <button onClick={toggle}>{visible}</button>
     )}
   </State>
 )
@@ -79,9 +77,6 @@ const counter = reim({count: 10})
 
 // create a presentational component
 const Counter = ({visible, increment, decrement}) => (
-    {({visible}, {set}) => (
-      <button onClick={() => set({visible: !visible})}>{visible.toString()}</button>
-    )}
   <div>
     <button onClick={decrement}>-</button>
     <div>{value}</div>
