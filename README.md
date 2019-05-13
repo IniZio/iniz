@@ -1,6 +1,8 @@
 # Reim.js
 
-![](https://i.imgur.com/C8AklnO.png)
+<p align="center">
+  <img src="https://i.imgur.com/C8AklnO.png" width="50px">
+</p>
 
 ### Make state easy with [Reim](https://reimjs.gitbook.io/)
 
