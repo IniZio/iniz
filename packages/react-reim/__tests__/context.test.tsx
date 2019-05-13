@@ -182,10 +182,11 @@ test('Properties not included in filter should not trigger update', () => {
       }
     }
   )
+  const filter = state => ({hel: state.hel})
 
   const updated = jest.fn()
 
-  class Listen extends React.Component<{hel: any}> {
+  class Listen extends React.PureComponent<{hel: any}> {
     componentDidUpdate = updated
 
     render() {
@@ -194,7 +195,7 @@ test('Properties not included in filter should not trigger update', () => {
   }
 
   renderer.create(
-    <State store={store} filter={state => ({hel: state.hel})}>
+    <State store={store} filter={filter}>
       {state => <Listen {...state}/>}
     </State>
   )

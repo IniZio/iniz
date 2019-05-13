@@ -34,7 +34,7 @@ class State<
     : TR['_state'],
   TF extends Filter<TS> = (s: TS) => TS,
   TA extends Actions<TS> = Actions<TS>
-> extends React.PureComponent<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
+> extends React.Component<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
   store: TR
 
   state: StateState<TS, TF> = {
@@ -52,14 +52,20 @@ class State<
     this.setFilter()
   }
 
+  shouldComponentUpdate(nextProps: StateProps<TR, TS, TF, TA>, nextState: StateState<TS, TF>) {
+    if (nextProps.filter !== this.props.filter) {
+      this.setFilter()
+    }
+
+    return (
+      nextState !== this.state ||
+      nextProps.actions !== this.props.actions
+    )
+  }
+
   componentDidUpdate(prevProps: StateProps<TR, TS, TF, TA>) {
     if (prevProps.initial !== this.props.initial) {
       this.store.reset(this.props.initial)
-    }
-
-    // User changed filter functions
-    if (prevProps.filter !== this.props.filter) {
-      this.setFilter()
     }
   }
 

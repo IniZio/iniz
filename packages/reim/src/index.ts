@@ -136,10 +136,10 @@ export class Reim<T = any> {
     return this._state as TF extends (null | undefined) ? T : SnapshotFor<TF, T>
   }
 
-  set<T, TR extends Reim<T>, TA extends Action<T>>(
+  set<T, TR extends Reim<T>, TA extends Action<T> | Mutation<T>>(
     this: TR & {_state: T},
     action: TA,
-    ...args: TA extends ((...args: any[]) => Mutation<T>) ? Parameters<TA> : []
+    ...args: TA extends Action<T> ? Parameters<TA> : []
   ) {
     const _mutation = args && args.length > 0 ? (action as ((...args: any[]) => Mutation<T>))(...args) : action
 
@@ -159,7 +159,7 @@ export class Reim<T = any> {
     this._notify({action, payload: args})
   }
 
-  _notify = <TA extends Action<T>, TP extends any[]>(meta: {
+  _notify = <TA extends Action<T> | Mutation<T>, TP extends any[]>(meta: {
     action: TA;
     payload: TP;
   }) => {

@@ -63,7 +63,7 @@ exports[`change filter 2`] = `
   <div
     id="selected"
   >
-    {"dui":12,"geo":"tie"}
+    {"dui":12}
   </div>
 </div>
 `;
