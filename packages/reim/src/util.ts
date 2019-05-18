@@ -10,4 +10,4 @@ export function isFunction(fn: any): fn is (...args: any[]) => any {
       fn === window.alert ||
       fn === window.confirm ||
       fn === window.prompt))
-};
+}

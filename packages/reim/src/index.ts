@@ -244,6 +244,8 @@ const reim = <T, TA>(
   return Object.assign(instance, instance.actions(options.actions))
 }
 
+export {default as effect} from './effect'
+
 export * from './types'
 
 export default reim

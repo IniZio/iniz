@@ -1,4 +1,4 @@
-import reim from '../src'
+import reim, {effect} from '../src'
 
 test('store a store', () => {
   const tstore = reim({abc: 12})
@@ -108,5 +108,34 @@ describe('observable', () => {
 
     const stream = store
     expect(stream.subscribe(() => {}).unsubscribe).toBeInstanceOf(Function)
+  })
+})
+
+describe('effect', () => {
+  test('Effect should work', async () => {
+    const subscriber = jest.fn()
+    subscriber.mockImplementation(s => s)
+    const scream = effect('scream out', () => new Promise<number>((resolve, reject) => {
+      setTimeout(() => resolve(10), 0)
+    }))
+
+    // scream.subscribe(subscriber)
+    scream.success(subscriber)
+    await scream()
+
+    expect(subscriber).toReturnWith(10)
+  })
+
+  test('Replacable effect', async () => {
+    const mocker = jest.fn()
+    const scream = effect('scream out', () => new Promise<number>((resolve, reject) => {
+      setTimeout(() => resolve(10), 0)
+    }))
+
+    scream.use(mocker)
+
+    await scream()
+
+    expect(mocker).toBeCalled()
   })
 })
