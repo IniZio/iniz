@@ -1,4 +1,4 @@
-import reim, {effect} from '../src'
+import reim, {effect, Actions} from '../src'
 
 test('store a store', () => {
   const tstore = reim({abc: 12})
@@ -24,6 +24,15 @@ test('set', () => {
 
   expect(store.filter(s => s.foo)).toBe(28)
   expect(store.filter(s => s.bb)).toBe(100)
+
+  const store1 = reim(10, {
+    actions: {
+      increment: () => state => state + 1
+    }
+  })
+
+  store1.increment()
+  expect(store1._state).toBe(11)
 })
 
 test('snapshot', () => {

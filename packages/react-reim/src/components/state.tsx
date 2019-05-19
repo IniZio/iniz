@@ -10,7 +10,7 @@ export interface StateProps<
     : TR['_state'] = TR['_state'] extends (null | undefined)
     ? any
     : TR['_state'],
-  TF extends Filter<TS> = (s: TS) => TS,
+  TF extends Filter<TS> = (s: TS) => any,
   TA extends Actions<TS> = Actions<TS>
 > {
   children: ((cache: Cache<TS, TF>, actions?: TA) => JSX.Element) | JSX.Element;
@@ -32,7 +32,7 @@ class State<
     : TR['_state'] = TR['_state'] extends (null | undefined)
     ? any
     : TR['_state'],
-  TF extends Filter<TS> = (s: TS) => TS,
+  TF extends Filter<TS> = (s: TS) => any,
   TA extends Actions<TS> = Actions<TS>
 > extends React.Component<StateProps<TR, TS, TF, TA>, StateState<TS, TF>> {
   store: TR

@@ -6,7 +6,7 @@ export interface ReimOptions<T> {
   actions?: Actions<T>;
 }
 
-export type Mutation<TS> = ((state: Draft<TS> | TS) => void | TS) | Partial<TS>
+export type Mutation<TS> = ((state: Draft<TS> | TS) => void | TS) | Partial<TS> | TS
 export type Action<TS> = ((...args: any[]) => Mutation<TS>)
 export type Actions<TS> = {[index: string]: Action<TS>}
 

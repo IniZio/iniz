@@ -143,19 +143,37 @@ export class Reim<T = any> {
     ...args: TA extends Action<T> ? Parameters<TA> : []
   ) {
     const _mutation = args && args.length > 0 ? (action as ((...args: any[]) => Mutation<T>))(...args) : action
+    let res
 
-    this._state = isPlainObject(this._state) ?
-      produce(
+    if (isPlainObject(this._state)) {
+      this._state = produce(
         this._state,
         isFunction(_mutation) ?
-          state => _mutation(state) :
+          state => {
+            res = _mutation(state)
+
+            if (isFunction(res)) {
+              res(state)
+            } else {
+              Object.assign(state, res)
+            }
+          } :
           state => {
             Object.assign(state, _mutation)
           }
-      ) :
-      _mutation instanceof Function ?
-        (_mutation(this._state) as T) :
-        (_mutation as T)
+      )
+    } else if (isFunction(_mutation)) {
+      console.log('here')
+      res = (_mutation(this._state) as T)
+
+      if (isFunction(res)) {
+        this._state = res(this._state)
+      } else {
+        this._state = res
+      }
+    } else {
+      this._state = _mutation as T
+    }
 
     this._notify({action, payload: args})
   }
@@ -191,7 +209,7 @@ export class Reim<T = any> {
       (acc, key) => ({
         ...acc,
         [key]: (...args: any[]) => {
-          this.set(actions[key], args)
+          this.set(actions[key], ...args)
         }
       }),
       {}
