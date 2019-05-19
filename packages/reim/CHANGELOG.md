@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/IniZio/reim/compare/v2.1.0...v2.1.1) (2019-05-19)
+
+
+### Bug Fixes
+
+* **action:** makes action work as expected ([9738bfd](https://github.com/IniZio/reim/commit/9738bfd))
+
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/IniZio/reim/compare/v2.0.2...v2.1.0) (2019-05-18)
 
