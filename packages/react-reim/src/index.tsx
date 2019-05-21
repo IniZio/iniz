@@ -52,11 +52,7 @@ export function useReim<TS>(
     }
   }, dependencies)
 
-  useEffect(() => {
-    const sub = s => set(s)
-    storeRef.current.subscribe(sub, {filter})
-    return () => storeRef.current.unsubscribe(sub)
-  }, [])
+  useEffect(() => storeRef.current.subscribe(s => set(s), {filter, immediate: true}).unsubscribe, [])
 
   return [state, storeRef.current.actions(actions)]
 }
