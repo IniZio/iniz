@@ -37,25 +37,26 @@ export function useReim<TS>(
     throw new Error('At least React@16.7-alpha.2 is required to use Hooks')
   }
 
-  const store = isReim(initial) ? initial : reim(initial)
-
   // @ts-ignore
   const {useState, useEffect, useRef} = React
-
   const mountRef = useRef(false)
-  const [state, set] = useState(store.filter(filter))
+  const storeRef = useRef(isReim(initial) ? initial : reim(initial))
+
+  const [state, set] = useState(storeRef.current.filter(filter))
 
   useEffect(() => {
     if (mountRef.current) {
-      set(() => store.filter(filter))
+      set(() => storeRef.current.filter(filter))
     } else {
       mountRef.current = true
     }
   }, dependencies)
 
-  useEffect(() => () => store.unsubscribe(set))
+  useEffect(() => {
+    const sub = s => set(s)
+    storeRef.current.subscribe(sub, {filter})
+    return () => storeRef.current.unsubscribe(sub)
+  }, [])
 
-  store.subscribe(set, {filter})
-
-  return [state, store.actions(actions)]
+  return [state, storeRef.current.actions(actions)]
 }

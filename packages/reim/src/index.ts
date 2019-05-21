@@ -163,7 +163,6 @@ export class Reim<T = any> {
           }
       )
     } else if (isFunction(_mutation)) {
-      console.log('here')
       res = (_mutation(this._state) as T)
 
       if (isFunction(res)) {
@@ -187,7 +186,8 @@ export class Reim<T = any> {
       const cache = this.filter(sub.filter)
 
       if (!equal(cache, sub.cache)) {
-        sub.cache = (isFunction(sub.handler) ? sub.handler : sub.handler.next)(cache, meta)
+        sub.cache = cache;
+        (isFunction(sub.handler) ? sub.handler : sub.handler.next)(sub.cache, meta)
       }
     })
   }
