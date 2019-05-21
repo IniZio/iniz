@@ -1,6 +1,6 @@
 {
   "name": "reim-persist",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "license": "MIT",
   "keywords": [
     "store",
@@ -50,7 +50,7 @@
     "eslint": "^5.2.0",
     "eslint-config-xo-react": "^0.17.0",
     "eslint-plugin-react": "^7.10.0",
-    "reim": "^2.1.1",
+    "reim": "^2.1.2",
     "xo": "^0.21.1"
   },
   "dependencies": {

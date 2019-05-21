@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.2"></a>
+## [2.1.2](https://github.com/IniZio/reim/compare/v2.1.1...v2.1.2) (2019-05-21)
+
+
+### Bug Fixes
+
+* **effect:** make effect throw error like promise ([f74d597](https://github.com/IniZio/reim/commit/f74d597))
+
+
+
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/IniZio/reim/compare/v2.1.0...v2.1.1) (2019-05-19)
 
