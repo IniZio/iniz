@@ -14,8 +14,10 @@ export default function effect<TC extends((...args: any[]) => any)>(name: string
       try {
         const success = await used(...args)
         store.set(() => ({success, error: undefined}))
+        return success
       } catch (error) {
         store.set(() => ({success: undefined, error}))
+        throw error
       }
     }
   ) as typeof callback

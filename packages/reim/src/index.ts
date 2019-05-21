@@ -153,10 +153,10 @@ export class Reim<T = any> {
             res = _mutation(state)
 
             if (isFunction(res)) {
-              res(state)
-            } else {
-              Object.assign(state, res)
+              return res(state)
             }
+
+            Object.assign(state, res)
           } :
           state => {
             Object.assign(state, _mutation)
