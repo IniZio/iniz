@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/IniZio/reim/compare/v2.1.2...v2.1.3) (2019-05-21)
+
+
+### Bug Fixes
+
+* **useReim:** make store instance permanent in hook ([91ba4eb](https://github.com/IniZio/reim/commit/91ba4eb))
+
+
+
+
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/IniZio/reim/compare/v2.1.1...v2.1.2) (2019-05-21)
 
