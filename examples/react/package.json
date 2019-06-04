@@ -10,7 +10,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "parcel-bundler": "^1.9.7"
+    "parcel-bundler": "^1.10.0"
   },
   "dependencies": {
     "prop-types": "^15.6.2",
