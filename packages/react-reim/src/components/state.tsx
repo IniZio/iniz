@@ -13,7 +13,7 @@ export interface StateProps<
   TF extends Filter<TS> = (s: TS) => any,
   TA extends Actions<TS> = Actions<TS>
 > {
-  children: ((cache: Cache<TS, TF>, actions?: TA) => JSX.Element) | JSX.Element;
+  children: ((cache: Cache<TS, TF>, actions?: any) => JSX.Element) | JSX.Element;
   store?: TR;
   filter?: TF;
   actions?: TA;
