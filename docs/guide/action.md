@@ -1,4 +1,4 @@
-# setState
+# Action
 
 **Actions** in Reim is like better **Reducer** in Redux, but with **immer**
 
