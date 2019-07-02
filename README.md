@@ -58,7 +58,16 @@ const Toggle = () => (
 #### Table of Contents
 
 - [`reim`](#reim)
+  - [`reim()`](#reimstate--store-actions-actions-name-string)
+    - [`filter()`](#filtergetter-name-state--any--state--any--keyof-typeof-state)
+    - [`subscribe()`](#subscribefn-filter) 
 - [`react-reim`](#react-reim)
+  - [`<State/>`](#state)
+    - [`initial`](#initial)
+    - [`store`](#store)
+    - [`actions`](#actions)
+    - [`filter`](#filter)
+  - [`useReim()`](#usereimstore--state-filter-actions)
 
 ## `reim`
 
@@ -112,7 +121,7 @@ Gets current snapshot of store
 
 <sup><a href="#table-of-contents">↑ Back to top</a></sup>
 
-This is the initial value of the store. The store is resets if initial value is changed.
+Initial value of the store. The store is resets if initial value is changed.
 
 #### `store`
 
@@ -124,11 +133,11 @@ Receives a `Reim` store, `initial` is ignored if `store` is provided
 
 <sup><a href="#table-of-contents">↑ Back to top</a></sup>
 
-Same as `actions` in `reim()`
+Same as [`actions`](#reimstate--store-actions-actions-name-string) in `reim()`
 
 #### `filter`
 
-Same as `filter` in `reim()`
+Same as [`filter`](#filtergetter-name-state--any--state--any--keyof-typeof-state) in `reim()`
 
 ### `useReim(store | state, {filter, actions})`
 
