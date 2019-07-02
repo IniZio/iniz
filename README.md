@@ -1,14 +1,10 @@
 # Reim &middot; [![](https://img.shields.io/npm/v/reim.svg)](https://npm.im/reim) [![](https://img.shields.io/npm/dm/reim.svg)](https://npm.im/reim) [![](https://travis-ci.org/IniZio/reim.svg?branch=master)](https://travis-ci.org/IniZio/reim) [![](https://api.codacy.com/project/badge/Coverage/1560c0832a3a41df8bfe51083fd92c20)](https://www.codacy.com/app/inizio/reim?utm_source=github.com&utm_medium=referral&utm_content=IniZio/reim&utm_campaign=Badge_Coverage) ![](https://badgen.net/badge/license/MIT/blue) [![](https://img.shields.io/bundlephobia/minzip/reim.svg)](https://bundlephobia.com/result?p=reim@)
 
-> React state done right™
-
-### Features
-
-* 🤟 Update state by simply mutating it, thanks to [immer](https://github.com/mweststrate/immer)
-* 🔐 **Immutable** state
-* ⚡ Small, **6kb** gzip + minified
-* 🌟 Typing support for **Typescript** & **Flow**
-* ⚛ Supports [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW)
+* :metal: Update state by simply mutating it, thanks to [immer](https://github.com/mweststrate/immer)
+* :closed_lock_with_key: **Immutable** state
+* :zap: Small, **6kb** gzip + minified
+* :star2: Typing support for **Typescript** & **Flow**
+* :atom_symbol: Supports [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=zh-TW)
 
 ### :book: How to use
 
