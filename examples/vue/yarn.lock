@@ -2365,6 +2365,13 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "http://repository.vyond.org:4873/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
 
+event-emitter@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
+  dependencies:
+    d "1"
+    es5-ext "~0.10.14"
+
 event-pubsub@4.3.0:
   version "4.3.0"
   resolved "http://repository.vyond.org:4873/event-pubsub/-/event-pubsub-4.3.0.tgz#f68d816bc29f1ec02c539dc58c8dd40ce72cb36e"
@@ -3118,9 +3125,9 @@ ignore@^3.3.5:
   version "3.3.10"
   resolved "http://repository.vyond.org:4873/ignore/-/ignore-3.3.10.tgz#0a97fb876986e8081c631160f8f9f389157f0043"
 
-immer@^1.5.0:
-  version "1.5.0"
-  resolved "http://repository.vyond.org:4873/immer/-/immer-1.5.0.tgz#1ed9b1b653643fe9276bbc36377613523ea32a39"
+immer@^1.6.0:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-1.12.1.tgz#40c6e5b292c00560836c2993bda3a24379d466f5"
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -3403,6 +3410,12 @@ is-plain-object@^2.0.1, is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   dependencies:
     isobject "^3.0.1"
 
+is-plain-object@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.0.tgz#47bfc5da1b5d50d64110806c199359482e75a928"
+  dependencies:
+    isobject "^4.0.0"
+
 is-posix-bracket@^0.1.0:
   version "0.1.1"
   resolved "http://repository.vyond.org:4873/is-posix-bracket/-/is-posix-bracket-0.1.1.tgz#3334dc79774368e92f016e6fbc0a88f5cd6e6bc4"
@@ -3478,6 +3491,10 @@ isobject@^2.0.0:
 isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "http://repository.vyond.org:4873/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
+
+isobject@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/isobject/-/isobject-4.0.0.tgz#3f1c9155e73b192022a80819bacd0343711697b0"
 
 isstream@~0.1.2:
   version "0.1.2"
@@ -3676,8 +3693,8 @@ lodash.debounce@^4.0.8:
   resolved "http://repository.vyond.org:4873/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
 lodash.defaultsdeep@^4.6.0:
-  version "4.6.0"
-  resolved "http://repository.vyond.org:4873/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.0.tgz#bec1024f85b1bd96cbea405b23c14ad6443a6f81"
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.1.tgz#512e9bd721d272d94e3d3a63653fa17516741ca6"
 
 lodash.mapvalues@^4.6.0:
   version "4.6.0"
@@ -5103,13 +5120,15 @@ regjsparser@^0.3.0:
   dependencies:
     jsesc "~0.5.0"
 
-reim@^1.6.0:
-  version "1.6.0"
-  resolved "http://repository.vyond.org:4873/reim/-/reim-1.6.0.tgz#45f494f3b2480c38f05bbd3621d182894938e1c9"
+reim@*:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/reim/-/reim-2.1.3.tgz#3b4476f776781184c20b678024e7e85a6bc9d211"
   dependencies:
     auto-bind "^1.2.1"
-    immer "^1.5.0"
-    lodash "^4.17.10"
+    event-emitter "^0.3.5"
+    fast-deep-equal "^2.0.1"
+    immer "^1.6.0"
+    is-plain-object "^3.0.0"
 
 relateurl@0.2.x:
   version "0.2.7"
