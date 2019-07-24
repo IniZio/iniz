@@ -61,6 +61,9 @@ const Toggle = () => (
   - [`reim()`](#reimstate--store-actions-actions-name-string)
     - [`filter()`](#filtergetter-name-state--any--state--any--keyof-typeof-state)
     - [`subscribe()`](#subscribefn-filter) 
+  - [`reim.snapshot`](#reimsnapshot)
+  - [`reim.stringify`](#reimstringify)
+  - [`reim.preload`](#reimpreloadsnapshot)
 - [`react-reim`](#react-reim)
   - [`<State/>`](#state)
     - [`initial`](#initial)
@@ -108,6 +111,38 @@ Gets current snapshot of store
 #### `subscribe(fn, {filter})`
 
 `fn` gets called on change. You can `unsubscribe(fn)` to stop subscription.
+
+### `reim.snapshot()`
+
+<sup><a href="#table-of-contents">↑ Back to top</a></sup>
+
+Returns snapshot of all stores created
+
+```js
+reim({abc: 133})
+
+reim.snapshot() // -> {0: {abc: 133}}
+```
+
+### `reim.stringify()`
+
+<sup><a href="#table-of-contents">↑ Back to top</a></sup>
+
+Returns `JSON.stringify`-ed snapshot of all stores created, safe for injecting
+
+### `reim.preload(snapshot)`
+
+<sup><a href="#table-of-contents">↑ Back to top</a></sup>
+
+Used in client side for preloading states
+
+```js
+// Server side:
+`<script>window.__PRELOAD_STATE__ = ${reim.stringify()}</script>`
+
+// Client side:
+reim.preload(window.__PRELOAD_STATE__)
+```
 
 ## `react-reim`
 

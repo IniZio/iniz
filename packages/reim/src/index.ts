@@ -20,7 +20,7 @@ const autoBind = require('auto-bind')
 
 const isReimFlag = Symbol('reim')
 
-const instances: {[name: string]: any} = {}
+const named: {[name: string]: boolean} = {}
 
 // @ts-ignore
 const observableSymbol = () =>
@@ -37,7 +37,12 @@ export function isReim(store: any): store is Reim {
   return store.__isReim === isReimFlag
 }
 
+let count = 0
+let cache: {[name: number]: any} = {}
+
 export class Reim<T = any> {
+  _index?: number // starts at 1
+
   _name?: string
 
   _initial: T
@@ -59,11 +64,14 @@ export class Reim<T = any> {
   constructor(initial?: T, options: ReimOptions<T> = {}) {
     autoBind(this)
 
+    this._index = count++
     this._name = options.name
-    this._state = initial
+    this._state = Object.prototype.hasOwnProperty.call(cache, this._index) ? cache[this._index] : initial
+
+    cache[this._index] = this._state
 
     if (this.name) {
-      if (instances[this.name]) {
+      if (named[this.name]) {
         throw new Error(
           `There is already an instance named ${
             this._name
@@ -71,7 +79,7 @@ export class Reim<T = any> {
         )
       }
 
-      instances[this.name] = {}
+      named[this.name] = true
     }
 
     if (withDevTools) {
@@ -181,6 +189,8 @@ export class Reim<T = any> {
     action: TA;
     payload: TP;
   }) => {
+    cache[this._index] = this._state
+
     this._subscribers.forEach(sub => {
       // Notify if cache is updated
       const cache = this.filter(sub.filter)
@@ -253,14 +263,28 @@ export class Reim<T = any> {
   }
 }
 
-const reim = <T, TA>(
+const reim = Object.assign(<T, TA>(
   initial: T,
   options: ReimOptions<T> & {actions?: TA} = {}
 ): Reim<T> & {[Tk in keyof TA]: TA[Tk]} => {
   const instance = new Reim<T | null | undefined>(initial, options)
 
   return Object.assign(instance, instance.actions(options.actions))
-}
+}, {
+  snapshot() {
+    return cache
+  },
+  stringify() {
+    return JSON.stringify(reim.snapshot()).replace(
+      /</g,
+      '\\u003c'
+    )
+  },
+  preload(state: any = {}) {
+    count = 0 // not needed actually but easier for testing
+    cache = state
+  }
+})
 
 export {default as effect} from './effect'
 
