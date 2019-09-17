@@ -23,8 +23,10 @@ import {useReim} from 'react-reim'
 
 function Counter() {
   const [count, {increment}] = useReim(10, {
-    increment: () => state => state++,
-    decrement: () => state => state--
+    actions: {
+      increment: () => state => state++,
+      decrement: () => state => state--
+    }
   })
 
   return (
