@@ -25,7 +25,6 @@
     "reim": "^2.2.0"
   },
   "dependencies": {
-    "@types/react": "^16.4.14",
     "lodash": "^4.17.10"
   },
   "gitHead": "419591f08507517258271f77077dc7a1d5c1f7af"
