@@ -54,6 +54,7 @@ export default Object.keys(builds).reduce((tasks, name) => {
           exclude: 'node_modules/**'
         }),
         typescript({
+          clean: true,
           rollupCommonJSResolveHack: true,
           tsconfig: `packages/${name}/tsconfig.json`,
           typescript: require('typescript')
