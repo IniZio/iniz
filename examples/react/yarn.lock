@@ -865,7 +865,7 @@ babel-plugin-syntax-exponentiation-operator@^6.8.0:
 
 babel-plugin-syntax-object-rest-spread@^6.8.0:
   version "6.13.0"
-  resolved "http://registry.npmjs.org/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
+  resolved "https://registry.npmjs.org/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
 
 babel-plugin-syntax-trailing-function-commas@^6.22.0:
   version "6.22.0"
@@ -2978,8 +2978,8 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
 lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.4, lodash@^4.17.5:
-  version "4.17.14"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.14.tgz#9ce487ae66c96254fe20b599f21b6816028078ba"
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
 
 log-symbols@^2.2.0:
   version "2.2.0"
@@ -4429,7 +4429,7 @@ rimraf@^2.6.1:
 
 rimraf@~2.4.0:
   version "2.4.5"
-  resolved "http://registry.npmjs.org/rimraf/-/rimraf-2.4.5.tgz#ee710ce5d93a8fdb856fb5ea8ff0e2d75934b2da"
+  resolved "https://registry.npmjs.org/rimraf/-/rimraf-2.4.5.tgz#ee710ce5d93a8fdb856fb5ea8ff0e2d75934b2da"
   dependencies:
     glob "^6.0.1"
 
