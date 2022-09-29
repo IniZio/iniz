@@ -5,6 +5,10 @@ const store = atom({ count: 10, a: { b: 12 }, message: 'hello' });
 const timer = atom<Date>(undefined);
 
 function Stat() {
+  /*
+  Both plain expression (i.e. `stat`) and `useComputed` can trigger rerender correctly,
+  `useComputed` is for cases where value from React hook e.g. `useState` is included
+   */
   const store$ = useAtom(store);
 
   const stat = store$.value.a.b + store$.value.count;
@@ -20,6 +24,9 @@ function Stat() {
 }
 
 function Message() {
+  /*
+  Simple usage of atom in text input
+   */
   const store$ = useAtom(store);
 
   const onChange = useCallback((event) => {
@@ -36,6 +43,10 @@ function Message() {
 }
 
 function ShowDecrement({ store }: any) {
+  /*
+  Scope an atom to property when passed to child component.
+  Changes to `a` will reflect in store, but won't cause parent to re-render unnecessarily
+   */
   const a$ = useAtom(store);
 
   return (
@@ -47,6 +58,10 @@ function ShowDecrement({ store }: any) {
 }
 
 function Counter() {
+  /*
+  Classic counter example along with `useSideEffect`, which is similar to `useEffect`
+   */
+
   // NOTE: Under strict mode, effect is called twice
   useSideEffect(() => {
     console.log("=== counter ", store.value.count)
@@ -76,6 +91,10 @@ function Counter() {
 }
 
 function Timer() {
+  /*
+  Notice only the timer component is updating to value change,
+  although the store is global
+   */
   const store$ = useAtom(store);
   const timer$ = useAtom(timer);
 
@@ -93,6 +112,9 @@ function Timer() {
 }
 
 function Inline() {
+  /*
+  Inline an atom creation in a component
+   */
   const theme$ = useAtom("black");
   const altTheme = theme$.value === "black" ? "white" : "black";
 
@@ -112,6 +134,10 @@ function Inline() {
 }
 
 function BatchUpdate() {
+  /*
+  Update multiple stores at same time in batch,
+  should see `useSideEffect` only executed once on reset
+   */
   const count$ = useAtom<number>(2000);
   const todos$ = useAtom<string[]>(["buy dinner", "play basketball"]);
   const profile$ = useAtom<{username: string}>({ username: 'tom' });
