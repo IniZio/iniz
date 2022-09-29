@@ -16,9 +16,12 @@
   },
   "scripts": {
     "dev": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types -w & vite build --watch",
-    "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build"
+    "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build",
+    "lint": "eslint"
   },
   "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-custom": "*",
     "@types/react": "^18.0.18",
 		"@types/react-dom": "^18.0.6",
     "react": "^18.2.0",

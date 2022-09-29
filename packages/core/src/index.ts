@@ -1,4 +1,4 @@
-import { arrayStartsWith, canProxy } from './util';
+import { arrayStartsWith, canProxy } from "./util";
 
 export const IS_ATOM = Symbol("IS_ATOM");
 export const IS_PROXY = Symbol("IS_PROXY");
@@ -19,7 +19,9 @@ interface Observer {
 export class Atom<TValue> {
   [IS_ATOM] = Symbol();
 
-  #createValueHandler = (parentPath: (string | symbol)[] = []): ProxyHandler<any> => {
+  #createValueHandler = (
+    parentPath: (string | symbol)[] = []
+  ): ProxyHandler<any> => {
     const r = this;
 
     return {
@@ -39,12 +41,14 @@ export class Atom<TValue> {
             r.#observerBySymbol.set(currentObserver[IS_OBSERVER], {
               paths: [],
               observer: currentObserver,
-            })
+            });
             currentObserver.register(r);
           }
 
-          const observer = r.#observerBySymbol.get(currentObserver[IS_OBSERVER]);
-          if (!observer?.paths.find(p => arrayStartsWith(path, p))) {
+          const observer = r.#observerBySymbol.get(
+            currentObserver[IS_OBSERVER]
+          );
+          if (!observer?.paths.find((p) => arrayStartsWith(path, p))) {
             observer?.paths.push(path);
           }
         }
@@ -57,7 +61,7 @@ export class Atom<TValue> {
         batch(() => {
           target[prop] = value;
           r.#observerBySymbol.forEach(({ paths: ps, observer }) => {
-            if(!ps.find(p => arrayStartsWith(p, path))) {
+            if (!ps.find((p) => arrayStartsWith(p, path))) {
               return;
             }
 
@@ -66,13 +70,16 @@ export class Atom<TValue> {
         });
 
         return true;
-      }
-    }
-  }
+      },
+    };
+  };
 
   proxy: any;
 
-  #observerBySymbol = new Map<Symbol, { paths: (string | symbol)[][]; observer: Observer; }>();
+  #observerBySymbol = new Map<
+    Symbol,
+    { paths: (string | symbol)[][]; observer: Observer }
+  >();
 
   get value(): TValue {
     return this.proxy.value;
@@ -82,10 +89,7 @@ export class Atom<TValue> {
   }
 
   constructor(value: TValue) {
-    this.proxy = new Proxy(
-      { value },
-      this.#createValueHandler()
-    );
+    this.proxy = new Proxy({ value }, this.#createValueHandler());
   }
 
   unsubscribe(observer: Observer) {
@@ -96,13 +100,19 @@ export class Atom<TValue> {
 export class Effect implements Observer {
   [IS_OBSERVER] = Symbol();
 
-  #atomBySymbol = new Map<Symbol, Atom<any>>()
+  #atomBySymbol = new Map<Symbol, Atom<any>>();
 
   #callback: () => void;
   #onNotify?: () => void;
   #tilNextTick?: boolean;
 
-  constructor(callback: () => void, { onNotify, tilNextTick }: { onNotify?: () => void, tilNextTick?: boolean } = {}) {
+  constructor(
+    callback: () => void,
+    {
+      onNotify,
+      tilNextTick,
+    }: { onNotify?: () => void; tilNextTick?: boolean } = {}
+  ) {
     this.#callback = callback;
     this.#onNotify = onNotify;
     this.#tilNextTick = tilNextTick;
@@ -114,7 +124,9 @@ export class Effect implements Observer {
     this.#callback();
 
     if (this.#tilNextTick) {
-      setTimeout(() => { currentObserver = undefined; });
+      setTimeout(() => {
+        currentObserver = undefined;
+      });
     } else {
       currentObserver = undefined;
     }
@@ -125,7 +137,7 @@ export class Effect implements Observer {
       reim.unsubscribe(this);
     });
     this.#atomBySymbol.clear();
-  }
+  };
 
   notify() {
     this.exec();
@@ -144,7 +156,7 @@ export function effect(callback: () => void, onNotify?: () => void) {
   return effect.dispose;
 }
 
-type extractValue<T> = T extends Atom<infer V> ? V : T
+type extractValue<T> = T extends Atom<infer V> ? V : T;
 
 function isAtom(value: any): value is Atom<extractValue<typeof value>> {
   return (value as any)?.[IS_ATOM];
@@ -154,14 +166,16 @@ export function atom<TValue>(value: TValue): Atom<extractValue<TValue>> {
   return (isAtom(value) ? value : new Atom(value)) as any;
 }
 
-function startBatch() { batchLevel++; }
+function startBatch() {
+  batchLevel++;
+}
 function endBatch() {
   if (batchLevel > 1) {
     batchLevel--;
     return;
   }
 
-  batchedObservers.forEach(o => o.notify());
+  batchedObservers.forEach((o) => o.notify());
   batchedObservers.clear();
   batchLevel--;
 }

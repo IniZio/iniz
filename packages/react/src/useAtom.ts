@@ -1,10 +1,10 @@
-import { useReducer, useRef, useState, useEffect } from 'react';
+import { useReducer, useRef, useState, useEffect } from "react";
 import { Effect, atom } from "@reim/core";
 
 export const RAW_ATOM = Symbol("RAW_ATOM");
 
 export function useAtom<TValue>(atomOrInitialValue: TValue) {
-  const [, forceUpdate] = useReducer(f => f + 1, 0);
+  const [, forceUpdate] = useReducer((f) => f + 1, 0);
 
   const listener = useRef<Effect>();
   const [snapshot] = useState(() => {
@@ -15,7 +15,8 @@ export function useAtom<TValue>(atomOrInitialValue: TValue) {
     thus preventing parent from re-rendering when child component is updating a property that the parent is not using
     */
     const maybeProxiedAtom = atom(atomOrInitialValue);
-    let rawAtom: typeof maybeProxiedAtom = (maybeProxiedAtom as any)?.[RAW_ATOM] ?? maybeProxiedAtom;
+    let rawAtom: typeof maybeProxiedAtom =
+      (maybeProxiedAtom as any)?.[RAW_ATOM] ?? maybeProxiedAtom;
 
     let value: any;
 
@@ -27,7 +28,9 @@ export function useAtom<TValue>(atomOrInitialValue: TValue) {
 
         if (!listener.current) {
           listener.current = new Effect(
-            () => { value = (target as any)[prop] },
+            () => {
+              value = (target as any)[prop];
+            },
             { onNotify: forceUpdate, tilNextTick: true }
           );
         }
@@ -38,14 +41,20 @@ export function useAtom<TValue>(atomOrInitialValue: TValue) {
       set: (target, prop, value) => {
         (target as any)[prop] = value;
         return true;
-      }
+      },
     });
   });
 
   // HACK: useEffect is triggered twice under strict mode
   // Currently our effect's final status become disposed after mount strict mode is active,
   // so we force update after dispose to ensure effect collects again if the component is not actually unmounted
-  useEffect(() => () => { listener.current?.dispose(); forceUpdate(); }, []);
+  useEffect(
+    () => () => {
+      listener.current?.dispose();
+      forceUpdate();
+    },
+    []
+  );
 
   return snapshot;
 }
