@@ -139,6 +139,12 @@ export function effect(callback: () => void, onNotify?: () => void) {
   return effect.dispose;
 }
 
-export function atom<TValue>(value: TValue) {
-  return new Atom(value);
+type extractValue<T> = T extends Atom<infer V> ? V : T
+
+function isAtom(value: any): value is Atom<extractValue<typeof value>> {
+  return (value as any)?.[IS_ATOM];
+}
+
+export function atom<TValue>(value: TValue): Atom<extractValue<TValue>> {
+  return (isAtom(value) ? value : new Atom(value)) as any;
 }
