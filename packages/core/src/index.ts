@@ -6,6 +6,9 @@ export const IS_OBSERVER = Symbol("IS_OBSERVER");
 
 let currentObserver: Observer | undefined;
 
+let batchLevel = 0;
+const batchedObservers = new Set<Observer>();
+
 interface Observer {
   [IS_OBSERVER]: Symbol;
 
@@ -51,13 +54,15 @@ export class Atom<TValue> {
       set(target, prop, value) {
         const path = parentPath.concat(prop);
 
-        target[prop] = value;
-        r.#observerBySymbol.forEach(({ paths: ps, observer }) => {
-          if(!ps.find(p => p.join('.').startsWith(path.join('.')))) {
-            return;
-          }
+        batch(() => {
+          target[prop] = value;
+          r.#observerBySymbol.forEach(({ paths: ps, observer }) => {
+            if(!ps.find(p => p.join('.').startsWith(path.join('.')))) {
+              return;
+            }
 
-          observer.notify();
+            batchedObservers.add(observer);
+          });
         });
 
         return true;
@@ -147,4 +152,22 @@ function isAtom(value: any): value is Atom<extractValue<typeof value>> {
 
 export function atom<TValue>(value: TValue): Atom<extractValue<TValue>> {
   return (isAtom(value) ? value : new Atom(value)) as any;
+}
+
+function startBatch() { batchLevel++; }
+function endBatch() {
+  if (batchLevel > 1) {
+    batchLevel--;
+    return;
+  }
+
+  batchedObservers.forEach(o => o.notify());
+  batchedObservers.clear();
+  batchLevel--;
+}
+
+export function batch(callback: () => void) {
+  startBatch();
+  callback();
+  endBatch();
 }
