@@ -1,4 +1,4 @@
-import { canProxy } from './util';
+import { arrayStartsWith, canProxy } from './util';
 
 export const IS_ATOM = Symbol("IS_ATOM");
 export const IS_PROXY = Symbol("IS_PROXY");
@@ -44,7 +44,7 @@ export class Atom<TValue> {
           }
 
           const observer = r.#observerBySymbol.get(currentObserver[IS_OBSERVER]);
-          if (!observer?.paths.find(p => path.join('.').startsWith(p.join('.')))) {
+          if (!observer?.paths.find(p => arrayStartsWith(path, p))) {
             observer?.paths.push(path);
           }
         }
@@ -57,7 +57,7 @@ export class Atom<TValue> {
         batch(() => {
           target[prop] = value;
           r.#observerBySymbol.forEach(({ paths: ps, observer }) => {
-            if(!ps.find(p => p.join('.').startsWith(path.join('.')))) {
+            if(!ps.find(p => arrayStartsWith(p, path))) {
               return;
             }
 

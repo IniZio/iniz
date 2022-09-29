@@ -36,12 +36,12 @@ function Message() {
 }
 
 function ShowDecrement({ store }: any) {
-  const store$$ = useAtom(store);
+  const a$ = useAtom(store);
 
   return (
     <div>
       <div>Decrement</div>
-      <div>{store$$.value.a.b}</div>
+      <button onClick={() => a$.value.b--}>{a$.value.b}--</button>
     </div>
   )
 }
@@ -70,7 +70,7 @@ function Counter() {
       <button onClick={increment}>Increment</button>
       <button onClick={decrementOther}>Decrement other</button>
       <div>Count: {store$.value.count}</div>
-      <ShowDecrement store={store$} />
+      <ShowDecrement store={store$.value.a} />
     </div>
   );
 }

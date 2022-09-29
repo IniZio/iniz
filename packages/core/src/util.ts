@@ -25,3 +25,7 @@ export function canProxy(value: any) {
         )
     );
 }
+
+export function arrayStartsWith(a: any[], b: any[]) {
+  return b.every((bv, index) => bv === a[index]);
+}
