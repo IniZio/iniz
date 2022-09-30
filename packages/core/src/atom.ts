@@ -19,10 +19,10 @@ export class Atom<TValue> {
           return true;
         }
 
-        const path = parentPath.concat(key);
+        const currentPath = parentPath.concat(key);
 
         if (canProxy(target[key]) && !target[key][IS_PROXY]) {
-          return new Proxy(target[key], r.#createValueHandler(path));
+          return new Proxy(target[key], r.#createValueHandler(currentPath));
         }
 
         if (activeObserver.current) {
@@ -37,20 +37,28 @@ export class Atom<TValue> {
           const observer = r.#observerBySymbol.get(
             activeObserver.current[IS_OBSERVER]
           );
-          if (!observer?.paths.find((p) => arrayStartsWith(path, p))) {
-            observer?.paths.push(path);
+          if (
+            !observer?.paths.find((observerPath) =>
+              arrayStartsWith(currentPath, observerPath)
+            )
+          ) {
+            observer?.paths.push(currentPath);
           }
         }
 
         return target[key];
       },
       set(target, prop, value) {
-        const path = parentPath.concat(prop);
+        const currentPath = parentPath.concat(prop);
 
         batch(() => {
           target[prop] = value;
-          r.#observerBySymbol.forEach(({ paths: ps, observer }) => {
-            if (!ps.find((p) => arrayStartsWith(p, path))) {
+          r.#observerBySymbol.forEach(({ paths: observerPaths, observer }) => {
+            if (
+              !observerPaths.find((observerPath) =>
+                arrayStartsWith(observerPath, currentPath)
+              )
+            ) {
               return;
             }
 
@@ -63,22 +71,21 @@ export class Atom<TValue> {
     };
   };
 
-  proxy: any;
-
+  #proxy: any;
   #observerBySymbol = new Map<
     Symbol,
     { paths: (string | symbol)[][]; observer: Observer }
   >();
 
   get value(): TValue {
-    return this.proxy.value;
+    return this.#proxy.value;
   }
   set value(val: TValue) {
-    this.proxy.value = val;
+    this.#proxy.value = val;
   }
 
   constructor(value: TValue) {
-    this.proxy = new Proxy({ value }, this.#createValueHandler());
+    this.#proxy = new Proxy({ value }, this.#createValueHandler());
   }
 
   unsubscribe(observer: Observer) {
