@@ -1,4 +1,4 @@
-import { atom, batch, useAtom, useSideEffect, useCompute } from "@reim/react";
+import { atom, batch, useAtom, useSideEffect, useComputed } from "@reim/react";
 import { useCallback, useEffect } from "react";
 
 const store = atom({ count: 10, a: { b: 12 }, message: "hello" });
@@ -12,13 +12,13 @@ function Stat() {
   const store$ = useAtom(store);
 
   const stat = store$.value.a.b + store$.value.count;
-  const statMemo = useCompute(() => store$.value.a.b + store$.value.count);
+  const statMemo = useComputed(() => store$.value.a.b + store$.value.count);
 
   return (
     <div>
       <div>Stat</div>
       <div>Asssign: {stat}</div>
-      <div>Function: {statMemo}</div>
+      <div>Function: {statMemo.value}</div>
     </div>
   );
 }
@@ -98,6 +98,10 @@ function Timer() {
   const store$ = useAtom(store);
   const timer$ = useAtom(timer);
 
+  const timerLabel = useComputed(
+    () => `${store$.value.message} ${timer$.value?.toLocaleTimeString()}`
+  );
+
   useEffect(() => {
     timer.value = new Date();
     setInterval(() => {
@@ -108,9 +112,7 @@ function Timer() {
   return (
     <div>
       <div>Timer</div>
-      <div>
-        {store$.value.message} {timer$.value?.toLocaleTimeString()}
-      </div>
+      <div>{timerLabel.value}</div>
     </div>
   );
 }

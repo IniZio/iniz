@@ -23,16 +23,23 @@ export class Effect implements Observer {
   }
 
   exec() {
-    activeObserver.current = this;
+    const canOccupyObserver =
+      !activeObserver.current || activeObserver.current instanceof Effect;
+
+    if (canOccupyObserver) {
+      activeObserver.current = this;
+    }
 
     this.#callback();
 
-    if (this.#tilNextTick) {
-      setTimeout(() => {
+    if (canOccupyObserver) {
+      if (this.#tilNextTick) {
+        setTimeout(() => {
+          activeObserver.current = undefined;
+        });
+      } else {
         activeObserver.current = undefined;
-      });
-    } else {
-      activeObserver.current = undefined;
+      }
     }
   }
 
