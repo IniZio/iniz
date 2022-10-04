@@ -1,5 +1,5 @@
 import { Atom, IS_ATOM } from "./atom";
-import { Observer, IS_OBSERVER, activeObserver } from "./observer";
+import { activeObserver, IS_OBSERVER, Observer } from "./observer";
 
 export class Effect implements Observer {
   [IS_OBSERVER] = Symbol();

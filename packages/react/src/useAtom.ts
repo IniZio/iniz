@@ -1,5 +1,5 @@
-import { useReducer, useRef, useState, useEffect } from "react";
-import { Effect, atom } from "@reim/core";
+import { atom, Effect } from "@reim/core";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 export const RAW_ATOM = Symbol("RAW_ATOM");
 

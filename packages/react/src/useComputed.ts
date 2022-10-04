@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { computed, isAtom } from "@reim/core";
-import { useSideEffect } from "./useSideEffect";
+import { computed } from "@reim/core";
+import { useEffect, useState } from "react";
 import { useAtom } from "./useAtom";
 
 export function useComputed<TFn extends () => any>(
@@ -13,7 +12,7 @@ export function useComputed<TFn extends () => any>(
   useEffect(
     () => cp.exec(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps,
+    deps
   );
 
   return instance;
