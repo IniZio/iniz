@@ -1,5 +1,6 @@
 import { batch, batchedObservers } from "./batch";
 import { activeObserver, IS_OBSERVER, Observer } from "./observer";
+import { extractValue } from "./types";
 import { arrayStartsWith, canProxy } from "./util";
 
 export const IS_ATOM = Symbol("IS_ATOM");
@@ -92,8 +93,6 @@ export class Atom<TValue> {
     this.#observerBySymbol.delete(observer[IS_OBSERVER]);
   }
 }
-
-type extractValue<T> = T extends Atom<infer V> ? V : T;
 
 export function isAtom(value: any): value is Atom<extractValue<typeof value>> {
   return (value as any)?.[IS_ATOM];
