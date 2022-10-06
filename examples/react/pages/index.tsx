@@ -1,4 +1,11 @@
-import { atom, batch, useAtom, useComputed, useSideEffect } from "@iniz/react";
+import {
+  atom,
+  batch,
+  effect,
+  useAtom,
+  useComputed,
+  useSideEffect,
+} from "@iniz/react";
 import { useCallback, useEffect } from "react";
 
 const store = atom({ count: 10, a: { b: 12 }, message: "hello" });
@@ -29,9 +36,22 @@ function Message() {
    */
   const store$ = useAtom(store);
 
-  const onChange = useCallback((event) => {
-    store.value.message = event.target.value;
+  const onChange = useCallback(
+    (event) => {
+      store$.value.message = event.target.value;
+    },
+    [store$]
+  );
+
+  // FIXING: scoped atom should still trigger effects
+  useEffect(() => {
+    effect(() => {
+      console.log("=== message", store.value.message);
+    });
   }, []);
+  // useSideEffect(() => {
+  //   console.log("=== message", store$.value.message);
+  // })
 
   return (
     <div>

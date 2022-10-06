@@ -7,7 +7,7 @@ export class Effect implements Observer {
   #atomBySymbol = new Map<Symbol, Atom<any>>();
 
   #callback: () => void;
-  #onNotify?: () => void;
+  onNotify?: () => void;
   #tilNextTick?: boolean;
 
   constructor(
@@ -18,7 +18,7 @@ export class Effect implements Observer {
     }: { onNotify?: () => void; tilNextTick?: boolean } = {}
   ) {
     this.#callback = callback;
-    this.#onNotify = onNotify;
+    this.onNotify = onNotify;
     this.#tilNextTick = tilNextTick;
   }
 
@@ -52,7 +52,7 @@ export class Effect implements Observer {
 
   notify() {
     this.exec();
-    this.#onNotify?.();
+    this.onNotify?.();
   }
 
   register(atom: Atom<any>): void {

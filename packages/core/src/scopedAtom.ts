@@ -19,7 +19,7 @@ export function scopedAtom<TValue>(
   Allow wrapping a scopedAtom again with scopedAtom by always extracting unscoped atom
   */
   const maybeScopedAtom = atom(atomOrInitialValue);
-  let unscopedAtom: typeof maybeScopedAtom =
+  const unscopedAtom: typeof maybeScopedAtom =
     (maybeScopedAtom as any)?.[UNSCOPED_ATOM] ?? maybeScopedAtom;
 
   let value: any;
@@ -32,18 +32,25 @@ export function scopedAtom<TValue>(
       }
 
       if (prop === "dispose") {
-        return eff?.dispose;
+        return eff?.dispose ?? (() => {});
       }
 
-      if (!eff) {
-        eff = new Effect(
-          () => {
-            value = (target as any)[prop];
-          },
-          { onNotify, tilNextTick }
-        );
+      if (prop === "value") {
+        if (!eff) {
+          eff = new Effect(
+            () => {
+              value = (target as any)[prop];
+            },
+            { onNotify, tilNextTick }
+          );
+        }
+        // TODO: On hot-reload, the original onNotify will be invalid.
+        // Add method to update onNotify properly
+        eff.onNotify = onNotify;
+        eff.exec();
+      } else {
+        value = (target as any)[prop];
       }
-      eff.exec();
 
       return value;
     },
