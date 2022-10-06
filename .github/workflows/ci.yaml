@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: ["experiment"]
+    branches: ["main"]
   pull_request:
     types: [opened, synchronize]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   build:
