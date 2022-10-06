@@ -7,7 +7,7 @@ export default defineConfig({
     emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "Reim",
+      name: "Iniz",
       fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {

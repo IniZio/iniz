@@ -1,4 +1,4 @@
-import { atom, batch, useAtom, useComputed, useSideEffect } from "@reim/react";
+import { atom, batch, useAtom, useComputed, useSideEffect } from "@iniz/react";
 import { useCallback, useEffect } from "react";
 
 const store = atom({ count: 10, a: { b: 12 }, message: "hello" });

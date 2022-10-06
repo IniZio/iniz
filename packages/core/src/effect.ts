@@ -44,8 +44,8 @@ export class Effect implements Observer {
   }
 
   dispose = () => {
-    this.#atomBySymbol.forEach((reim) => {
-      reim.unsubscribe(this);
+    this.#atomBySymbol.forEach((atom) => {
+      atom.unsubscribe(this);
     });
     this.#atomBySymbol.clear();
   };

@@ -1,4 +1,4 @@
-import { computed } from "@reim/core";
+import { computed } from "@iniz/core";
 import { useEffect, useState } from "react";
 import { useAtom } from "./useAtom";
 

@@ -1,4 +1,4 @@
-import { scopedAtom } from "@reim/core";
+import { scopedAtom } from "@iniz/core";
 import { useEffect, useReducer, useState } from "react";
 
 export function useAtom<TValue>(atomOrInitialValue: TValue) {

@@ -1,4 +1,4 @@
-import { effect } from "@reim/core";
+import { effect } from "@iniz/core";
 import { useEffect } from "react";
 
 // NOTE: Under strict mode, effect is called twice

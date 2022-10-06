@@ -7,7 +7,7 @@ export default defineConfig({
     emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "ReactReim",
+      name: "ReactIniz",
       fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {

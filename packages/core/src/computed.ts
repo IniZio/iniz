@@ -41,8 +41,8 @@ export class Computed<TValue> extends Atom<TValue> implements Observer {
   }
 
   dispose = () => {
-    this.#atomBySymbol.forEach((reim) => {
-      reim.unsubscribe(this);
+    this.#atomBySymbol.forEach((atom) => {
+      atom.unsubscribe(this);
     });
     this.#atomBySymbol.clear();
   };
