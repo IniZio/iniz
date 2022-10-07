@@ -1,64 +1,6 @@
-import { Atom, IS_ATOM } from "./atom";
-import { activeObserver, IS_OBSERVER, Observer } from "./observer";
+import { Observer } from "./observer";
 
-export class Effect implements Observer {
-  [IS_OBSERVER] = Symbol();
-
-  #atomBySymbol = new Map<Symbol, Atom<any>>();
-
-  #callback: () => void;
-  onNotify?: () => void;
-  #tilNextTick?: boolean;
-
-  constructor(
-    callback: () => void,
-    {
-      onNotify,
-      tilNextTick,
-    }: { onNotify?: () => void; tilNextTick?: boolean } = {}
-  ) {
-    this.#callback = callback;
-    this.onNotify = onNotify;
-    this.#tilNextTick = tilNextTick;
-  }
-
-  exec() {
-    const canOccupyObserver =
-      !activeObserver.current || activeObserver.current instanceof Effect;
-
-    if (canOccupyObserver) {
-      activeObserver.current = this;
-    }
-
-    this.#callback();
-
-    if (canOccupyObserver) {
-      if (this.#tilNextTick) {
-        setTimeout(() => {
-          activeObserver.current = undefined;
-        });
-      } else {
-        activeObserver.current = undefined;
-      }
-    }
-  }
-
-  dispose = () => {
-    this.#atomBySymbol.forEach((atom) => {
-      atom.unsubscribe(this);
-    });
-    this.#atomBySymbol.clear();
-  };
-
-  notify() {
-    this.exec();
-    this.onNotify?.();
-  }
-
-  register(atom: Atom<any>): void {
-    this.#atomBySymbol.set(atom[IS_ATOM], atom);
-  }
-}
+export class Effect extends Observer {}
 
 export function effect(callback: () => void, onNotify?: () => void) {
   const effect = new Effect(callback, { onNotify });

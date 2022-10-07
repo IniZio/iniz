@@ -43,15 +43,14 @@ function Message() {
     [store$]
   );
 
-  // FIXING: scoped atom should still trigger effects
   useEffect(() => {
     effect(() => {
-      console.log("=== message", store.value.message);
+      console.log("=== message A", store.value.message);
     });
   }, []);
-  // useSideEffect(() => {
-  //   console.log("=== message", store$.value.message);
-  // })
+  useSideEffect(() => {
+    console.log("=== message B", store$.value.message);
+  });
 
   return (
     <div>
@@ -198,26 +197,26 @@ function BatchUpdate() {
 }
 
 export default function Web() {
-  const visibility$ = useAtom(true);
+  // const visibility$ = useAtom(true);
 
   return (
     <div>
       <h1>Web</h1>
-      <hr />
+      {/* <hr />
       <button onClick={() => (visibility$.value = !visibility$.value)}>
         set visiblity
       </button>
       <Counter />
       <hr />
       {visibility$.value && <Stat />}
-      <hr />
+      <hr /> */}
       <Message />
-      <hr />
+      {/* <hr />
       <Timer />
       <hr />
       <Inline />
       <hr />
-      <BatchUpdate />
+      <BatchUpdate /> */}
     </div>
   );
 }
