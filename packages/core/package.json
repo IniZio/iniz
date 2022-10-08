@@ -17,13 +17,18 @@
   "scripts": {
     "dev": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types -w & vite build --watch",
     "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch --ui"
   },
   "devDependencies": {
+    "@vitest/coverage-c8": "^0.23.4",
+    "@vitest/ui": "^0.23.4",
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "vite": "^2.9.9",
-    "vite-plugin-dts": "^1.2.0"
+    "vite-plugin-dts": "^1.2.0",
+    "vitest": "^0.23.4"
   },
   "dependencies": {
     "proxy-state-tree": "^6.3.0",

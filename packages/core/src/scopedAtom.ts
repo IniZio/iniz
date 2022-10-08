@@ -1,29 +1,29 @@
 import { Atom, atom } from "./atom";
-import { Effect } from "./effect";
+import { IS_OBSERVER, Observer } from "./observer";
 import { extractValue } from "./types";
 
-const UNSCOPED_ATOM = Symbol("UNSCOPED_ATOM");
+export const UNSCOPED_ATOM = Symbol("UNSCOPED_ATOM");
+export const SCOPED_OBSERVER = Symbol("SCOPED_OBSERVER");
 
-export type DisposableAtom<TValue> = Atom<extractValue<TValue>> & {
-  dispose: () => void;
+export type ScopedAtom<TValue> = Atom<extractValue<TValue>> & {
+  observer: Observer;
+  dispose: () => {};
 };
 
 export function scopedAtom<TValue>(
   atomOrInitialValue: TValue,
-  {
-    tilNextTick,
-    onNotify,
-  }: { onNotify?: () => void; tilNextTick?: boolean } = {}
-): DisposableAtom<TValue> {
+  { onNotify }: { onNotify?: () => void } = {}
+): ScopedAtom<TValue> {
   /*
   Allow wrapping a scopedAtom again with scopedAtom by always extracting unscoped atom
   */
   const maybeScopedAtom = atom(atomOrInitialValue);
-  let unscopedAtom: typeof maybeScopedAtom =
+  const unscopedAtom: typeof maybeScopedAtom =
     (maybeScopedAtom as any)?.[UNSCOPED_ATOM] ?? maybeScopedAtom;
 
-  let value: any;
-  let eff: Effect;
+  const observer = new Observer(() => {}, { onNotify });
+
+  unscopedAtom.mark(observer);
 
   return new Proxy(unscopedAtom, {
     get: (target, prop) => {
@@ -32,20 +32,15 @@ export function scopedAtom<TValue>(
       }
 
       if (prop === "dispose") {
-        return eff?.dispose;
+        return () => maybeScopedAtom.unmark(observer);
       }
 
-      if (!eff) {
-        eff = new Effect(
-          () => {
-            value = (target as any)[prop];
-          },
-          { onNotify, tilNextTick }
-        );
+      // Here the the observer symbol is passed as fake property to let proxy know this getter is from which scoped atom
+      if (prop === "value") {
+        return (target as any)._proxy[observer[IS_OBSERVER]][prop];
       }
-      eff.exec();
 
-      return value;
+      return target[prop as keyof typeof unscopedAtom];
     },
     set: (target, prop, value) => {
       (target as any)[prop] = value;

@@ -1,4 +1,11 @@
-import { atom, batch, useAtom, useComputed, useSideEffect } from "@iniz/react";
+import {
+  atom,
+  batch,
+  effect,
+  useAtom,
+  useComputed,
+  useSideEffect,
+} from "@iniz/react";
 import { useCallback, useEffect } from "react";
 
 const store = atom({ count: 10, a: { b: 12 }, message: "hello" });
@@ -29,9 +36,21 @@ function Message() {
    */
   const store$ = useAtom(store);
 
-  const onChange = useCallback((event) => {
-    store.value.message = event.target.value;
+  const onChange = useCallback(
+    (event) => {
+      store$.value.message = event.target.value;
+    },
+    [store$]
+  );
+
+  useEffect(() => {
+    effect(() => {
+      console.log("=== message A", store.value.message);
+    });
   }, []);
+  useSideEffect(() => {
+    console.log("=== message B", store$.value.message);
+  });
 
   return (
     <div>
@@ -178,26 +197,26 @@ function BatchUpdate() {
 }
 
 export default function Web() {
-  const visibility$ = useAtom(true);
+  // const visibility$ = useAtom(true);
 
   return (
     <div>
       <h1>Web</h1>
-      <hr />
+      {/* <hr />
       <button onClick={() => (visibility$.value = !visibility$.value)}>
         set visiblity
       </button>
       <Counter />
       <hr />
       {visibility$.value && <Stat />}
-      <hr />
+      <hr /> */}
       <Message />
-      <hr />
+      {/* <hr />
       <Timer />
       <hr />
       <Inline />
       <hr />
-      <BatchUpdate />
+      <BatchUpdate /> */}
     </div>
   );
 }

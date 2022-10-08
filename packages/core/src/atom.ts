@@ -10,7 +10,8 @@ export class Atom<TValue> {
   [IS_ATOM] = Symbol();
 
   #createValueHandler = (
-    parentPath: (string | symbol)[] = []
+    parentPath: (string | symbol)[] = [],
+    markedObserver?: { paths: (string | symbol)[][]; observer: Observer }
   ): ProxyHandler<any> => {
     const r = this;
 
@@ -20,10 +21,21 @@ export class Atom<TValue> {
           return true;
         }
 
-        const currentPath = parentPath.concat(key);
+        const scope =
+          markedObserver ?? r.#markedObserverBySymbol.get(key as any);
 
-        if (canProxy(target[key]) && !target[key][IS_PROXY]) {
-          return new Proxy(target[key], r.#createValueHandler(currentPath));
+        let currentPath: (string | symbol)[];
+        let value: any;
+        if (r.#markedObserverBySymbol.has(key as any)) {
+          currentPath = parentPath;
+          value = target;
+        } else {
+          currentPath = parentPath.concat(key);
+          value = target[key];
+        }
+
+        if (canProxy(value) && !value[IS_PROXY]) {
+          return new Proxy(value, r.#createValueHandler(currentPath, scope));
         }
 
         if (activeObserver.current) {
@@ -47,7 +59,16 @@ export class Atom<TValue> {
           }
         }
 
-        return target[key];
+        if (
+          scope &&
+          !scope.paths.some((observerPath) =>
+            arrayStartsWith(currentPath, observerPath)
+          )
+        ) {
+          scope.paths.push(currentPath);
+        }
+
+        return value;
       },
       set(target, prop, value) {
         const currentPath = parentPath.concat(prop);
@@ -65,6 +86,20 @@ export class Atom<TValue> {
 
             batchedObservers.add(observer);
           });
+
+          r.#markedObserverBySymbol.forEach(
+            ({ paths: observerPaths, observer }) => {
+              if (
+                !observerPaths.find((observerPath) =>
+                  arrayStartsWith(observerPath, currentPath)
+                )
+              ) {
+                return;
+              }
+
+              batchedObservers.add(observer);
+            }
+          );
         });
 
         return true;
@@ -72,22 +107,37 @@ export class Atom<TValue> {
     };
   };
 
-  #proxy: any;
+  _proxy: any;
   #observerBySymbol = new Map<
+    Symbol,
+    { paths: (string | symbol)[][]; observer: Observer }
+  >();
+  #markedObserverBySymbol = new Map<
     Symbol,
     { paths: (string | symbol)[][]; observer: Observer }
   >();
 
   get value(): TValue {
-    return this.#proxy.value;
+    return this._proxy.value;
   }
   set value(val: TValue) {
-    this.#proxy.value = val;
+    this._proxy.value = val;
   }
 
   constructor(value: TValue) {
-    this.#proxy = new Proxy({ value }, this.#createValueHandler());
+    this._proxy = new Proxy({ value }, this.#createValueHandler());
   }
+
+  mark = (observer: Observer) => {
+    this.#markedObserverBySymbol.set(observer[IS_OBSERVER], {
+      paths: [],
+      observer,
+    });
+  };
+
+  unmark = (observer: Observer) => {
+    this.#markedObserverBySymbol.delete(observer[IS_OBSERVER]);
+  };
 
   unsubscribe(observer: Observer) {
     this.#observerBySymbol.delete(observer[IS_OBSERVER]);

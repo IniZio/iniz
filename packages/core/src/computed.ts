@@ -1,60 +1,30 @@
-import { Atom, IS_ATOM } from "./atom";
-import { activeObserver, IS_OBSERVER, Observer } from "./observer";
+import { Atom } from "./atom";
+import { Observer } from "./observer";
 
-export class Computed<TValue> extends Atom<TValue> implements Observer {
-  [IS_OBSERVER] = Symbol();
-
-  #atomBySymbol = new Map<Symbol, Atom<any>>();
-
-  #callback: () => TValue;
-  #onNotify?: () => void;
-  #tilNextTick?: boolean;
+export class Computed<TValue> extends Atom<TValue> {
+  #observer: Observer;
+  #compute: () => TValue;
 
   constructor(
-    callback: () => TValue,
-    {
-      tilNextTick,
-      onNotify,
-    }: { onNotify?: () => void; tilNextTick?: boolean } = {}
+    compute: () => TValue,
+    { onNotify }: { onNotify?: () => void } = {}
   ) {
-    super(callback());
+    super(compute());
 
-    this.#callback = callback;
-    this.#onNotify = onNotify;
-    this.#tilNextTick = tilNextTick;
-
-    this.exec();
-  }
-
-  exec() {
-    activeObserver.current = this;
-
-    this.value = this.#callback();
-
-    if (this.#tilNextTick) {
-      setTimeout(() => {
-        activeObserver.current = undefined;
-      });
-    } else {
-      activeObserver.current = undefined;
-    }
-  }
-
-  dispose = () => {
-    this.#atomBySymbol.forEach((atom) => {
-      atom.unsubscribe(this);
+    this.#compute = compute;
+    this.#observer = new Observer(this.#computeValue, {
+      onNotify,
     });
-    this.#atomBySymbol.clear();
+
+    this.#observer.exec();
+  }
+
+  #computeValue = () => {
+    this.value = this.#compute();
   };
 
-  notify = () => {
-    this.exec();
-    this.#onNotify?.();
-  };
-
-  register = (atom: Atom<any>): void => {
-    this.#atomBySymbol.set(atom[IS_ATOM], atom);
-  };
+  exec = () => this.#observer.exec();
+  dispose = () => this.#observer.dispose();
 }
 
 export function computed<TValue>(
