@@ -44,7 +44,7 @@
     "vitest": "^0.23.4"
   },
   "dependencies": {
-    "@iniz/core": "*",
+    "@iniz/core": "0.1.1",
     "proxy-state-tree": "^6.3.0",
     "typescript": "^4.8.3"
   },

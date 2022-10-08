@@ -26,6 +26,9 @@ function Stat() {
     <div>
       <div>Stat</div>
       <div>Asssign: {stat}</div>
+      <button onClick={() => statMemo.value++}>
+        Try to update computed value
+      </button>
       <div>Function: {statMemo.value}</div>
     </div>
   );

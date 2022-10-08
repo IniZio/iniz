@@ -9,6 +9,8 @@ export const IS_PROXY = Symbol("IS_PROXY");
 export class Atom<TValue> {
   [IS_ATOM] = Symbol();
 
+  readonly = false;
+
   #createValueHandler = (
     parentPath: (string | symbol)[] = [],
     markedObserver?: { paths: (string | symbol)[][]; observer: Observer }
@@ -71,6 +73,10 @@ export class Atom<TValue> {
         return value;
       },
       set(target, prop, value) {
+        if (r.readonly) {
+          throw new Error("Cannot assign to readonly atom");
+        }
+
         const currentPath = parentPath.concat(prop);
 
         batch(() => {

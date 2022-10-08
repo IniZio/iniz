@@ -11,6 +11,8 @@ export class Computed<TValue> extends Atom<TValue> {
   ) {
     super(compute());
 
+    this.readonly = true;
+
     this.#compute = compute;
     this.#observer = new Observer(this.#computeValue, {
       onNotify,
@@ -20,7 +22,9 @@ export class Computed<TValue> extends Atom<TValue> {
   }
 
   #computeValue = () => {
+    this.readonly = false;
     this.value = this.#compute();
+    this.readonly = true;
   };
 
   _updateCompute = (compute: () => TValue) => {};

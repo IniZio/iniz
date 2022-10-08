@@ -32,4 +32,13 @@ describe("computed", () => {
 
     expect(c1.value).toBe("xyz 10");
   });
+
+  it("should forbidden updating", () => {
+    const a1 = atom("abc");
+    const a2 = atom(2);
+
+    const c1 = computed(() => `${a1.value} ${a2.value}`);
+
+    expect(() => (c1.value = "BCD")).toThrowError();
+  });
 });
