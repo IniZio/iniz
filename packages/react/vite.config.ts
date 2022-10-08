@@ -1,5 +1,7 @@
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
+// NOTE: Apparently vitest is not compatitable with react plugin for now...?
+// import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,6 +24,10 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: "happy-dom",
   },
   plugins: [],
 });

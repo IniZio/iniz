@@ -1,5 +1,7 @@
 export { atom, isAtom } from "./atom";
+export type { Atom } from "./atom";
 export { batch } from "./batch";
 export { computed } from "./computed";
-export { effect, Effect } from "./effect";
+export { effect } from "./effect";
+export type { Effect } from "./effect";
 export { scopedAtom } from "./scopedAtom";

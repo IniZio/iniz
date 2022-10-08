@@ -1,4 +1,5 @@
 import {
+  Atom,
   atom,
   batch,
   effect,
@@ -196,8 +197,63 @@ function BatchUpdate() {
   );
 }
 
+type Company = {
+  basic: {
+    name: string;
+  };
+  contacts: {
+    phone: string;
+    name: string;
+  }[];
+};
+
+const company = atom({
+  basic: { name: "ABC" },
+  contacts: [{ phone: "111111111", name: "Tom" }],
+});
+
+function ContactPersonSubForm({ company }: { company: Atom<Company> }) {
+  const company$ = useAtom(company);
+  const companyContacts$ = useAtom(company$.value.contacts);
+
+  return (
+    <div>
+      <div data-testid="contact-name-display">
+        {companyContacts$.value[0].name}
+      </div>
+      <input
+        data-testid="contact-name-input"
+        onChange={(e) => {
+          companyContacts$.value[0].name = e.target.value;
+        }}
+        value={companyContacts$.value[0].name}
+      />
+    </div>
+  );
+}
+
+function ProfileForm() {
+  const company$ = useAtom(company);
+  const companyBasic$ = useAtom(company.value.basic);
+
+  return (
+    <div>
+      <h1 data-testid="name-display">{companyBasic$.value.name}</h1>
+      <input
+        data-testid="name-input"
+        onChange={(e) => {
+          companyBasic$.value.name = e.target.value;
+        }}
+        value={company$.value.basic.name}
+      />
+
+      <ContactPersonSubForm company={company$} />
+    </div>
+  );
+}
+
 export default function Web() {
-  // const visibility$ = useAtom(true);
+  const visibility$ = useAtom(true);
 
   return (
     <div>
@@ -205,18 +261,19 @@ export default function Web() {
       {/* <hr />
       <button onClick={() => (visibility$.value = !visibility$.value)}>
         set visiblity
-      </button>
+      </button> */}
       <Counter />
       <hr />
       {visibility$.value && <Stat />}
-      <hr /> */}
-      <Message />
       {/* <hr />
+      <Message />
+      <hr />
       <Timer />
       <hr />
       <Inline />
       <hr />
-      <BatchUpdate /> */}
+      <BatchUpdate />
+      <ProfileForm /> */}
     </div>
   );
 }

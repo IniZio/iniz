@@ -9,6 +9,6 @@ export function useSideEffect(
   useEffect(
     () => effect(callback),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [deps]
+    deps
   );
 }

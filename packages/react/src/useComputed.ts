@@ -9,8 +9,10 @@ export function useComputed<TFn extends () => any>(
   const [cp] = useState(() => computed(callback));
   const instance = useAtom(cp);
 
+  // HACK: Don't want callback to keep triggering compute,
+  // but also want to ensure latest version of callback on recompute...
   useEffect(
-    () => cp.exec(),
+    () => cp.refresh(callback),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     deps
   );

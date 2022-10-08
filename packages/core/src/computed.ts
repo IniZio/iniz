@@ -23,7 +23,13 @@ export class Computed<TValue> extends Atom<TValue> {
     this.value = this.#compute();
   };
 
-  exec = () => this.#observer.exec();
+  _updateCompute = (compute: () => TValue) => {};
+
+  refresh = (compute?: () => TValue) => {
+    this.#compute = compute ?? this.#compute;
+    this.#observer.exec();
+  };
+
   dispose = () => this.#observer.dispose();
 }
 
