@@ -1,5 +1,15 @@
 # @iniz/core
 
+## 0.2.0
+
+### Minor Changes
+
+- [#149](https://github.com/IniZio/iniz/pull/149) [`1dc6b50`](https://github.com/IniZio/iniz/commit/1dc6b5081b66d15db9c9e9c150ef2be495d111c1) Thanks [@IniZio](https://github.com/IniZio)! - Support marking property as untracked
+
+### Patch Changes
+
+- [#151](https://github.com/IniZio/iniz/pull/151) [`fff064b`](https://github.com/IniZio/iniz/commit/fff064bfc4c58633d94ee9a3c2c73a6a1b6e1d9d) Thanks [@IniZio](https://github.com/IniZio)! - Should trigger effect if reassign ref itself
+
 ## 0.1.4
 
 ### Patch Changes
