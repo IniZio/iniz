@@ -41,3 +41,17 @@ jobs:
 
         - name: Test
           run: yarn test
+
+        - name: Upload @iniz/core coverage
+          uses: codecov/codecov-action@v2
+          with:
+            files: ./packages/core/coverage/coverage-final.json
+            flags: core
+            token: ${{ secrets.CODECOV_TOKEN }}
+
+        - name: Upload @iniz/react coverage
+          uses: codecov/codecov-action@v2
+          with:
+            files: ./packages/react/coverage/coverage-final.json
+            flags: react
+            token: ${{ secrets.CODECOV_TOKEN }}
