@@ -1,4 +1,4 @@
-import { Atom, atom } from "./atom";
+import { Atom, atom, CURRENT_PATH } from "./atom";
 import { IS_OBSERVER, Observer } from "./observer";
 import { extractValue } from "./types";
 
@@ -14,13 +14,43 @@ export function scopedAtom<TValue>(
   atomOrInitialValue: TValue,
   { onNotify }: { onNotify?: () => void } = {}
 ): ScopedAtom<TValue> {
-  /*
-  Allow wrapping a scopedAtom again with scopedAtom by always extracting unscoped atom
-  */
-  const maybeScopedAtom = atom(atomOrInitialValue);
-  const unscopedAtom: typeof maybeScopedAtom =
-    (maybeScopedAtom as any)?.[UNSCOPED_ATOM] ?? maybeScopedAtom;
+  const rootAtom =
+    (atomOrInitialValue as any)?.[UNSCOPED_ATOM] ?? atomOrInitialValue;
 
+  if (rootAtom !== atomOrInitialValue) {
+    const rootScopedAtom = scopedAtom(rootAtom, { onNotify });
+
+    return new Proxy(rootScopedAtom, {
+      get: (target, prop) => {
+        if (prop === UNSCOPED_ATOM) {
+          return rootAtom;
+        }
+
+        if (prop === "dispose") {
+          return () => rootAtom.unmark(observer);
+        }
+
+        if (prop === "value") {
+          const currentPath = (atomOrInitialValue as any)[CURRENT_PATH];
+          let value = rootScopedAtom;
+
+          if (currentPath[0] !== "value") {
+            value = value.value;
+          }
+
+          for (const path of currentPath) {
+            value = (value as any)[path];
+          }
+
+          return value;
+        }
+
+        return (target as any)[prop];
+      },
+    });
+  }
+
+  const unscopedAtom = atom(atomOrInitialValue);
   const observer = new Observer(() => {}, { onNotify });
 
   unscopedAtom.mark(observer);
@@ -32,7 +62,7 @@ export function scopedAtom<TValue>(
       }
 
       if (prop === "dispose") {
-        return () => maybeScopedAtom.unmark(observer);
+        return () => unscopedAtom.unmark(observer);
       }
 
       // Here the the observer symbol is passed as fake property to let proxy know this getter is from which scoped atom

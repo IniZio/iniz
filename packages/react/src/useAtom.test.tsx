@@ -135,9 +135,8 @@ describe("useAtom", () => {
     });
 
     /**
-     * Currently child component has to apply `useAtom` on the root atom before applying useAtom on property to avoid updating parent
      *
-     * The following will update child component without re-rendering parent:
+     * All of the following usages will not cause re-render in parent when `contacts`'s value changes
      *
      * ```
      * function Child({ company }) {
@@ -146,32 +145,33 @@ describe("useAtom", () => {
      * }
      * ```
      *
-     * But this will re-render parent as well
-     *
      * ``
      * function Child({ company }) {
      *   const companyContacts$ = useAtom(company.value.contacts)
      * }
      * ```
+     *
+     * ``
+     * function Child({ companyContacts }) {
+     *   const companyContacts$ = useAtom(compantConctacts)
+     * }
+     * ```
      */
-    test.todo(
-      "should not update parent if property only used by child's useAtom",
-      () => {
-        expect(profileRerenderCount).toBe(1);
+    test("should not update parent if property only used by child's useAtom", () => {
+      expect(profileRerenderCount).toBe(1);
 
-        const contactNameInputEl =
-          screen.getByTestId<HTMLInputElement>("contact-name-input");
-        fireEvent.change(contactNameInputEl, { target: { value: "Jerry" } });
+      const contactNameInputEl =
+        screen.getByTestId<HTMLInputElement>("contact-name-input");
+      fireEvent.change(contactNameInputEl, { target: { value: "Jerry" } });
 
-        expect(profileRerenderCount).toBe(1);
+      expect(profileRerenderCount).toBe(1);
 
-        expect(screen.getByTestId("contact-name-display").innerHTML).toBe(
-          "Jerry"
-        );
-        expect(
-          screen.getByTestId<HTMLInputElement>("contact-name-input").value
-        ).toBe("Jerry");
-      }
-    );
+      expect(screen.getByTestId("contact-name-display").innerHTML).toBe(
+        "Jerry"
+      );
+      expect(
+        screen.getByTestId<HTMLInputElement>("contact-name-input").value
+      ).toBe("Jerry");
+    });
   });
 });

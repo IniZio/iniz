@@ -1,13 +1,16 @@
 import { batch, batchedObservers } from "./batch";
 import { activeObserver, IS_OBSERVER, Observer } from "./observer";
+import { UNSCOPED_ATOM } from "./scopedAtom";
 import { extractValue } from "./types";
 import { arrayStartsWith, canProxy } from "./util";
 
 export const IS_ATOM = Symbol("IS_ATOM");
 export const IS_PROXY = Symbol("IS_PROXY");
+export const CURRENT_PATH = Symbol("CURRENT_PATH");
 
 export class Atom<TValue> {
   [IS_ATOM] = Symbol();
+  [CURRENT_PATH]: (string | symbol)[] = [];
 
   readonly = false;
 
@@ -23,8 +26,15 @@ export class Atom<TValue> {
           return true;
         }
 
-        const scope =
-          markedObserver ?? r.#markedObserverBySymbol.get(key as any);
+        if (key === UNSCOPED_ATOM) {
+          return r;
+        }
+
+        if (key === CURRENT_PATH) {
+          return parentPath;
+        }
+
+        let scope = markedObserver ?? r.#markedObserverBySymbol.get(key as any);
 
         let currentPath: (string | symbol)[];
         let value: any;
@@ -36,7 +46,7 @@ export class Atom<TValue> {
           value = target[key];
         }
 
-        if (canProxy(value) && !value[IS_PROXY]) {
+        if (canProxy(value) && !value[IS_PROXY] && !value[IS_ATOM]) {
           return new Proxy(value, r.#createValueHandler(currentPath, scope));
         }
 

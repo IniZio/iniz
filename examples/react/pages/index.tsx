@@ -1,5 +1,4 @@
 import {
-  Atom,
   atom,
   batch,
   effect,
@@ -215,9 +214,12 @@ const company = atom({
   contacts: [{ phone: "111111111", name: "Tom" }],
 });
 
-function ContactPersonSubForm({ company }: { company: Atom<Company> }) {
-  const company$ = useAtom(company);
-  const companyContacts$ = useAtom(company$.value.contacts);
+function ContactPersonSubForm({
+  companyContacts,
+}: {
+  companyContacts: Company["contacts"];
+}) {
+  const companyContacts$ = useAtom(companyContacts);
 
   return (
     <div>
@@ -247,10 +249,11 @@ function ProfileForm() {
         onChange={(e) => {
           companyBasic$.value.name = e.target.value;
         }}
+        // value={companyBasic$.value.name}
         value={company$.value.basic.name}
       />
 
-      <ContactPersonSubForm company={company$} />
+      <ContactPersonSubForm companyContacts={company$.value.contacts} />
     </div>
   );
 }
@@ -261,14 +264,14 @@ export default function Web() {
   return (
     <div>
       <h1>Web</h1>
-      {/* <hr />
+      <hr />
       <button onClick={() => (visibility$.value = !visibility$.value)}>
         set visiblity
-      </button> */}
+      </button>
       <Counter />
       <hr />
       {visibility$.value && <Stat />}
-      {/* <hr />
+      <hr />
       <Message />
       <hr />
       <Timer />
@@ -276,7 +279,7 @@ export default function Web() {
       <Inline />
       <hr />
       <BatchUpdate />
-      <ProfileForm /> */}
+      <ProfileForm />
     </div>
   );
 }
