@@ -1,5 +1,6 @@
 import { batch, batchedObservers } from "./batch";
 import { activeObserver, IS_OBSERVER, Observer } from "./observer";
+import { IS_REF } from "./ref";
 import { UNSCOPED_ATOM } from "./scopedAtom";
 import { extractValue } from "./types";
 import { arrayStartsWith, canProxy } from "./util";
@@ -46,8 +47,17 @@ export class Atom<TValue> {
           value = target[key];
         }
 
-        if (canProxy(value) && !value[IS_PROXY] && !value[IS_ATOM]) {
+        if (
+          canProxy(value) &&
+          !value[IS_PROXY] &&
+          !value[IS_ATOM] &&
+          !value[IS_REF]
+        ) {
           return new Proxy(value, r.#createValueHandler(currentPath, scope));
+        }
+
+        if (value?.[IS_REF]) {
+          return value.value;
         }
 
         if (activeObserver.current) {
