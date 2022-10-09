@@ -17,7 +17,8 @@ export class Atom<TValue> {
 
   #createValueHandler = (
     parentPath: (string | symbol)[] = [],
-    markedObserver?: { paths: (string | symbol)[][]; observer: Observer }
+    markedObserver?: { paths: (string | symbol)[][]; observer: Observer },
+    untrack?: boolean
   ): ProxyHandler<any> => {
     const r = this;
 
@@ -39,6 +40,7 @@ export class Atom<TValue> {
 
         let currentPath: (string | symbol)[];
         let value: any;
+        let untrackChild = untrack;
         if (r.#markedObserverBySymbol.has(key as any)) {
           currentPath = parentPath;
           value = target;
@@ -47,17 +49,26 @@ export class Atom<TValue> {
           value = target[key];
         }
 
+        if (value?.[IS_REF]) {
+          currentPath = parentPath.concat(key);
+          value = value.value;
+          untrackChild = true;
+        }
+
         if (
           canProxy(value) &&
           !value[IS_PROXY] &&
           !value[IS_ATOM] &&
-          !value[IS_REF]
+          !untrackChild
         ) {
-          return new Proxy(value, r.#createValueHandler(currentPath, scope));
+          return new Proxy(
+            value,
+            r.#createValueHandler(currentPath, scope, untrackChild)
+          );
         }
 
-        if (value?.[IS_REF]) {
-          return value.value;
+        if (untrack) {
+          return value;
         }
 
         if (activeObserver.current) {
