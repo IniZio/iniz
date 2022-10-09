@@ -1,5 +1,32 @@
 # @iniz/core
 
+## 0.1.3
+
+### Patch Changes
+
+- [#133](https://github.com/IniZio/iniz/pull/133) [`ea60fa7`](https://github.com/IniZio/iniz/commit/ea60fa778951de897d1d9f8e72eeb2b79b9dfec4) Thanks [@IniZio](https://github.com/IniZio)! - Allow applying scope on a property of scoped atom / root atom.
+
+  All of the following usages will not cause re-render in parent when `contacts`'s property changes
+
+  ```tsx
+  function Child({ company }) {
+    const company$ = useAtom(company);
+    const companyContacts$ = useAtom(company$.value.contacts);
+  }
+  ```
+
+  ```tsx
+  function Child({ company }) {
+    const companyContacts$ = useAtom(company.value.contacts);
+  }
+  ```
+
+  ```tsx
+  function Child({ companyContacts }) {
+    const companyContacts$ = useAtom(compantConctacts);
+  }
+  ```
+
 ## 0.1.2
 
 ### Patch Changes
