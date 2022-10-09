@@ -9,7 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write --cache \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint && prettier --check \"**/*.{ts,tsx,md}\"",
     "test": "turbo run test",
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
