@@ -5,4 +5,3 @@ export { computed } from "./computed";
 export { effect, Effect } from "./effect";
 export { activeObserver } from "./observer";
 export { ref } from "./ref";
-export { scopedAtom } from "./scopedAtom";

@@ -1,14 +1,6 @@
-import { scopedAtom } from "@iniz/core";
-import { useReducer, useState } from "react";
+import { atom } from "@iniz/core";
+import { useState } from "react";
 
 export function useAtom<TValue>(atomOrInitialValue: TValue) {
-  const [, forceUpdate] = useReducer((f) => f + 1, 0);
-
-  const [snapshot] = useState(() =>
-    scopedAtom(atomOrInitialValue, {
-      onNotify: forceUpdate,
-    })
-  );
-
-  return snapshot;
+  return useState(() => atom(atomOrInitialValue))[0];
 }

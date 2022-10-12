@@ -27,8 +27,6 @@ export class Computed<TValue> extends Atom<TValue> {
     this.readonly = true;
   };
 
-  _updateCompute = (compute: () => TValue) => {};
-
   refresh = (compute?: () => TValue) => {
     this.#compute = compute ?? this.#compute;
     this.#observer.exec();
