@@ -1,3 +1,4 @@
+/** @jsxImportSource @iniz/react */
 import {
   atom,
   batch,

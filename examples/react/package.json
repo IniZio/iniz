@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@iniz/example-react",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
     "@babel/core": "^7.0.0",
     "@iniz/react": "*",
     "@types/node": "^17.0.12",
-    "@types/react": "18.0.17",
+    "@types/react": "^18.0.21",
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "next-transpile-modules": "9.0.0",
