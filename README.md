@@ -2,6 +2,8 @@
 
 Iniz is a reactive state library.
 
+> Currently Iniz is still at **alpha** stage
+
 `npm i @iniz/core`
 
 [![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
@@ -15,8 +17,7 @@ Iniz is a reactive state library.
     - [Create an atom](#create-an-atom)
     - [Mutate the atom value](#mutate-the-atom-value)
     - [Subscribe to atom](#subscribe-to-atom)
-  - [React via `useAtom`](#react-via-useatom)
-    - [Going one step furthur...](#going-one-step-furthur)
+  - [React ⚛](#react-)
 
 ## Guide
 
@@ -79,80 +80,40 @@ const timerAndCounter$ = computed(
 timerAndCounter$.value; // Returns "Computed: 2022-08-31T00:00:00.000Z 4"
 ```
 
-### React via `useAtom`
-
-Create a scoped atom that only re-renders when parts of the state accessed in component has changed.
+### React ⚛
 
 `npm i @iniz/react`
 
-> `@iniz/react` already installs and exports `@iniz/core`
+> `@iniz/react` already re-exports `@iniz/core`
+
+Simply use `atom()` values in components, they will re-render correctly thanks to [useSyncExternalStore](https://reactjs.org/docs/hooks-reference.html#usesyncexternalstore)
 
 ```tsx
-import { useAtom, useComputed, useSideEffect } from "@iniz/react";
-
 // The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
 
 function MessageInput() {
-  const nestedCounter$$ = useAtom(nestedCounter$);
+  // Equivalient to `atom()`
+  const counter = useAtom(10);
 
-  // Equivalent to `computed`
+  // Equivalent to `computed()`
   const computedCounter = useComputed(
     () => `Computed: ${nestedCounter$$.value.obj.message}`
   );
 
-  // Equivalent to `effect`
+  // Equivalent to `effect()`
+  // NOTE: You can also use `useEffect` with atoms actually
   useSideEffect(() => {
     console.log("[Latest message] ", computedCounter.value);
   });
 
   return (
     <div>
+      <button onClick={() => counter.value++}>{counter.value}++</button>
       <input
-        value={nestedCounter$$.value.obj.message}
+        value={nestedCounter$.value.obj.message}
         onChange={(evt) =>
-          (nestedCounter$$.value.obj.message = evt.target.value)
+          (nestedCounter$.value.obj.message = evt.target.value)
         }
-      />
-    </div>
-  );
-}
-```
-
-#### Going one step furthur...
-
-`useAtom` can be applied on a property of atom as well
-
-```tsx
-// CompanyForm won't be re-rendered when `company$.value.contacts` is updated
-
-function CompanyForm() {
-  const company$ = useAtom(company);
-  const companyBasic$ = useAtom(company.value.basic);
-
-  return (
-    <div>
-      <input
-        onChange={(e) => (companyBasic$.value.name = e.target.value)}
-        value={company$.value.basic.name}
-      />
-
-      <ContactPersonSubForm companyContacts={company$.value.contacts} />
-    </div>
-  );
-}
-
-function ContactPersonSubForm({ companyContacts }) {
-  const companyContacts$ = useAtom(companyContacts);
-
-  return (
-    <div>
-      <div data-testid="contact-name-display">
-        {companyContacts$.value[0].name}
-      </div>
-      <input
-        data-testid="contact-name-input"
-        onChange={(e) => (companyContacts$.value[0].name = e.target.value)}
-        value={companyContacts$.value[0].name}
       />
     </div>
   );

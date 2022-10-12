@@ -2,6 +2,8 @@
 
 Iniz is a reactive state library.
 
+> Currently Iniz is still at **alpha** stage
+
 `npm i @iniz/react`
 
 [![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
@@ -11,60 +13,40 @@ Iniz is a reactive state library.
 [![Downloads](https://img.shields.io/npm/dt/@iniz/react.svg?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/react)
 
 - [Guide](#guide)
-  - [React via `useAtom`](#react-via-useatom)
-  - [`useComputed` and `useSideEffect`](#usecomputed-and-usesideeffect)
 
 ## Guide
 
-### React via `useAtom`
+`npm i @iniz/react`
 
-Create a scoped atom that only re-renders when parts of the state accessed in component has changed.
+> `@iniz/react` already re-exports `@iniz/core`
 
-```tsx
-import { useAtom } from "@iniz/react";
-
-function MessageInput() {
-  const message$ = useAtom("Hello World");
-
-  return (
-    <div>
-      <input
-        value={message$$.value}
-        onChange={(evt) => (message$$.value = evt.target.value)}
-      />
-    </div>
-  );
-}
-```
-
-### `useComputed` and `useSideEffect`
-
-They are equivalent to `computed` and `effect` of `@iniz/core` respectively
+Simply use `atom()` values in components, they will re-render correctly thanks to [useSyncExternalStore](https://reactjs.org/docs/hooks-reference.html#usesyncexternalstore)
 
 ```tsx
-import { useAtom, useComputed, useSideEffect } from "@iniz/react";
-
 // The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
 
 function MessageInput() {
-  const nestedCounter$$ = useAtom(nestedCounter$);
+  // Equivalient to `atom()`
+  const counter = useAtom(10);
 
-  // Equivalent to `computed`
+  // Equivalent to `computed()`
   const computedCounter = useComputed(
     () => `Computed: ${nestedCounter$$.value.obj.message}`
   );
 
-  // Equivalent to `effect`
+  // Equivalent to `effect()`
+  // NOTE: You can also use `useEffect` with atoms actually
   useSideEffect(() => {
     console.log("[Latest message] ", computedCounter.value);
   });
 
   return (
     <div>
+      <button onClick={() => counter.value++}>{counter.value}++</button>
       <input
-        value={nestedCounter$$.value.obj.message}
+        value={nestedCounter$.value.obj.message}
         onChange={(evt) =>
-          (nestedCounter$$.value.obj.message = evt.target.value)
+          (nestedCounter$.value.obj.message = evt.target.value)
         }
       />
     </div>

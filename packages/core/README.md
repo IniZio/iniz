@@ -2,6 +2,8 @@
 
 Iniz is a reactive state library.
 
+> Currently Iniz is still at **alpha** stage
+
 `npm i @iniz/core`
 
 [![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
