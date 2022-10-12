@@ -1,6 +1,6 @@
 ---
-"@iniz/core": major
-"@iniz/react": major
+"@iniz/core": minor
+"@iniz/react": minor
 ---
 
 Change to use useSyncExtenalStore.
