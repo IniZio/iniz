@@ -1,5 +1,14 @@
 # @iniz/react
 
+## 0.2.1
+
+### Patch Changes
+
+- [#158](https://github.com/IniZio/iniz/pull/158) [`6a4cecc`](https://github.com/IniZio/iniz/commit/6a4ceccf8a292330d3702948d434d025347219e7) Thanks [@IniZio](https://github.com/IniZio)! - Update readmes for latest version
+
+- Updated dependencies [[`6a4cecc`](https://github.com/IniZio/iniz/commit/6a4ceccf8a292330d3702948d434d025347219e7)]:
+  - @iniz/core@0.3.1
+
 ## 0.2.0
 
 ### Minor Changes
