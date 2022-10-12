@@ -1,5 +1,11 @@
 # @iniz/core
 
+## 1.0.0
+
+### Major Changes
+
+- [#155](https://github.com/IniZio/iniz/pull/155) [`478aa31`](https://github.com/IniZio/iniz/commit/478aa31f3b61c3e1fece2b43bd4d5812cba775f2) Thanks [@IniZio](https://github.com/IniZio)! - Change to use useSyncExtenalStore.
+
 ## 0.2.0
 
 ### Minor Changes
