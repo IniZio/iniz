@@ -11,20 +11,20 @@ export class Observer {
 
   #atomBySymbol = new Map<Symbol, Atom<any>>();
 
-  #callback: () => void;
+  callback: () => void;
   onNotify?: () => void;
 
   constructor(
     callback: () => void,
     { onNotify }: { onNotify?: () => void } = {}
   ) {
-    this.#callback = callback;
+    this.callback = callback;
     this.onNotify = onNotify;
   }
 
   exec = () => {
     activeObserver.current = this;
-    this.#callback();
+    this.callback();
     activeObserver.current = undefined;
   };
 
