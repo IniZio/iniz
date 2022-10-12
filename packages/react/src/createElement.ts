@@ -54,6 +54,18 @@ const proxyHandler: ProxyHandler<FunctionComponent> = {
   },
 };
 
+const proxiedComponentMap = new Map<FunctionComponent, FunctionComponent>();
+function getOrCreateProxiedComponent(Component: FunctionComponent) {
+  if (!proxiedComponentMap.has(Component)) {
+    const ProxiedComponent = new Proxy(Component, proxyHandler);
+
+    proxiedComponentMap.set(Component, ProxiedComponent);
+    proxiedComponentMap.set(ProxiedComponent, ProxiedComponent);
+  }
+
+  return proxiedComponentMap.get(Component);
+}
+
 function proxyCreateElement(createElement: any) {
   if (typeof createElement !== "function") return createElement;
 
@@ -61,13 +73,13 @@ function proxyCreateElement(createElement: any) {
     let proxiedType = type;
 
     if (typeof type === "function") {
-      proxiedType = new Proxy(type, proxyHandler);
+      proxiedType = getOrCreateProxiedComponent(type);
     } else if (
       type &&
       typeof type === "object" &&
       typeof type.type === "function"
     ) {
-      proxiedType.type = new Proxy(type, proxyHandler);
+      proxiedType.type = getOrCreateProxiedComponent(type);
     }
 
     return createElement(proxiedType, props, ...children);

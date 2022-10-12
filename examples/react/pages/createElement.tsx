@@ -1,5 +1,5 @@
 import { atom } from "@iniz/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const counter = atom(55);
 const increment = () => counter.value++;
@@ -20,24 +20,24 @@ type Company = {
 };
 
 const company = atom({
-  basic: { name: "ABC" },
+  basic: { name: "ABC", type: "logistics" },
   contacts: [{ phone: "111111111", name: "Tom" }],
 });
 
 function ContactPersonSubForm({
-  companyContacts: companyContacts$,
+  companyContacts,
 }: {
   companyContacts: Company["contacts"];
 }) {
   return (
     <div>
-      <div data-testid="contact-name-display">{companyContacts$[0].name}</div>
+      <div data-testid="contact-name-display">{companyContacts[0].name}</div>
       <input
         data-testid="contact-name-input"
         onChange={(e) => {
-          companyContacts$[0].name = e.target.value;
+          companyContacts[0].name = e.target.value;
         }}
-        value={companyContacts$[0].name}
+        value={companyContacts[0].name}
       />
     </div>
   );
@@ -45,6 +45,12 @@ function ContactPersonSubForm({
 
 function ProfileForm() {
   const companyBasic = company.value.basic;
+  const firstCompanyContact = company.value.contacts[0];
+
+  // NOTE: This works but react complains about exhaustive deps if just pass `company.value.contacts[0].name`
+  useEffect(() => {
+    console.log("=== first contact name", firstCompanyContact.name);
+  }, [firstCompanyContact.name]);
 
   return (
     <div>
