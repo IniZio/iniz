@@ -1,5 +1,11 @@
 # @iniz/react
 
+## 0.2.2
+
+### Patch Changes
+
+- [#162](https://github.com/IniZio/iniz/pull/162) [`583d18e`](https://github.com/IniZio/iniz/commit/583d18e315cc8da6ff181a35868d8649cca85e11) Thanks [@IniZio](https://github.com/IniZio)! - Provide jsxImportSource for error `default not exported by jsx runtime`
+
 ## 0.2.1
 
 ### Patch Changes
