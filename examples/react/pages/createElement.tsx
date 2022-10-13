@@ -1,3 +1,4 @@
+/** @jsxImportSource @iniz/react */
 import { atom } from "@iniz/react";
 import { useEffect, useState } from "react";
 

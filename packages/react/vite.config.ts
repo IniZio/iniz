@@ -1,7 +1,7 @@
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vitest/config";
-// NOTE: Apparently vitest is not compatitable with react plugin for now...?
-// import react from '@vitejs/plugin-react'
+// import { viteStaticCopy as copy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,9 +10,15 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "ReactIniz",
-      fileName: (format) => `index.${format}.js`,
+      formats: ["es", "cjs"],
+      fileName: (format) => `[name].${format}.js`,
     },
     rollupOptions: {
+      input: {
+        index: "./src/index.ts",
+        "jsx-runtime": "./src/jsx-runtime.ts",
+        "jsx-dev-runtime": "./src/jsx-dev-runtime.ts",
+      },
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external(id) {
@@ -24,6 +30,7 @@ export default defineConfig({
         globals: {
           react: "React",
         },
+        inlineDynamicImports: false,
       },
     },
   },
@@ -34,5 +41,21 @@ export default defineConfig({
       provider: "istanbul",
     },
   },
-  plugins: [],
+  plugins: [
+    react({
+      jsxRuntime: "classic",
+    }) as any,
+    // copy({
+    //   targets: [
+    //     {
+    //       src: 'dist/jsx-dev-runtime*',
+    //       dest: '../jsx-dev-runtime/dist'
+    //     },
+    //     {
+    //       src: 'dist/jsx-runtime*',
+    //       dest: '../jsx-runtime/dist'
+    //     }
+    //   ]
+    // })
+  ],
 });

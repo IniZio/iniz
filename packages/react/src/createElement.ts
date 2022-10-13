@@ -3,8 +3,6 @@
 
 import { activeObserver, Effect } from "@iniz/core";
 import React, { FunctionComponent, useState } from "react";
-import _jsxRuntimeDev from "react/jsx-dev-runtime";
-import _jsxRuntime from "react/jsx-runtime";
 
 // Makes this work < React v17
 import { useSyncExternalStore } from "use-sync-external-store/shim";
@@ -66,7 +64,7 @@ function getOrCreateProxiedComponent(Component: FunctionComponent) {
   return proxiedComponentMap.get(Component);
 }
 
-function proxyCreateElement(createElement: any) {
+export function proxyCreateElement(createElement: any) {
   if (typeof createElement !== "function") return createElement;
 
   return (type: any, props: any, ...children: any[]) => {
@@ -90,13 +88,14 @@ if (React) {
   React.createElement = proxyCreateElement(React.createElement);
 }
 
+// NOTE: This breaks bundlers that do not handle export default from the runtime files...
 // Wasted hours to find that I forgot React v17 has new jsx runtime thing...
 // Saved me: https://stackoverflow.com/a/70755183
-const jsxRuntime: any = _jsxRuntime;
-if (jsxRuntime) {
-  jsxRuntime.jsx = proxyCreateElement(jsxRuntime.jsx);
-}
-const jsxRuntimeDev: any = _jsxRuntimeDev;
-if (jsxRuntimeDev) {
-  jsxRuntimeDev.jsxDEV = proxyCreateElement(jsxRuntimeDev.jsxDEV);
-}
+// const jsxRuntime: any = _jsxRuntime;
+// if (jsxRuntime) {
+//   jsxRuntime.jsx = proxyCreateElement(jsxRuntime.jsx);
+// }
+// const jsxRuntimeDev: any = _jsxRuntimeDev;
+// if (jsxRuntimeDev) {
+//   jsxRuntimeDev.jsxDEV = proxyCreateElement(jsxRuntimeDev.jsxDEV);
+// }
