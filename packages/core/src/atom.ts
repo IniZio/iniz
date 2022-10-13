@@ -1,7 +1,7 @@
 import { batch, batchedObservers } from "./batch";
 import { activeObserver, IS_OBSERVER, Observer } from "./observer";
 import { IS_REF } from "./ref";
-import { extractValue } from "./types";
+import { extractAtomValue } from "./types";
 import { arrayStartsWith, canProxy } from "./util";
 
 export const IS_ATOM = Symbol("IS_ATOM");
@@ -128,10 +128,12 @@ export class Atom<TValue> {
   }
 }
 
-export function isAtom(value: any): value is Atom<extractValue<typeof value>> {
+export function isAtom(
+  value: any
+): value is Atom<extractAtomValue<typeof value>> {
   return (value as any)?.[IS_ATOM];
 }
 
-export function atom<TValue>(value: TValue): Atom<extractValue<TValue>> {
+export function atom<TValue>(value: TValue): Atom<extractAtomValue<TValue>> {
   return (isAtom(value) ? value : new Atom(value)) as any;
 }
