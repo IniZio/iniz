@@ -1,23 +1,23 @@
-import { endBatchV2, startBatchV2 } from "./batch";
+import { endBatch, startBatch } from "./batch";
 import { DependencyTracker } from "./dependency";
 import { isRef } from "./ref";
-import { extractStateV2Value } from "./types";
+import { extractStateValue } from "./types";
 import { isClass } from "./util";
 
 export const IS_ATOM = Symbol.for("ATOM_CONTROL");
 
-export type StateV2<TValue> = TValue & {
+export type State<TValue> = TValue & {
   /** @internal */
   [IS_ATOM]: true;
 };
 
-export function isStateV2<TValue>(
+export function isState<TValue>(
   value: TValue
-): value is StateV2<extractStateV2Value<typeof value>> {
+): value is State<extractStateValue<typeof value>> {
   return !!(value as any)?.[IS_ATOM];
 }
 
-export function canApplyStateV2Proxy(value: any): boolean {
+export function canApplyStateProxy(value: any): boolean {
   return (
     value !== undefined &&
     (typeof value === "object" ||
@@ -37,14 +37,14 @@ export function canApplyStateV2Proxy(value: any): boolean {
   );
 }
 
-export function stateV2<TValue extends object>(
+export function state<TValue extends object>(
   value: TValue
-): StateV2<extractStateV2Value<TValue>> {
-  if (isStateV2(value)) {
+): State<extractStateValue<TValue>> {
+  if (isState(value)) {
     return value as any;
   }
 
-  if (!canApplyStateV2Proxy(value)) {
+  if (!canApplyStateProxy(value)) {
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
@@ -82,7 +82,7 @@ export function stateV2<TValue extends object>(
           untrackChild = true;
         }
 
-        if (canApplyStateV2Proxy(value)) {
+        if (canApplyStateProxy(value)) {
           return new Proxy(
             value,
             createProxyHandler(root ?? target, currentPropArray, untrackChild)
@@ -99,7 +99,7 @@ export function stateV2<TValue extends object>(
       set(target, prop, newValue, receiver) {
         const currentPropArray = parentPropArray.concat(prop);
 
-        startBatchV2();
+        startBatch();
         Reflect.set(target, prop, newValue, receiver);
         if (!untrack) {
           DependencyTracker.notifyObservers({
@@ -107,7 +107,7 @@ export function stateV2<TValue extends object>(
             path: currentPropArray,
           });
         }
-        endBatchV2();
+        endBatch();
 
         return true;
       },

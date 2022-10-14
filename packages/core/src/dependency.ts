@@ -1,20 +1,20 @@
-import { arrayStartsWith } from "../util";
 import { notifyStack } from "./batch";
-import { observerStack, ObserverV2 } from "./observer";
-import { StateV2 } from "./state";
+import { Observer, observerStack } from "./observer";
+import { State } from "./state";
+import { arrayStartsWith } from "./util";
 
 interface Dependency {
-  state: StateV2<any>;
+  state: State<any>;
   paths: (string | symbol | number)[][];
 }
 
 interface Access {
-  state: StateV2<any>;
+  state: State<any>;
   path: (string | symbol | number)[];
 }
 
-const observerMap = new Map<ObserverV2, Dependency[]>();
-const atomMap = new Map<StateV2<any>, Set<ObserverV2>>();
+const observerMap = new Map<Observer, Dependency[]>();
+const atomMap = new Map<State<any>, Set<Observer>>();
 
 export class DependencyTracker {
   static addDependency(access: Access) {
@@ -44,7 +44,7 @@ export class DependencyTracker {
     atomMap.get(access.state)!.add(observer);
   }
 
-  static clearDependencies(observer: ObserverV2) {
+  static clearDependencies(observer: Observer) {
     const dependencies = observerMap.get(observer);
     if (!dependencies) return;
 

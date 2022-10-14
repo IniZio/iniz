@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { atom } from "./atom";
-import { batch, batchLevel } from "./batch";
+import { batch } from "./batch";
 import { effect } from "./effect";
 
 describe("batch", () => {
@@ -19,20 +19,16 @@ describe("batch", () => {
     a1.value = `xyz`;
     a2.value = 2.5;
 
-    expect(batchLevel.current).toBe(0);
     expect(effectCount).toBe(2);
     expect(effectValue).toBe("xyz2.5");
 
     batch(() => {
-      expect(batchLevel.current).toBe(1);
-
       expect(effectCount).toBe(2);
       a1.value = `bcd`;
       a2.value = 3;
       expect(effectCount).toBe(2);
     });
 
-    expect(batchLevel.current).toBe(0);
     expect(effectValue).toBe("bcd3");
     expect(effectCount).toBe(3);
   });

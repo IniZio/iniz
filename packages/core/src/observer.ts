@@ -1,46 +1,37 @@
-import { Atom, IS_ATOM } from "./atom";
+import { DependencyTracker } from "./dependency";
 
-export const IS_OBSERVER = Symbol("IS_OBSERVER");
-
-export const activeObserver: { current: Observer | undefined } = {
-  current: undefined,
-};
+export const observerStack: Observer[] = [];
 
 export class Observer {
-  [IS_OBSERVER] = Symbol();
+  scheduler?: () => void;
 
-  #atomBySymbol = new Map<Symbol, Atom<any>>();
-
-  callback: () => void;
-  onNotify?: () => void;
-
-  constructor(
-    callback: () => void,
-    { onNotify }: { onNotify?: () => void } = {}
-  ) {
-    this.callback = callback;
-    this.onNotify = onNotify;
+  constructor(scheduler: () => void = () => {}) {
+    this.scheduler = scheduler;
   }
 
-  exec = () => {
-    activeObserver.current = this;
-    this.callback();
-    activeObserver.current = undefined;
+  start = () => {
+    if (observerStack.slice(-1)[0] === this) {
+      return;
+    }
+    observerStack.push(this);
   };
 
-  dispose = () => {
-    this.#atomBySymbol.forEach((atom) => {
-      atom.unsubscribe(this);
-    });
-    this.#atomBySymbol.clear();
+  stop = () => {
+    if (observerStack.slice(-1)[0] !== this) {
+      return;
+    }
+    observerStack.pop();
   };
 
   notify = () => {
-    this.exec();
-    this.onNotify?.();
+    this.scheduler?.();
   };
 
-  register = (atom: Atom<any>): void => {
-    this.#atomBySymbol.set(atom[IS_ATOM], atom);
+  dispose = () => {
+    DependencyTracker.clearDependencies(this);
   };
+}
+
+export function observer(scheduler: () => void = () => {}) {
+  return new Observer(scheduler);
 }
