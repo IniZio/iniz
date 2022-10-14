@@ -1,9 +1,10 @@
 import { endBatchV2, startBatchV2 } from "./batch";
 import { DependencyTracker } from "./dependency";
+import { isRef } from "./ref";
 import { extractStateV2Value } from "./types";
 import { isClass } from "./util";
 
-export const IS_ATOM = Symbol("ATOM_CONTROL");
+export const IS_ATOM = Symbol.for("ATOM_CONTROL");
 
 export type StateV2<TValue> = TValue & {
   /** @internal */
@@ -49,7 +50,8 @@ export function stateV2<TValue extends object>(
 
   function createProxyHandler(
     root: TValue | undefined = undefined,
-    parentPropArray: (string | symbol)[] = []
+    parentPropArray: (string | symbol)[] = [],
+    untrack: boolean = false
   ): ProxyHandler<any> {
     return {
       apply(target, thisArg, argArray) {
@@ -71,12 +73,19 @@ export function stateV2<TValue extends object>(
         }
 
         const currentPropArray = parentPropArray.concat(prop);
-        const value = Reflect.get(target, prop, receiver);
+        let value = Reflect.get(target, prop, receiver);
+
+        let untrackChild = untrack;
+
+        if (isRef(value)) {
+          value = value.value;
+          untrackChild = true;
+        }
 
         if (canApplyStateV2Proxy(value)) {
           return new Proxy(
             value,
-            createProxyHandler(root ?? target, currentPropArray)
+            createProxyHandler(root ?? target, currentPropArray, untrackChild)
           );
         }
 
@@ -92,10 +101,12 @@ export function stateV2<TValue extends object>(
 
         startBatchV2();
         Reflect.set(target, prop, newValue, receiver);
-        DependencyTracker.notifyObservers({
-          state: root ?? target,
-          path: currentPropArray,
-        });
+        if (!untrack) {
+          DependencyTracker.notifyObservers({
+            state: root ?? target,
+            path: currentPropArray,
+          });
+        }
         endBatchV2();
 
         return true;

@@ -34,4 +34,17 @@ describe("effect", () => {
     a3.push("bb");
     expect(anotherEffectCount).toBe(1);
   });
+
+  it("should call when deeply nested property updates", () => {
+    const a3 = stateV2({ a: { b: { c: [{ d: 1 }] } } });
+    let deepEffectCount = -1;
+
+    effectV2(() => {
+      a3.a.b.c[0].d;
+      deepEffectCount++;
+    });
+
+    a3.a.b.c[0].d++;
+    expect(deepEffectCount).toBe(1);
+  });
 });

@@ -13,6 +13,7 @@ export function endBatchV2() {
     return;
   }
 
+  // TODO: Error if notifyStack keep growing?
   for (const observer of notifyStack) {
     observer.notify();
   }

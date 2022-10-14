@@ -76,7 +76,7 @@ export class DependencyTracker {
       if (!dependency) continue;
 
       if (
-        !dependency.paths.find((path) => arrayStartsWith(path, access.path))
+        !dependency.paths.some((path) => arrayStartsWith(path, access.path))
       ) {
         continue;
       }
