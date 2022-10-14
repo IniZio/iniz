@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { atomV2 } from "./atom";
 import { batchV2 } from "./batch";
 import { effectV2 } from "./effect";
-import { atomV2 } from "./atom";
 
 describe("batch", () => {
   it("should plus/minus batch levels according to batch closure", () => {

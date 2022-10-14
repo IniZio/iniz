@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { effectV2 } from "./effect";
 import { atomV2 } from "./atom";
+import { effectV2 } from "./effect";
 import { stateV2 } from "./state";
 
 describe("effect", () => {
