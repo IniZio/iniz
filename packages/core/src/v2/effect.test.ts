@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { effectV2 } from "./effect";
-import { primitiveV2 } from "./primitive";
+import { atomV2 } from "./atom";
 import { stateV2 } from "./state";
 
 describe("effect", () => {
   it("should call when included primitve updates", () => {
-    const a1 = primitiveV2("abc");
-    const a2 = primitiveV2(2);
+    const a1 = atomV2("abc");
+    const a2 = atomV2(2);
 
     let effectCount = -1;
     effectV2(() => {

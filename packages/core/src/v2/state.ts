@@ -1,3 +1,4 @@
+import { endBatchV2, startBatchV2 } from "./batch";
 import { DependencyTracker } from "./dependency";
 import { extractStateV2Value } from "./types";
 import { isClass } from "./util";
@@ -88,12 +89,14 @@ export function stateV2<TValue extends object>(
       },
       set(target, prop, newValue, receiver) {
         const currentPropArray = parentPropArray.concat(prop);
-        Reflect.set(target, prop, newValue, receiver);
 
+        startBatchV2();
+        Reflect.set(target, prop, newValue, receiver);
         DependencyTracker.notifyObservers({
           state: root ?? target,
           path: currentPropArray,
         });
+        endBatchV2();
 
         return true;
       },

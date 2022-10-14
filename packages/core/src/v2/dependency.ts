@@ -1,4 +1,5 @@
 import { arrayStartsWith } from "../util";
+import { notifyStack } from "./batch";
 import { observerStack, ObserverV2 } from "./observer";
 import { StateV2 } from "./state";
 
@@ -80,8 +81,9 @@ export class DependencyTracker {
         continue;
       }
 
-      // TODO: Handling batching
-      observer.notify();
+      if (!notifyStack.includes(observer)) {
+        notifyStack.push(observer);
+      }
     }
   }
 }
