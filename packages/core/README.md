@@ -40,7 +40,7 @@ const nestedCounter$ = atom({
 
 #### Mutate the atom value
 
-Call the atom to read/write it, or use `.value` property.
+Call the atom to read/write it.
 
 ```ts
 timer$(); // Returns latest value e.g. `2019-08-31T00:00:00.000Z`
@@ -52,7 +52,7 @@ setInterval(() => {
 }, 1000);
 
 // Later on...
-timer$.value; // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
+timer$(); // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
 nestedCouner$().obj.array[0].count;
 ```
 
@@ -62,7 +62,7 @@ Use `effect()` to subscribe to value change.
 
 ```ts
 const dispose = effect(() => {
-  console.log("Updated timer: ", timer$.value);
+  console.log("Updated timer: ", timer$());
 });
 
 // Execute `dispose` to stop effect
@@ -73,7 +73,7 @@ Use `computed()` to get calculated value from multiple atoms.
 
 ```ts
 const timerAndCounter$ = computed(
-  () => `Computed: '${nestedCounter$.value.obj.array[0]}' '${timer$.value}'`
+  () => `Computed: '${nestedCounter$().obj.array[0]}' '${timer$()}'`
 );
 
 timerAndCounter$(); // Returns "Computed: 2022-08-31T00:00:00.000Z 4"

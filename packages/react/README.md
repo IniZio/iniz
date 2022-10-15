@@ -46,14 +46,14 @@ Simply use `atom()` values in components, they will re-render correctly thanks t
 ```tsx
 import { useAtom, useComputed, useSideEffect } from "@iniz/react";
 
-// The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
+// The component won't re-render when `nestedCounter$().obj.array[0].count` is updated
 function MessageInput() {
   // Equivalient to `atom()`
   const counter = useAtom(10);
 
   // Equivalent to `computed()`
   const computedCounter = useComputed(
-    () => `Computed: ${nestedCounter$$.value.obj.message}`
+    () => `Computed: ${nestedCounter$$().obj.message}`
   );
 
   // Equivalent to `effect()`
@@ -64,7 +64,7 @@ function MessageInput() {
 
   return (
     <div>
-      <button onClick={() => counter.value++}>{counter()}++</button>
+      <button onClick={() => counter()++}>{counter()}++</button>
       <input
         value={nestedCounter$().obj.message}
         onChange={(evt) => (nestedCounter$().obj.message = evt.target.value)}
