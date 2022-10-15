@@ -10,7 +10,7 @@ import {
 import { useCallback, useEffect } from "react";
 
 const store = atom({ count: 10, a: { b: 12 }, message: "hello" });
-const timer = atom<Date>(undefined);
+const timer = atom<Date | undefined>(undefined);
 
 function Stat() {
   /*
@@ -122,7 +122,7 @@ function Timer() {
   const timer$ = useAtom(timer);
 
   const timerLabel = useComputed(
-    () => `${store$.value.message} ${timer$.value?.toLocaleTimeString()}`
+    () => `${store$.value.message} ${timer$.value?.toLocaleDateString()}`
   );
 
   useEffect(() => {
@@ -240,18 +240,17 @@ function ContactPersonSubForm({
 
 function ProfileForm() {
   const company$ = useAtom(company);
-  const companyBasic$ = useAtom(company.value.basic);
+  const companyBasic$ = company().basic;
 
   return (
     <div>
-      <h1 data-testid="name-display">{companyBasic$.value.name}</h1>
+      <h1 data-testid="name-display">{companyBasic$.name}</h1>
       <input
         data-testid="name-input"
         onChange={(e) => {
-          companyBasic$.value.name = e.target.value;
+          companyBasic$.name = e.target.value;
         }}
-        // value={companyBasic$.value.name}
-        value={company$.value.basic.name}
+        value={company$().basic.name}
       />
 
       <ContactPersonSubForm companyContacts={company$.value.contacts} />

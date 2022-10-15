@@ -1,7 +1,10 @@
-export { atom, isAtom } from "./atom";
+export { atom } from "./atom";
 export type { Atom } from "./atom";
 export { batch } from "./batch";
 export { computed } from "./computed";
-export { effect, Effect } from "./effect";
-export { activeObserver } from "./observer";
+export { effect } from "./effect";
+export { observer } from "./observer";
+export type { Observer } from "./observer";
 export { ref } from "./ref";
+export { isState, state } from "./state";
+export type { State } from "./state";

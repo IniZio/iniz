@@ -1,21 +1,24 @@
-import { Observer } from "./observer";
+import type { Observer } from "./observer";
 
-export const batchLevel = { current: 0 };
-export const batchedObservers = new Set<Observer>();
+let batchLevel = 0;
+export const notifyStack: Observer[] = [];
 
 export function startBatch() {
-  batchLevel.current++;
+  batchLevel++;
 }
 
 export function endBatch() {
-  if (batchLevel.current > 1) {
-    batchLevel.current--;
+  if (batchLevel > 1) {
+    batchLevel--;
     return;
   }
 
-  batchedObservers.forEach((o) => o.notify());
-  batchedObservers.clear();
-  batchLevel.current--;
+  // TODO: Error if notifyStack keeps growing?
+  for (const observer of notifyStack) {
+    observer.notify();
+  }
+  notifyStack.length = 0;
+  batchLevel--;
 }
 
 export function batch(callback: () => void): void {

@@ -1,21 +1,12 @@
 import { computed } from "@iniz/core";
 import { useEffect, useState } from "react";
-import { useAtom } from "./useAtom";
 
-export function useComputed<TFn extends () => any>(
-  callback: TFn,
-  deps: any[] = []
-) {
-  const [cp] = useState(() => computed(callback));
-  const instance = useAtom(cp);
-
-  // HACK: Don't want callback to keep triggering compute,
-  // but also want to ensure latest version of callback on recompute...
+export function useComputed<TValue>(compute: () => TValue, deps: any[] = []) {
+  const [snapshot] = useState(() => computed(compute));
   useEffect(
-    () => cp.refresh(callback),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps
+    () => void (snapshot.value = compute()),
+    deps // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  return instance;
+  return snapshot;
 }

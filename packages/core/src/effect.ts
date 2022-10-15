@@ -1,10 +1,34 @@
-import { Observer } from "./observer";
+import { observer } from "./observer";
 
-export class Effect extends Observer {}
+class Effect {
+  #observer = observer();
 
-export function effect(callback: () => void, onNotify?: () => void) {
-  const effect = new Effect(callback, { onNotify });
+  #fn: () => void = () => {};
 
+  constructor(fn: () => void, { scheduler }: { scheduler?: () => void } = {}) {
+    this.#fn = fn;
+    this.#observer.scheduler = () => {
+      this.#fn();
+      scheduler?.();
+    };
+  }
+
+  exec = () => {
+    this.#observer.start();
+    this.#fn();
+    this.#observer.stop();
+  };
+
+  dispose = () => {
+    this.#observer.dispose();
+  };
+}
+
+export function effect(
+  fn: () => void,
+  { scheduler }: { scheduler?: () => void } = {}
+) {
+  const effect = new Effect(fn, { scheduler });
   effect.exec();
   return effect.dispose;
 }

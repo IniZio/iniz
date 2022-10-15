@@ -2,8 +2,6 @@
 
 Iniz is a reactive state library.
 
-> Currently Iniz is still at **alpha** stage
-
 `npm i @iniz/core`
 
 [![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
@@ -43,23 +41,25 @@ const nestedCounter$ = atom({
 
 #### Mutate the atom value
 
-The `value` property can be read/written to.
+Call the atom to read/write it, or use `.value` property.
 
 ```ts
-timer$.value; // Returns latest value e.g. `2019-08-31T00:00:00.000Z`
+timer$(); // Returns latest value e.g. `2019-08-31T00:00:00.000Z`
 
 setInterval(() => {
-  timer$.value = new Date();
-  nestedCounter$.value.obj.array[0].count++;
+  nestedCounter$().obj.array[0].count++;
+  timer$(new Date());
+  // Calling it as function also sets `value`
 }, 1000);
 
 // Later on...
 timer$.value; // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
+nestedCouner$().obj.array[0].count;
 ```
 
 #### Subscribe to atom
 
-Use `effect` to subscribe to value change.
+Use `effect()` to subscribe to value change.
 
 ```ts
 const dispose = effect(() => {
@@ -70,27 +70,28 @@ const dispose = effect(() => {
 dispose();
 ```
 
-Use `computed` to get calculated value from multiple atoms
+Use `computed()` to get calculated value from multiple atoms.
 
 ```ts
 const timerAndCounter$ = computed(
   () => `Computed: '${nestedCounter$.value.obj.array[0]}' '${timer$.value}'`
 );
 
-timerAndCounter$.value; // Returns "Computed: 2022-08-31T00:00:00.000Z 4"
+timerAndCounter$(); // Returns "Computed: 2022-08-31T00:00:00.000Z 4"
 ```
 
 ### React ⚛
 
 `npm i @iniz/react`
 
-> `@iniz/react` already re-exports `@iniz/core`
+> `@iniz/react` already re-exports `@iniz/core`, so don't need to install `@iniz/core` yourself
 
 Simply use `atom()` values in components, they will re-render correctly thanks to [useSyncExternalStore](https://reactjs.org/docs/hooks-reference.html#usesyncexternalstore)
 
 ```tsx
-// The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
+import { useAtom, useComputed } from "@iniz/react";
 
+// The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
 function MessageInput() {
   // Equivalient to `atom()`
   const counter = useAtom(10);
@@ -103,17 +104,15 @@ function MessageInput() {
   // Equivalent to `effect()`
   // NOTE: You can also use `useEffect` with atoms actually
   useSideEffect(() => {
-    console.log("[Latest message] ", computedCounter.value);
+    console.log("[Latest message] ", computedCounter());
   });
 
   return (
     <div>
-      <button onClick={() => counter.value++}>{counter.value}++</button>
+      <button onClick={() => counter.value++}>{counter()}++</button>
       <input
-        value={nestedCounter$.value.obj.message}
-        onChange={(evt) =>
-          (nestedCounter$.value.obj.message = evt.target.value)
-        }
+        value={nestedCounter$().obj.message}
+        onChange={(evt) => (nestedCounter$().obj.message = evt.target.value)}
       />
     </div>
   );
