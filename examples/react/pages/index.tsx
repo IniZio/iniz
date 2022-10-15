@@ -42,7 +42,7 @@ function Message() {
 
   const onChange = useCallback(
     (event) => {
-      store$().message = event.target();
+      store$().message = event.target.value;
     },
     [store$]
   );
