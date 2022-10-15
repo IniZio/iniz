@@ -1,5 +1,16 @@
 # @iniz/react
 
+## 0.3.0
+
+### Minor Changes
+
+- [#164](https://github.com/IniZio/iniz/pull/164) [`56e119e`](https://github.com/IniZio/iniz/commit/56e119e0df6de9de1327d2f943d72f20b03656bf) Thanks [@IniZio](https://github.com/IniZio)! - Reduce exposed API
+
+### Patch Changes
+
+- Updated dependencies [[`56e119e`](https://github.com/IniZio/iniz/commit/56e119e0df6de9de1327d2f943d72f20b03656bf)]:
+  - @iniz/core@0.4.0
+
 ## 0.2.2
 
 ### Patch Changes
