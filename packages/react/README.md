@@ -10,34 +10,9 @@ Iniz is a reactive state library.
 [![Version](https://img.shields.io/npm/v/@iniz/react?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/react)
 [![Downloads](https://img.shields.io/npm/dt/@iniz/react.svg?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/react)
 
-- [Iniz](#iniz)
 - [Guide](#guide)
-
-## Iniz
-
-Iniz is a reactive state library.
-
-> Currently Iniz is still at **alpha** stage
-
-`npm i @iniz/core`
-
-[![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
-[![Test Coverage](https://img.shields.io/codecov/c/github/inizio/iniz/main?token=qiX91NsrLE&label=coverage&style=flat&colorA=28282B&colorB=28282B)](https://codecov.io/gh/IniZio/iniz)
-[![Build Size](https://img.shields.io/bundlephobia/minzip/@iniz/core?label=bundle%20size&style=flat&colorA=28282B&colorB=28282B)](https://bundlephobia.com/package/@iniz/core)
-[![Version](https://img.shields.io/npm/v/@iniz/core?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/core)
-[![Downloads](https://img.shields.io/npm/dt/@iniz/core.svg?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/core)
-
-- [Iniz](#iniz)
-- [Guide](#guide)
-  - [Getting started](#getting-started)
-    - [Create an atom](#create-an-atom)
-    - [Mutate the atom value](#mutate-the-atom-value)
-    - [Subscribe to atom](#subscribe-to-atom)
-  - [React ⚛](#react-)
 
 ## Guide
-
-`npm i @iniz/react`
 
 > `@iniz/react` already re-exports `@iniz/core`, so don't need to install `@iniz/core` yourself
 
