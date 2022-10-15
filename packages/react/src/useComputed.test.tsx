@@ -18,7 +18,7 @@ describe("useComputed", () => {
     const [age, setAge] = useState(10);
 
     const fullName$ = useComputed(
-      () => `${firstName$.value} ${lastName$.value} (${age})`,
+      () => `${firstName$()} ${lastName$()} (${age})`,
       [age]
     );
 
@@ -30,17 +30,17 @@ describe("useComputed", () => {
         <input
           data-testid="firstName-input"
           onChange={(e) => {
-            firstName$.value = e.target.value;
+            firstName$(e.target.value);
           }}
-          value={firstName$.value}
+          value={firstName$()}
         />
-        <div data-testid="fullName">{fullName$.value}</div>
+        <div data-testid="fullName">{fullName$()}</div>
       </div>
     );
   }
 
   beforeEach(() => {
-    lastName.value = "CD";
+    lastName("CD");
 
     render(<NameForm />);
   });
@@ -51,7 +51,7 @@ describe("useComputed", () => {
 
   test("should reflect dependency update", () => {
     act(() => {
-      lastName.value = "EF";
+      lastName("EF");
     });
 
     fireEvent.change(screen.getByTestId<HTMLInputElement>("firstName-input"), {

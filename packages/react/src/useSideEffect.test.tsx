@@ -20,8 +20,8 @@ describe("useSideEffect", () => {
     const [age, setAge] = useState(10);
 
     useSideEffect(() => {
-      firstName$.value;
-      lastName$.value;
+      firstName$();
+      lastName$();
       effectCount++;
     }, [age]);
 
@@ -33,9 +33,9 @@ describe("useSideEffect", () => {
         <input
           data-testid="firstName-input"
           onChange={(e) => {
-            firstName$.value = e.target.value;
+            firstName$(e.target.value);
           }}
-          value={firstName$.value}
+          value={firstName$()}
         />
       </div>
     );
@@ -54,7 +54,7 @@ describe("useSideEffect", () => {
   test("should execute on atom chaNge", () => {
     expect(effectCount).toBe(1);
     act(() => {
-      lastName.value = "CD";
+      lastName("CD");
     });
     expect(effectCount).toBe(2);
 

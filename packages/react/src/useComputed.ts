@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 export function useComputed<TValue>(compute: () => TValue, deps: any[] = []) {
   const [snapshot] = useState(() => computed(compute));
   useEffect(
-    () => void (snapshot.value = compute()),
+    () => void snapshot(compute() as any),
     deps // eslint-disable-line react-hooks/exhaustive-deps
   );
 

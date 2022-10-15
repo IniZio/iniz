@@ -1,3 +1,4 @@
+import { Atom, isAtom } from "./atom";
 import { endBatch, startBatch } from "./batch";
 import { DependencyTracker } from "./dependency";
 import { isRef } from "./ref";
@@ -6,9 +7,15 @@ import { isClass } from "./util";
 
 export const IS_STATE = Symbol.for("IS_STATE");
 
-export type State<TValue> = TValue & {
+export type State<TValue> = (TValue extends
+  | { [k in keyof TValue]: State<any> }
+  | { [k in keyof TValue]: Atom<any> }
+  ? {
+      [k in keyof TValue]: extractStateValue<TValue[k]>;
+    }
+  : TValue) & {
   /** @internal */
-  [IS_STATE]?: boolean;
+  [IS_STATE]?: true;
 };
 
 export function isState<TValue>(value: TValue): value is State<any> {
@@ -35,9 +42,7 @@ export function canApplyStateProxy(value: any): boolean {
   );
 }
 
-export function state<TValue extends object>(
-  value: TValue
-): State<extractStateValue<TValue>> {
+export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
   if (isState(value)) {
     return value as any;
   }
@@ -70,6 +75,10 @@ export function state<TValue extends object>(
         if (isRef(value)) {
           value = value.value;
           untrackChild = true;
+        }
+
+        if (isAtom(value)) {
+          value = value();
         }
 
         if (canApplyStateProxy(value)) {

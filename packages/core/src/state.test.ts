@@ -68,6 +68,30 @@ describe("atom", () => {
     p1(newValue);
     expect(p1.value).toBe(newValue);
   });
+
+  it("should autou-nwrap atom in atom", () => {
+    const child = atom({ b: { c: 1 } });
+    const parent = atom({
+      a: child,
+    });
+
+    let parentEffectCount = -1;
+    effect(() => {
+      parent().a.b.c;
+      parentEffectCount++;
+    });
+
+    let childEffectCount = -1;
+    effect(() => {
+      child().b.c;
+      childEffectCount++;
+    });
+
+    child().b.c++;
+    expect(childEffectCount).toBe(1);
+    expect(parentEffectCount).toBe(1);
+    expect(parent().a.b.c).toBe(2);
+  });
 });
 
 describe("isState", () => {
