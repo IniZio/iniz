@@ -5,9 +5,7 @@ export type Computed<TValue> = Atom<TValue>;
 
 export function computed<TValue>(compute: () => TValue): Computed<TValue> {
   const computed = atom<TValue>(compute());
-  effect(() => {
-    computed.value = compute();
-  });
+  effect(() => computed(compute() as any));
 
-  return computed;
+  return computed as any;
 }

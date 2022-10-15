@@ -41,7 +41,7 @@ const nestedCounter$ = atom({
 
 #### Mutate the atom value
 
-Call the atom to read/write it, or use `.value` property.
+Call the atom to read/write it.
 
 ```ts
 timer$(); // Returns latest value e.g. `2019-08-31T00:00:00.000Z`
@@ -53,7 +53,7 @@ setInterval(() => {
 }, 1000);
 
 // Later on...
-timer$.value; // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
+timer$(); // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
 nestedCouner$().obj.array[0].count;
 ```
 
@@ -63,7 +63,7 @@ Use `effect()` to subscribe to value change.
 
 ```ts
 const dispose = effect(() => {
-  console.log("Updated timer: ", timer$.value);
+  console.log("Updated timer: ", timer$());
 });
 
 // Execute `dispose` to stop effect
@@ -74,7 +74,7 @@ Use `computed()` to get calculated value from multiple atoms.
 
 ```ts
 const timerAndCounter$ = computed(
-  () => `Computed: '${nestedCounter$.value.obj.array[0]}' '${timer$.value}'`
+  () => `Computed: '${nestedCounter$().obj.array[0]}' '${timer$()}'`
 );
 
 timerAndCounter$(); // Returns "Computed: 2022-08-31T00:00:00.000Z 4"
@@ -91,14 +91,14 @@ Simply use `atom()` values in components, they will re-render correctly thanks t
 ```tsx
 import { useAtom, useComputed } from "@iniz/react";
 
-// The component won't re-render when `nestedCounter$.value.obj.array[0].count` is updated
+// The component won't re-render when `nestedCounter$().obj.array[0].count` is updated
 function MessageInput() {
   // Equivalient to `atom()`
   const counter = useAtom(10);
 
   // Equivalent to `computed()`
   const computedCounter = useComputed(
-    () => `Computed: ${nestedCounter$$.value.obj.message}`
+    () => `Computed: ${nestedCounter$$().obj.message}`
   );
 
   // Equivalent to `effect()`
@@ -109,10 +109,10 @@ function MessageInput() {
 
   return (
     <div>
-      <button onClick={() => counter.value++}>{counter()}++</button>
+      <button onClick={() => counter()++}>{counter()}++</button>
       <input
         value={nestedCounter$().obj.message}
-        onChange={(evt) => (nestedCounter$().obj.message = evt.target.value)}
+        onChange={(evt) => (nestedCounter$().obj.message = evt.target())}
       />
     </div>
   );

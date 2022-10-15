@@ -3,7 +3,7 @@ import { atom } from "@iniz/react";
 import { useState } from "react";
 
 const counter = atom(55);
-const increment = () => counter.value++;
+const increment = () => counter(counter() + 1);
 
 // NOTE: This is also working
 function useAtom<TValue>(value: TValue) {
@@ -45,11 +45,11 @@ function ContactPersonSubForm({
 }
 
 function ProfileForm() {
-  const companyBasic = company.value.basic;
+  const companyBasic = company().basic;
   const address = useAtom("");
-  // const firstCompanyContact = company.value.contacts[0];
+  // const firstCompanyContact = company().contacts[0];
 
-  // NOTE: This works but react complains about exhaustive deps if just pass `company.value.contacts[0].name`
+  // NOTE: This works but react complains about exhaustive deps if just pass `company().contacts[0].name`
   // useEffect(() => {
   //   console.log("=== first contact name", firstCompanyContact.name);
   // }, [firstCompanyContact.name]);
@@ -62,11 +62,11 @@ function ProfileForm() {
         onChange={(e) => {
           companyBasic.name = e.target.value;
         }}
-        value={company.value.basic.name}
+        value={company().basic.name}
       />
       <input value={address()} onChange={(e) => address(e.target.value)} />
 
-      <ContactPersonSubForm companyContacts={company.value.contacts} />
+      <ContactPersonSubForm companyContacts={company().contacts} />
     </div>
   );
 }
@@ -77,11 +77,8 @@ export default function CreateElement() {
   return (
     <div>
       <div>Create Element</div>
-      <button onClick={increment}>{counter.value}</button>
-      <input
-        onChange={(e) => (message.value = e.target.value)}
-        value={message.value}
-      />
+      <button onClick={increment}>{counter()}</button>
+      <input onChange={(e) => message(e.target.value)} value={message()} />
       <ProfileForm />
     </div>
   );

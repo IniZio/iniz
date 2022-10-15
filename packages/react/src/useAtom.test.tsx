@@ -13,13 +13,13 @@ describe("useAtom", () => {
     function Counter() {
       const counter$ = useAtom({ count: 10 });
       const increment = useCallback(() => {
-        counter$.value.count += 1;
+        counter$().count += 1;
       }, [counter$]);
 
       return (
         <div>
           <button data-testid="counter-increment" onClick={increment}>
-            {counter$.value.count}
+            {counter$().count}
           </button>
         </div>
       );
@@ -54,19 +54,19 @@ describe("useAtom", () => {
     let profileRerenderCount = 0;
 
     function ContactPersonSubForm({ company }: { company: Atom<Company> }) {
-      const companyContacts$ = useAtom(company.value.contacts);
+      const companyContacts$ = useAtom(company().contacts);
 
       return (
         <div>
           <div data-testid="contact-name-display">
-            {companyContacts$.value[0].name}
+            {companyContacts$()[0].name}
           </div>
           <input
             data-testid="contact-name-input"
             onChange={(e) => {
-              companyContacts$.value[0].name = e.target.value;
+              companyContacts$()[0].name = e.target.value;
             }}
-            value={companyContacts$.value[0].name}
+            value={companyContacts$()[0].name}
           />
         </div>
       );
@@ -74,7 +74,7 @@ describe("useAtom", () => {
 
     function ProfileForm() {
       const company$ = useAtom(company);
-      const companyBasic$ = useAtom(company.value.basic);
+      const companyBasic$ = useAtom(company().basic);
 
       useEffect(() => {
         profileRerenderCount++;
@@ -82,13 +82,13 @@ describe("useAtom", () => {
 
       return (
         <div>
-          <h1 data-testid="name-display">{companyBasic$.value.name}</h1>
+          <h1 data-testid="name-display">{companyBasic$().name}</h1>
           <input
             data-testid="name-input"
             onChange={(e) => {
-              companyBasic$.value.name = e.target.value;
+              companyBasic$().name = e.target.value;
             }}
-            value={company$.value.basic.name}
+            value={company$().basic.name}
           />
 
           <ContactPersonSubForm company={company$} />
@@ -125,7 +125,7 @@ describe("useAtom", () => {
 
     test("should update according to atom", () => {
       act(() => {
-        company.value.basic.name = "DEF";
+        company().basic.name = "DEF";
       });
 
       expect(screen.getByTestId("name-display").innerHTML).toBe("DEF");
@@ -141,13 +141,13 @@ describe("useAtom", () => {
      * ```
      * function Child({ company }) {
      *   const company$ = useAtom(company)
-     *   const companyContacts$ = useAtom(company$.value.contacts)
+     *   const companyContacts$ = useAtom(company$().contacts)
      * }
      * ```
      *
      * ``
      * function Child({ company }) {
-     *   const companyContacts$ = useAtom(company.value.contacts)
+     *   const companyContacts$ = useAtom(company().contacts)
      * }
      * ```
      *
