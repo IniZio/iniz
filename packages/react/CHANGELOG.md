@@ -1,5 +1,16 @@
 # @iniz/react
 
+## 0.4.0
+
+### Minor Changes
+
+- [#166](https://github.com/IniZio/iniz/pull/166) [`3997271`](https://github.com/IniZio/iniz/commit/399727102e131e7970bfdf7eca78d2db147cb32b) Thanks [@IniZio](https://github.com/IniZio)! - Auto unwrap nested atom in atom
+
+### Patch Changes
+
+- Updated dependencies [[`3997271`](https://github.com/IniZio/iniz/commit/399727102e131e7970bfdf7eca78d2db147cb32b)]:
+  - @iniz/core@0.5.0
+
 ## 0.3.0
 
 ### Minor Changes
