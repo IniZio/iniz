@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { activeObserver, Effect } from "@iniz/core";
+import { observer } from "@iniz/core";
 import React, { FunctionComponent, useState } from "react";
 
 // Makes this work < React v17
@@ -10,25 +10,24 @@ import { useSyncExternalStore } from "use-sync-external-store/shim";
 // NOTE: Using proxy here to change function call but keep all properties
 const proxyHandler: ProxyHandler<FunctionComponent> = {
   apply(target, thisArg, argArray: [any, any]) {
-    const [effectAsStore] = useState(() => {
-      const effectAsSession = new Effect(() => {});
+    const [observerAsSession] = useState(() => observer());
+    const [observerAsStore] = useState(() => {
       let currentOnStoreChange: (() => void) | null = null;
       let snapshot = 0;
 
-      effectAsSession.onNotify = function () {
+      observerAsSession.scheduler = function () {
         snapshot++;
         currentOnStoreChange?.();
       };
 
       return {
-        effectAsSession,
         subscribe: (onStoreChange: () => void) => {
           currentOnStoreChange = onStoreChange;
 
           return () => {
             snapshot++;
             currentOnStoreChange = null;
-            effectAsSession.dispose();
+            observerAsSession.dispose();
           };
         },
         getSnapshot: () => {
@@ -38,15 +37,14 @@ const proxyHandler: ProxyHandler<FunctionComponent> = {
     });
 
     useSyncExternalStore(
-      effectAsStore.subscribe,
-      effectAsStore.getSnapshot,
-      effectAsStore.getSnapshot
+      observerAsStore.subscribe,
+      observerAsStore.getSnapshot,
+      observerAsStore.getSnapshot
     );
 
-    // HACK: Cannot even put it inside a callback of the effect not sure why yet...
-    activeObserver.current = effectAsStore.effectAsSession;
+    observerAsSession.start();
     const children = target.apply(thisArg, argArray);
-    activeObserver.current = undefined;
+    observerAsSession.stop();
 
     return children;
   },

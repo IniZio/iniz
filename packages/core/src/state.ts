@@ -4,17 +4,15 @@ import { isRef } from "./ref";
 import { extractStateValue } from "./types";
 import { isClass } from "./util";
 
-export const IS_ATOM = Symbol.for("ATOM_CONTROL");
+export const IS_STATE = Symbol.for("IS_STATE");
 
 export type State<TValue> = TValue & {
   /** @internal */
-  [IS_ATOM]: true;
+  [IS_STATE]?: boolean;
 };
 
-export function isState<TValue>(
-  value: TValue
-): value is State<extractStateValue<typeof value>> {
-  return !!(value as any)?.[IS_ATOM];
+export function isState<TValue>(value: TValue): value is State<any> {
+  return !!(value as any)?.[IS_STATE];
 }
 
 export function canApplyStateProxy(value: any): boolean {
@@ -48,6 +46,8 @@ export function state<TValue extends object>(
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
+  let state: any;
+
   function createProxyHandler(
     root: TValue | undefined = undefined,
     parentPropArray: (string | symbol)[] = [],
@@ -55,21 +55,11 @@ export function state<TValue extends object>(
   ): ProxyHandler<any> {
     return {
       apply(target, thisArg, argArray) {
-        // Primitive
-        if (!root && typeof target === "function") {
-          const VALUE_KEY = "value";
-          if (argArray.length === 0) {
-            return target[VALUE_KEY];
-          }
-
-          target[VALUE_KEY] = argArray[0];
-        }
-
-        return target.apply(thisArg, argArray);
+        return target.apply(thisArg ?? state, argArray);
       },
       get(target, prop, receiver) {
-        if (prop === IS_ATOM) {
-          return true;
+        if (prop === IS_STATE) {
+          return !root;
         }
 
         const currentPropArray = parentPropArray.concat(prop);
@@ -114,5 +104,6 @@ export function state<TValue extends object>(
     };
   }
 
-  return new Proxy(value, createProxyHandler());
+  state = new Proxy(value, createProxyHandler());
+  return state;
 }

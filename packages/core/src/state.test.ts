@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { atom } from "./atom";
+import { effect } from "./effect";
 import { isState, state } from "./state";
 
 describe("state", () => {
@@ -37,17 +38,35 @@ describe("atom", () => {
   });
 
   it("should return same atom if passed again", () => {
-    const a1 = atom(30);
-    expect(a1).toBe(atom(a1));
+    const a1 = atom({ a: { b: { c: [{ d: 10 }] } } });
+    const aa1 = atom(a1);
+    expect(a1).toBe(aa1);
+    expect(aa1.value.a.b.c[0].d).toBe(10);
+  });
+
+  it("should can apply on sub-path and trigger original atom updates", () => {
+    const a1 = atom({ a: { b: { c: [{ d: 10 }] } } });
+    expect(a1.value.a.b.c[0].d).toBe(10);
+    const aa2 = atom(a1.value.a.b);
+    expect(aa2.value.c[0].d).toBe(10);
+    let effectCount = -1;
+    effect(() => {
+      a1().a.b.c[0].d;
+      effectCount++;
+    });
+    expect(effectCount).toBe(0);
+    aa2().c[0].d = 100;
+    expect(a1().a.b.c[0].d).toBe(100);
+    expect(effectCount).toBe(1);
   });
 
   it("should reflect value assigned correctly", () => {
     const p1 = atom(3);
-    expect(p1.value).toBe(3);
+    expect(p1()).toBe(3);
 
     const newValue = Math.random();
     p1(newValue);
-    expect(p1()).toBe(newValue);
+    expect(p1.value).toBe(newValue);
   });
 });
 

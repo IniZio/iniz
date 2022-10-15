@@ -4,8 +4,10 @@ import { effect } from "./effect";
 export type Computed<TValue> = Atom<TValue>;
 
 export function computed<TValue>(compute: () => TValue): Computed<TValue> {
-  const computed = atom(compute());
-  effect(() => computed(compute() as any));
+  const computed = atom<TValue>(compute());
+  effect(() => {
+    computed.value = compute();
+  });
 
   return computed;
 }
