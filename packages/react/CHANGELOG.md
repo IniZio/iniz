@@ -1,5 +1,11 @@
 # @iniz/react
 
+## 0.4.1
+
+### Patch Changes
+
+- [#168](https://github.com/IniZio/iniz/pull/168) [`8d091c0`](https://github.com/IniZio/iniz/commit/8d091c01baeaa01dfe651f3431ff3c2c08e88003) Thanks [@IniZio](https://github.com/IniZio)! - Fix readme...
+
 ## 0.4.0
 
 ### Minor Changes
