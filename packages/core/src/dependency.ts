@@ -53,6 +53,9 @@ export class DependencyTracker {
       if (!observerSet) continue;
 
       observerSet.delete(observer);
+      if (observerSet.size === 0) {
+        atomMap.delete(dependency.state);
+      }
     }
 
     observerMap.delete(observer);
