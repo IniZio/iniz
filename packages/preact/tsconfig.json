@@ -1,0 +1,5 @@
+{
+  "extends": "tsconfig/preact-library.json",
+  "include": ["next-env.d.ts", "src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
