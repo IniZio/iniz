@@ -1,0 +1,8 @@
+{
+  "name": "@iniz/react-jsx-dev-runtime",
+  "source": "../src/jsx-dev-runtime.ts",
+  "main": "../dist/jsx-dev-runtime.cjs.js",
+  "module": "../dist/jsx-dev-runtime.es.js",
+  "types": "../dist/types/index.d.ts",
+  "sideEffects": false
+}

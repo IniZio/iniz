@@ -1,17 +1,24 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import './app.css'
+/** @jsxImportSource @iniz/preact */
+
+/* eslint-disable @next/next/no-img-element */
+
+import { atom } from "@iniz/preact";
+import { useState } from "preact/hooks";
+import "./app.css";
+import preactLogo from "./assets/preact.svg";
+
+const count$ = atom(1);
 
 export function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
+        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
           <img src="/vite.svg" class="logo" alt="Vite logo" />
         </a>
-        <a href="https://preactjs.com" target="_blank">
+        <a href="https://preactjs.com" target="_blank" rel="noreferrer">
           <img src={preactLogo} class="logo preact" alt="Preact logo" />
         </a>
       </div>
@@ -19,6 +26,9 @@ export function App() {
       <div class="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
+        </button>
+        <button onClick={() => count$(count$() + 1)}>
+          count is {count$()}
         </button>
         <p>
           Edit <code>src/app.tsx</code> and save to test HMR
@@ -28,5 +38,5 @@ export function App() {
         Click on the Vite and Preact logos to learn more
       </p>
     </>
-  )
+  );
 }

@@ -39,7 +39,7 @@ function MessageInput() {
 
   return (
     <div>
-      <button onClick={() => counter()++}>{counter()}++</button>
+      <button onClick={() => counter(counter() + 1)}>{counter()}++</button>
       <input
         value={nestedCounter$().obj.message}
         onChange={(evt) => (nestedCounter$().obj.message = evt.target.value)}

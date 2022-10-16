@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iniz/preact": "*",
     "preact": "^10.10.6"
   },
   "devDependencies": {
