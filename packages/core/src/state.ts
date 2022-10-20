@@ -25,9 +25,8 @@ export function isState<TValue>(value: TValue): value is State<any> {
 export function canApplyStateProxy(value: any): boolean {
   return (
     value !== undefined &&
-    (typeof value === "object" ||
-      // HACK: For primitive to work, is this a good idea though...?
-      typeof value === "function") &&
+    value !== null &&
+    typeof value === "object" &&
     (!isClass(value) ||
       (!(value instanceof Map) &&
         !(value instanceof Set) &&
@@ -47,7 +46,8 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     return value as any;
   }
 
-  if (!canApplyStateProxy(value)) {
+  // HACK: Allow function to make atom work
+  if (!canApplyStateProxy(value) && typeof value !== "function") {
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
@@ -59,8 +59,8 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     untrack: boolean = false
   ): ProxyHandler<any> {
     return {
-      apply(target, thisArg, argArray) {
-        return target.apply(thisArg ?? state, argArray);
+      apply(target, _thisArg, argArray) {
+        return target.apply(state, argArray);
       },
       get(target, prop, receiver) {
         if (prop === IS_STATE) {
@@ -96,6 +96,11 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
         return value;
       },
       set(target, prop, newValue, receiver) {
+        // TODO: Allow customized equality check?
+        if (Reflect.get(target, prop, receiver) === newValue) {
+          return true;
+        }
+
         const currentPropArray = parentPropArray.concat(prop);
 
         startBatch();
