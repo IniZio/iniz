@@ -1,7 +1,6 @@
 /** @jsxImportSource @iniz/react */
 
-import { atom } from "@iniz/react";
-import { field, Field, validators } from "@iniz/react/form";
+import { Field, group, validators } from "@iniz/react/form";
 import { useState } from "react";
 
 function emailSuffixValidator(suffix: string) {
@@ -21,40 +20,37 @@ function emailSuffixValidator(suffix: string) {
 
 export default function FormPage() {
   const [profileForm] = useState(() =>
-    atom({
-      controls: {
-        firstname: field("firstname", "First"),
-        lastname: field("lastname", "Last"),
-        gender: field("gender", "F"),
-        email: field(
-          "email",
-          "abc@abc.com",
-          [],
-          [emailSuffixValidator("bcd.com")],
-          "onChange"
-        ),
-        age: field("age", 1, [validators.min(10)], [], "onChange"),
-      },
-    })()
+    group({
+      firstname: group.field("First"),
+      lastname: group.field("Last"),
+      gender: group.field("F"),
+      email: group.field(
+        "abc@abc.com",
+        [],
+        [emailSuffixValidator("bcd.com")],
+        "onChange"
+      ),
+      age: group.field(1, [validators.min(10)], [], "onChange"),
+    })
   );
 
   return (
     <form>
-      <Field field={profileForm.controls.firstname}>
+      <Field field={profileForm.firstname}>
         {(field) => (
           <div>
             <input {...field.props} />
           </div>
         )}
       </Field>
-      <Field field={profileForm.controls.lastname}>
+      <Field field={profileForm.lastname}>
         {(field) => (
           <div>
             <input {...field.props} />
           </div>
         )}
       </Field>
-      <Field field={profileForm.controls.email}>
+      <Field field={profileForm.email}>
         {({ pending, touched, errors, props }) => (
           <div>
             <input {...props} />
@@ -65,7 +61,7 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.controls.gender}>
+      <Field field={profileForm.gender}>
         {(field) => (
           <div>
             <select {...field.props}>
@@ -76,7 +72,7 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.controls.age}>
+      <Field field={profileForm.age}>
         {({ touched, errors, props }) => (
           <div>
             <input {...props} type="number" />
