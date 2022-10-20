@@ -18,6 +18,7 @@ export default defineConfig({
         index: "./src/index.ts",
         "jsx-runtime": "./src/jsx-runtime.ts",
         "jsx-dev-runtime": "./src/jsx-dev-runtime.ts",
+        form: "./src/form/index.ts",
       },
       // make sure to externalize deps that shouldn't be bundled
       // into your library

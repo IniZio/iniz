@@ -29,6 +29,12 @@
         "default": "./dist/jsx-dev-runtime.es.js"
       },
       "default": "./dist/jsx-dev-runtime.cjs.js"
+    },
+    "./form": {
+      "module": {
+        "default": "./dist/form.es.js"
+      },
+      "default": "./dist/form.cjs.js"
     }
   },
   "scripts": {

@@ -3,6 +3,6 @@
   "source": "../src/jsx-dev-runtime.ts",
   "main": "../dist/jsx-dev-runtime.cjs.js",
   "module": "../dist/jsx-dev-runtime.es.js",
-  "types": "../dist/types/index.d.ts",
+  "types": "../dist/types/jsx-dev-runtime.d.ts",
   "sideEffects": false
 }
