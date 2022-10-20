@@ -41,14 +41,14 @@ describe("atom", () => {
     const a1 = atom({ a: { b: { c: [{ d: 10 }] } } });
     const aa1 = atom(a1);
     expect(a1).toBe(aa1);
-    expect(aa1.value.a.b.c[0].d).toBe(10);
+    expect(aa1().a.b.c[0].d).toBe(10);
   });
 
   it("should can apply on sub-path and trigger original atom updates", () => {
     const a1 = atom({ a: { b: { c: [{ d: 10 }] } } });
-    expect(a1.value.a.b.c[0].d).toBe(10);
-    const aa2 = atom(a1.value.a.b);
-    expect(aa2.value.c[0].d).toBe(10);
+    expect(a1().a.b.c[0].d).toBe(10);
+    const aa2 = atom(a1().a.b);
+    expect(aa2().c[0].d).toBe(10);
     let effectCount = -1;
     effect(() => {
       a1().a.b.c[0].d;
@@ -66,10 +66,10 @@ describe("atom", () => {
 
     const newValue = Math.random();
     p1(newValue);
-    expect(p1.value).toBe(newValue);
+    expect(p1()).toBe(newValue);
   });
 
-  it("should autou-nwrap atom in atom", () => {
+  it("should auto-unwrap atom in atom", () => {
     const child = atom({ b: { c: 1 } });
     const parent = atom({
       a: child,

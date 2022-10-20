@@ -1,19 +1,19 @@
-import { isState, State, state } from "./state";
+import { isState, state } from "./state";
 import { extractStateValue } from "./types";
 
 export const IS_ATOM = Symbol.for("IS_ATOM");
 
-export type Atom<TValue> = { value: State<TValue> } & {
+export type Atom<TValue> = {
   /** @internal */
   [IS_ATOM]: true;
-} & (() => State<TValue>) &
+} & (() => extractStateValue<TValue>) &
   ((v: extractStateValue<TValue>) => void);
 
 export function isAtom(value: any): value is Atom<any> {
   return !!value?.[IS_ATOM];
 }
 
-export function atom<TValue>(value: TValue): Atom<extractStateValue<TValue>> {
+export function atom<TValue>(value: TValue): Atom<TValue> {
   if (isState(value)) {
     return value as any;
   }
@@ -24,7 +24,7 @@ export function atom<TValue>(value: TValue): Atom<extractStateValue<TValue>> {
         if (arguments.length === 0) return this.value;
         this.value = arguments[0];
       },
-      { [IS_ATOM]: true, value }
+      { [IS_ATOM]: true as const, value }
     )
-  ) as any;
+  ) as unknown as Atom<TValue>;
 }

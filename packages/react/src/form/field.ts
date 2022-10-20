@@ -89,6 +89,7 @@ export function field<
   > extends infer O
     ? { [K in keyof O]?: O[K] }
     : never;
+
   const errors = atom<SyncValidatorsReturnTypes & AsyncValidatorsReturnTypes>(
     {} as any
   );
@@ -138,12 +139,14 @@ export function field<
     errors,
     pending,
 
+    validate,
     reset: () => {
       value(initialValue as any);
       touched(false);
     },
 
     props: atom({
+      name,
       [propName]: value,
       [handlerName]: (...args: any[]) => {
         value(map(...args));

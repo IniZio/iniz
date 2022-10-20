@@ -12,20 +12,20 @@ describe("batch", () => {
     let effectCount = -1;
     let effectValue;
     effect(() => {
-      effectValue = a1.value + a2.value;
+      effectValue = a1() + a2();
       effectCount++;
     });
 
-    a1.value = `xyz`;
-    a2.value = 2.5;
+    a1(`xyz`);
+    a2(2.5);
 
     expect(effectCount).toBe(2);
     expect(effectValue).toBe("xyz2.5");
 
     batch(() => {
       expect(effectCount).toBe(2);
-      a1.value = `bcd`;
-      a2.value = 3;
+      a1(`bcd`);
+      a2(3);
       expect(effectCount).toBe(2);
     });
 
