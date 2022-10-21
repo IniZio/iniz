@@ -1,6 +1,6 @@
 /** @jsxImportSource @iniz/react */
 
-import { Field, group, validators } from "@iniz/react/form";
+import { Field, form, group, validators } from "@iniz/react/form";
 import { useState } from "react";
 
 function emailSuffixValidator(suffix: string) {
@@ -20,17 +20,19 @@ function emailSuffixValidator(suffix: string) {
 
 export default function FormPage() {
   const [profileForm] = useState(() =>
-    group({
-      firstname: group.field("First"),
-      lastname: group.field("Last"),
-      gender: group.field("F"),
-      email: group.field(
-        "abc@abc.com",
-        [],
-        [emailSuffixValidator("bcd.com")],
-        "onChange"
-      ),
-      age: group.field(1, [validators.min(10)], [], "onChange"),
+    group("register", {
+      firstname: form.field("First"),
+      lastname: form.field("Last"),
+      gender: form.field("F"),
+      age: form.field(1, [validators.min(10)], [], "onChange"),
+      contact: form.group({
+        email: form.field(
+          "abc@abc.com",
+          [],
+          [emailSuffixValidator("bcd.com")],
+          "onChange"
+        ),
+      }),
     })
   );
 
@@ -50,7 +52,7 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.email}>
+      <Field field={profileForm.contact.email}>
         {({ pending, touched, errors, props }) => (
           <div>
             <input {...props} />

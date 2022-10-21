@@ -1,48 +1,56 @@
 import { atom, Atom } from "@iniz/core";
-import { field, FieldInstance } from "./field";
+import { extractStateValue } from "@iniz/core/dist/types/types";
+import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
+import { FilterFirstElement } from "./types";
 
-function formGroup<TG extends { [key: string]: FieldControl }>(
+export function group<TG extends TGroupControlArgs0>(
+  name: string,
   groupControl: TG
 ) {
-  const generated = Object.entries(groupControl).reduce(
+  const generated: any = Object.entries(groupControl).reduce(
     (acc, [name, control]) => ({
       ...acc,
-      [name]: field(name, ...control.args),
+      [name]: isFieldControl(control)
+        ? field(name, ...control.args)
+        : isGroupControl(control)
+        ? group(name, ...control.args)
+        : null,
     }),
     {}
   );
 
-  return atom(generated as any)() as ReturnType<
-    Atom<{
-      [k in keyof TG]: FieldInstance<
-        Exclude<TG[k]["args"][1], undefined>,
-        Exclude<TG[k]["args"][2], undefined>
-      >;
-    }>
-  >;
+  type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
+    [k in keyof TGG]: TGG[k] extends FieldControl
+      ? FieldInstance<
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
+        >
+      : TGG[k] extends GroupControl<any>
+      ? GroupInstance<TGG[k]["args"][0]>
+      : never;
+  };
+
+  return atom(generated)() as extractStateValue<Atom<GroupInstance<TG>>>;
 }
 
-const IS_FIELD = Symbol.for("IS_FIELD");
+const IS_GROUP = Symbol.for("IS_GROUP");
 
-// Group field wil not need name since it comes from the property name, thus excluded from arguments
-type FilterFirstElement<T extends unknown[]> = T extends [unknown, ...infer R]
-  ? R
-  : [];
+type TGroupControlArgs0 = { [index: string]: FieldControl | GroupControl<any> };
 
-type FieldControl = {
-  $$typeof: typeof IS_FIELD;
-  args: FilterFirstElement<Parameters<typeof field>>;
+export type GroupControl<TGCArgs0 extends TGroupControlArgs0> = {
+  $$typeof: typeof IS_GROUP;
+  args: [TGCArgs0];
 };
 
-function formField(
-  ...args: FilterFirstElement<Parameters<typeof field>>
-): FieldControl {
+export function isGroupControl(control: any): control is GroupControl<any> {
+  return control.$$typeof === IS_GROUP;
+}
+
+export function formGroup<
+  TArgs extends FilterFirstElement<Parameters<typeof group>>
+>(...args: TArgs): GroupControl<TArgs[0]> {
   return {
-    $$typeof: IS_FIELD,
+    $$typeof: IS_GROUP,
     args,
   };
 }
-
-export const group = Object.assign(formGroup, {
-  field: formField,
-});

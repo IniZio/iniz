@@ -1,4 +1,5 @@
-import { atom } from "@iniz/core";
+import { Atom, atom } from "@iniz/core";
+import { FilterFirstElement } from "./types";
 
 export const onChangeMap = (e: any) => {
   const tagName = e?.target?.tagName;
@@ -38,9 +39,10 @@ export const onChangeMap = (e: any) => {
   return e;
 };
 
-type ExtractReturnTypes<T extends readonly ((i: any) => any)[]> = {
-  [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
-};
+type ExtractReturnTypes<T extends readonly (((i: any) => any) | undefined)[]> =
+  {
+    [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
+  };
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I
@@ -48,9 +50,39 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
+export type FieldInstance<
+  TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
+  TAsyncValidators extends readonly (
+    | ((...args: any) => Promise<any>)
+    | undefined
+  )[]
+> = Atom<{
+  touched: Atom<boolean>;
+  errors: Atom<
+    (UnionToIntersection<
+      Exclude<ExtractReturnTypes<TSyncValidators>[number], null | undefined>
+    > extends infer O
+      ? { [K in keyof O]?: O[K] | undefined }
+      : never) &
+      (UnionToIntersection<
+        Exclude<ExtractReturnTypes<TAsyncValidators>[number], null | undefined>
+      > extends infer O
+        ? { [K in keyof O]?: O[K] | undefined }
+        : never)
+  >;
+  pending: Atom<boolean>;
+  validate: () => void;
+  reset: () => void;
+  props: {
+    [x: string]: string | ((...args: any[]) => void);
+    name: string;
+    onBlur: () => void;
+  };
+}>;
+
 export function field<
   TValue,
-  TSyncValidators extends readonly ((...args: any) => any)[],
+  TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
   TAsyncValidators extends readonly ((...args: any) => Promise<any>)[]
 >(
   name: string,
@@ -68,7 +100,7 @@ export function field<
     handlerName?: string;
     map?: (...args: any[]) => any;
   } = {}
-) {
+): FieldInstance<TSyncValidators, TAsyncValidators> {
   const value = atom(initialValue);
   const touched = atom(false);
   const pending = atom(false);
@@ -102,7 +134,7 @@ export function field<
     try {
       errors({
         ...syncValidators.reduce(
-          (es, v) => ({ ...es, ...v({ value: value() }) }),
+          (es, v) => ({ ...es, ...v?.({ value: value() }) }),
           {} as SyncValidatorsReturnTypes
         ),
       } as any);
@@ -145,7 +177,7 @@ export function field<
       touched(false);
     },
 
-    props: atom({
+    props: {
       name,
       [propName]: value,
       [handlerName]: (...args: any[]) => {
@@ -161,6 +193,26 @@ export function field<
         if (mode === "onBlur") validate();
         if (mode === "all") validate();
       },
-    }),
+    },
   });
+}
+
+const IS_FIELD = Symbol.for("IS_FIELD");
+
+export type FieldControl = {
+  $$typeof: typeof IS_FIELD;
+  args: FilterFirstElement<Parameters<typeof field>>;
+};
+
+export function isFieldControl(control: any): control is FieldControl {
+  return control.$$typeof === IS_FIELD;
+}
+
+export function formField(
+  ...args: FilterFirstElement<Parameters<typeof field>>
+): FieldControl {
+  return {
+    $$typeof: IS_FIELD,
+    args,
+  };
 }
