@@ -1,3 +1,4 @@
+export * from "./array";
 export * from "./components/Field";
 export * from "./field";
 export * from "./form";

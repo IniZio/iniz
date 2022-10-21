@@ -1,5 +1,6 @@
 /** @jsxImportSource @iniz/react */
 
+import { useSideEffect } from "@iniz/react";
 import { Field, form, group, validators } from "@iniz/react/form";
 import { useState } from "react";
 
@@ -18,6 +19,10 @@ function emailSuffixValidator(suffix: string) {
     );
 }
 
+const relative = form.group({
+  phone: form.field("11111111", [validators.maxLength(10)]),
+});
+
 export default function FormPage() {
   const [profileForm] = useState(() =>
     group("register", {
@@ -33,8 +38,13 @@ export default function FormPage() {
           "onChange"
         ),
       }),
+      relatives: form.array([relative, relative]),
     })
   );
+
+  useSideEffect(() => {
+    console.log("=== profile form", JSON.stringify(profileForm, null, 4));
+  });
 
   return (
     <form>
@@ -83,6 +93,31 @@ export default function FormPage() {
                 errors.min &&
                 `At lease ${errors.min.min} is needed but got ${errors.min.actual}`}
             </span>
+          </div>
+        )}
+      </Field>
+      <Field field={profileForm.relatives}>
+        {(fields) => (
+          <div>
+            {fields.map(({ phone: { touched, errors, props } }, index) => (
+              <div key={index}>
+                <input {...props} />
+                <span>
+                  {touched &&
+                    errors.maxLength &&
+                    `At most ${errors.maxLength.maxLength} is allowed but got ${errors.maxLength.actual}`}
+                </span>
+                <button type="button" onClick={() => fields.splice(index, 1)}>
+                  -
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => fields.push(group("", ...relative.args))}
+            >
+              + row
+            </button>
           </div>
         )}
       </Field>

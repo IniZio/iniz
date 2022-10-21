@@ -96,11 +96,6 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
         return value;
       },
       set(target, prop, newValue, receiver) {
-        // TODO: Allow customized equality check?
-        if (Reflect.get(target, prop, receiver) === newValue) {
-          return true;
-        }
-
         const currentPropArray = parentPropArray.concat(prop);
 
         startBatch();

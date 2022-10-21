@@ -1,7 +1,21 @@
 import { atom, Atom } from "@iniz/core";
 import { extractStateValue } from "@iniz/core/dist/types/types";
+import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { FilterFirstElement } from "./types";
+
+export type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
+  [k in keyof TGG]: TGG[k] extends FieldControl
+    ? FieldInstance<
+        Exclude<TGG[k]["args"][1], undefined>,
+        Exclude<TGG[k]["args"][2], undefined>
+      >
+    : TGG[k] extends GroupControl<any>
+    ? GroupInstance<TGG[k]["args"][0]>
+    : TGG[k] extends ArrayControl<any>
+    ? ArrayInstance<TGG[k]["args"][0]>
+    : never;
+};
 
 export function group<TG extends TGroupControlArgs0>(
   name: string,
@@ -14,28 +28,21 @@ export function group<TG extends TGroupControlArgs0>(
         ? field(name, ...control.args)
         : isGroupControl(control)
         ? group(name, ...control.args)
+        : isArrayControl(control)
+        ? array(name, ...control.args)
         : null,
     }),
     {}
   );
-
-  type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
-    [k in keyof TGG]: TGG[k] extends FieldControl
-      ? FieldInstance<
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
-        >
-      : TGG[k] extends GroupControl<any>
-      ? GroupInstance<TGG[k]["args"][0]>
-      : never;
-  };
 
   return atom(generated)() as extractStateValue<Atom<GroupInstance<TG>>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");
 
-type TGroupControlArgs0 = { [index: string]: FieldControl | GroupControl<any> };
+type TGroupControlArgs0 = {
+  [index: string]: FieldControl | ArrayControl<any> | GroupControl<any>;
+};
 
 export type GroupControl<TGCArgs0 extends TGroupControlArgs0> = {
   $$typeof: typeof IS_GROUP;
