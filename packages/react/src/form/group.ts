@@ -4,37 +4,43 @@ import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { extractStateValue, FilterFirstElement } from "./types";
 
 export type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
-  [k in keyof TGG]: TGG[k] extends FieldControl<any>
-    ? FieldInstance<
-        Exclude<TGG[k]["args"][1], undefined>,
-        Exclude<TGG[k]["args"][2], undefined>
-      >
-    : TGG[k] extends GroupControl<any>
-    ? GroupInstance<TGG[k]["args"][0]>
-    : TGG[k] extends ArrayControl<any>
-    ? ArrayInstance<TGG[k]["args"][0]>
-    : never;
+  controls: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any>
+      ? FieldInstance<
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
+        >
+      : TGG[k] extends GroupControl<any>
+      ? GroupInstance<TGG[k]["args"][0]>
+      : TGG[k] extends ArrayControl<any>
+      ? ArrayInstance<TGG[k]["args"][0]>
+      : never;
+  };
 };
 
 export function group<TG extends TGroupControlArgs0>(
   name: string,
   groupControl: TG
 ) {
-  const generated: any = Object.entries(groupControl).reduce(
-    (acc, [name, control]) => ({
-      ...acc,
-      [name]: isFieldControl(control)
-        ? field(name, ...control.args)
-        : isGroupControl(control)
-        ? group(name, ...control.args)
-        : isArrayControl(control)
-        ? array(name, ...control.args)
-        : null,
-    }),
-    {}
+  const controls: any = atom(
+    Object.entries(groupControl).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: isFieldControl(control)
+          ? field(name, ...control.args)
+          : isGroupControl(control)
+          ? // @ts-ignore
+            group(name, ...control.args)
+          : isArrayControl(control)
+          ? // @ts-ignore
+            array(name, ...control.args)
+          : null,
+      }),
+      {}
+    )
   );
 
-  return atom(generated)() as extractStateValue<Atom<GroupInstance<TG>>>;
+  return atom({ controls })() as extractStateValue<Atom<GroupInstance<TG>>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");

@@ -4,33 +4,39 @@ import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 import { extractStateValue, FilterFirstElement } from "./types";
 
 export type ArrayInstance<TGG extends ArrayControl<any>["args"][0]> = {
-  [k in keyof TGG]: TGG[k] extends FieldControl<any>
-    ? FieldInstance<
-        Exclude<TGG[k]["args"][1], undefined>,
-        Exclude<TGG[k]["args"][2], undefined>
-      >
-    : TGG[k] extends ArrayControl<any>
-    ? ArrayInstance<TGG[k]["args"][0]>
-    : TGG[k] extends GroupControl<any>
-    ? GroupInstance<TGG[k]["args"][0]>
-    : never;
+  controls: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any>
+      ? FieldInstance<
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
+        >
+      : TGG[k] extends ArrayControl<any>
+      ? ArrayInstance<TGG[k]["args"][0]>
+      : TGG[k] extends GroupControl<any>
+      ? GroupInstance<TGG[k]["args"][0]>
+      : never;
+  };
 };
 
 export function array<TA extends TArrayControlArgs0>(
   name: string,
   arrayControl: TA
 ) {
-  const generated: any = arrayControl.map((control) =>
-    isFieldControl(control)
-      ? field(name, ...control.args)
-      : isArrayControl(control)
-      ? array(name, ...control.args)
-      : isGroupControl(control)
-      ? group(name, ...control.args)
-      : null
+  const controls: any = atom(
+    arrayControl.map((control) =>
+      isFieldControl(control)
+        ? field(name, ...control.args)
+        : isArrayControl(control)
+        ? // @ts-ignore
+          array(name, ...control.args)
+        : isGroupControl(control)
+        ? // @ts-ignore
+          group(name, ...control.args)
+        : null
+    )
   );
 
-  return atom(generated)() as extractStateValue<Atom<ArrayInstance<TA>>>;
+  return atom({ controls })() as extractStateValue<Atom<ArrayInstance<TA>>>;
 }
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");

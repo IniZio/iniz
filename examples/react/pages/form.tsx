@@ -48,21 +48,21 @@ export default function FormPage() {
 
   return (
     <form>
-      <Field field={profileForm.firstname}>
+      <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
             <input {...field.props} />
           </div>
         )}
       </Field>
-      <Field field={profileForm.lastname}>
+      <Field field={profileForm.controls.lastname}>
         {(field) => (
           <div>
             <input {...field.props} />
           </div>
         )}
       </Field>
-      <Field field={profileForm.contact.email}>
+      <Field field={profileForm.controls.contact.controls.email}>
         {({ pending, touched, errors, props }) => (
           <div>
             <input {...props} />
@@ -73,7 +73,7 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.gender}>
+      <Field field={profileForm.controls.gender}>
         {(field) => (
           <div>
             <select {...field.props}>
@@ -84,7 +84,7 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.age}>
+      <Field field={profileForm.controls.age}>
         {({ touched, errors, props }) => (
           <div>
             <input {...props} type="number" />
@@ -96,25 +96,37 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <Field field={profileForm.relatives}>
+      <Field field={profileForm.controls.relatives}>
         {(fields) => (
           <div>
-            {fields.map(({ phone: { touched, errors, props } }, index) => (
-              <div key={index}>
-                <input {...props} />
-                <span>
-                  {touched &&
-                    errors.maxLength &&
-                    `At most ${errors.maxLength.maxLength} is allowed but got ${errors.maxLength.actual}`}
-                </span>
-                <button type="button" onClick={() => fields.splice(index, 1)}>
-                  -
-                </button>
-              </div>
-            ))}
+            {fields.controls.map(
+              (
+                {
+                  controls: {
+                    phone: { touched, errors, props },
+                  },
+                },
+                index
+              ) => (
+                <div key={index}>
+                  <input {...props} />
+                  <span>
+                    {touched &&
+                      errors.maxLength &&
+                      `At most ${errors.maxLength.maxLength} is allowed but got ${errors.maxLength.actual}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => fields.controls.splice(index, 1)}
+                  >
+                    -
+                  </button>
+                </div>
+              )
+            )}
             <button
               type="button"
-              onClick={() => fields.push(group("", ...relative.args))}
+              onClick={() => fields.controls.push(group("", ...relative.args))}
             >
               + row
             </button>
