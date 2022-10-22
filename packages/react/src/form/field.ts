@@ -51,12 +51,14 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   : never;
 
 export type FieldInstance<
+  TValue,
   TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
   TAsyncValidators extends readonly (
     | ((...args: any) => Promise<any>)
     | undefined
   )[]
 > = Atom<{
+  value?: TValue;
   touched: Atom<boolean>;
   errors: Atom<
     (UnionToIntersection<
@@ -81,7 +83,7 @@ export type FieldInstance<
 }>;
 
 export function field<
-  TValue,
+  TValue extends any,
   TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
   TAsyncValidators extends readonly ((...args: any) => Promise<any>)[]
 >(
@@ -100,7 +102,7 @@ export function field<
     handlerName?: string;
     map?: (...args: any[]) => any;
   } = {}
-): FieldInstance<TSyncValidators, TAsyncValidators> {
+): FieldInstance<TValue, TSyncValidators, TAsyncValidators> {
   const value = atom(initialValue);
   const touched = atom(false);
   const pending = atom(false);
@@ -162,11 +164,18 @@ export function field<
         });
       })
       .finally(() => {
+        // Ensure only latest validation result is taken
+        if (version < validationVersion) {
+          return;
+        }
+
         pending(false);
       });
   };
 
   return atom({
+    value,
+
     touched,
     errors,
     pending,

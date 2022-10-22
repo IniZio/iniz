@@ -2,7 +2,7 @@
 
 import { useSideEffect } from "@iniz/react";
 import { Field, form, group, validators } from "@iniz/react/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function emailSuffixValidator(suffix: string) {
   return ({ value }: { value: string }) =>
@@ -29,7 +29,7 @@ export default function FormPage() {
       firstname: form.field("First"),
       lastname: form.field("Last"),
       gender: form.field("F"),
-      age: form.field(1, [validators.min(10)], [], "onChange"),
+      age: form.field(1, [validators.min(10)], []),
       contact: form.group({
         email: form.field(
           "abc@abc.com",
@@ -43,8 +43,25 @@ export default function FormPage() {
   );
 
   useSideEffect(() => {
-    console.log("=== profile form", JSON.stringify(profileForm, null, 4));
+    // console.log("=== profile form", JSON.stringify(profileForm.value));
   });
+
+  useEffect(() => {
+    // profileForm.value = {
+    //   firstname: 'YOLO',
+    //   lastname: 'Last',
+    //   gender: 'M',
+    //   age: 2,
+    //   contact: {
+    //     email: 'bcd@bcd.com'
+    //   },
+    //   relatives: [{ phone: '22222222' }]
+    // }
+    setTimeout(() => {
+      profileForm.controls.age.value = 11;
+    });
+    console.log("=== profile form", profileForm.controls.age.value);
+  }, []);
 
   return (
     <form>

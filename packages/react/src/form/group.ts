@@ -1,12 +1,28 @@
-import { atom, Atom } from "@iniz/core";
+import { atom, Atom, computed } from "@iniz/core";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { extractStateValue, FilterFirstElement } from "./types";
 
 export type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
+  value: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any>
+      ? ReturnType<
+          FieldInstance<
+            Exclude<TGG[k]["args"][0], undefined>,
+            Exclude<TGG[k]["args"][1], undefined>,
+            Exclude<TGG[k]["args"][2], undefined>
+          >
+        >["value"]
+      : TGG[k] extends GroupControl<any>
+      ? GroupInstance<TGG[k]["args"][0]>["value"]
+      : TGG[k] extends ArrayControl<any>
+      ? ArrayInstance<TGG[k]["args"][0]>["value"]
+      : never;
+  };
   controls: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any>
       ? FieldInstance<
+          Exclude<TGG[k]["args"][0], undefined>,
           Exclude<TGG[k]["args"][1], undefined>,
           Exclude<TGG[k]["args"][2], undefined>
         >
@@ -40,7 +56,20 @@ export function group<TG extends TGroupControlArgs0>(
     )
   );
 
-  return atom({ controls })() as extractStateValue<Atom<GroupInstance<TG>>>;
+  const value = computed(() =>
+    Object.entries(controls()).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: (control as any).value,
+      }),
+      {}
+    )
+  );
+
+  return atom({
+    value,
+    controls,
+  })() as extractStateValue<Atom<GroupInstance<TG>>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");
