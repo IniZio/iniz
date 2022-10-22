@@ -199,18 +199,20 @@ export function field<
 
 const IS_FIELD = Symbol.for("IS_FIELD");
 
-export type FieldControl = {
+export type FieldControl<
+  TFieldControlArgs extends FilterFirstElement<Parameters<typeof field>>
+> = {
   $$typeof: typeof IS_FIELD;
-  args: FilterFirstElement<Parameters<typeof field>>;
+  args: TFieldControlArgs;
 };
 
-export function isFieldControl(control: any): control is FieldControl {
+export function isFieldControl(control: any): control is FieldControl<any> {
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField(
-  ...args: FilterFirstElement<Parameters<typeof field>>
-): FieldControl {
+export function formField<
+  TFieldArgs extends FilterFirstElement<Parameters<typeof field>>
+>(...args: TFieldArgs): FieldControl<TFieldArgs> {
   return {
     $$typeof: IS_FIELD,
     args,

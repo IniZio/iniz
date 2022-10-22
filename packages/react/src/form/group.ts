@@ -1,11 +1,10 @@
 import { atom, Atom } from "@iniz/core";
-import { extractStateValue } from "@iniz/core/dist/types/types";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
-import { FilterFirstElement } from "./types";
+import { extractStateValue, FilterFirstElement } from "./types";
 
 export type GroupInstance<TGG extends GroupControl<any>["args"][0]> = {
-  [k in keyof TGG]: TGG[k] extends FieldControl
+  [k in keyof TGG]: TGG[k] extends FieldControl<any>
     ? FieldInstance<
         Exclude<TGG[k]["args"][1], undefined>,
         Exclude<TGG[k]["args"][2], undefined>
@@ -41,7 +40,7 @@ export function group<TG extends TGroupControlArgs0>(
 const IS_GROUP = Symbol.for("IS_GROUP");
 
 type TGroupControlArgs0 = {
-  [index: string]: FieldControl | ArrayControl<any> | GroupControl<any>;
+  [index: string]: FieldControl<any> | ArrayControl<any> | GroupControl<any>;
 };
 
 export type GroupControl<TGCArgs0 extends TGroupControlArgs0> = {
