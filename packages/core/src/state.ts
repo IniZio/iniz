@@ -1,4 +1,4 @@
-import { Atom, isAtom } from "./atom";
+import { Atom, isAtom, IS_ATOM } from "./atom";
 import { endBatch, startBatch } from "./batch";
 import { DependencyTracker } from "./dependency";
 import { isRef } from "./ref";
@@ -46,8 +46,8 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     return value as any;
   }
 
-  // HACK: Allow function to make atom work
-  if (!canApplyStateProxy(value) && typeof value !== "function") {
+  // Atom is an object-assigned function, so bypass proxiable check here
+  if (!canApplyStateProxy(value) && !value?.[IS_ATOM]) {
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
