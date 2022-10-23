@@ -1,69 +1,55 @@
 import { atom, Atom } from "../atom";
 import { computed } from "../computed";
-import { extractStateValue, FilterFirstElement } from "../types";
+import { extractStateValue } from "../types";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 
 export type ArrayInstance<
-  TValue extends { [k in keyof TGG]: any },
-  TGG extends ArrayControl<any, any>["args"][0]
+  TValue extends any[],
+  TAA extends ArrayControl<TValue, any>["args"][0]
 > = {
-  value: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? ReturnType<
-          FieldInstance<
-            TValue[k],
-            Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
-            Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
-          >
-        >["value"]
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["value"]
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["value"]
-      : never;
-  };
+  value: TValue;
   setValue: (val: TValue) => void;
   controls: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
+    [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
-          Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["args"][0]["syncValidators"], undefined>,
+          Exclude<TAA["args"][0]["asyncValidators"], undefined>
         >
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>
+      : TAA extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TAA["args"][0]>
+      : TAA extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TAA["args"][0]>
       : never;
   };
 };
 
-export function array<
-  TValue extends { [k in keyof TA]: any },
-  TA extends TArrayControlArgs0
->(initialValue: TValue, arrayControl: TA) {
-  const controls: Atom<any[]> = atom(
-    arrayControl.map((control, index) =>
-      isFieldControl(control)
-        ? field(String(index), initialValue[index], ...control.args)
-        : isArrayControl(control)
-        ? // @ts-ignore
-          array(initialValue[index], ...control.args)
-        : isGroupControl(control)
-        ? // @ts-ignore
-          group(initialValue[index], ...control.args)
-        : null
-    )
-  );
+export function array<TValue extends any[], TA extends TArrayControlArgs0>(
+  initialValue: TValue,
+  arrayControl: TA
+) {
+  const controls: Atom<any[]> = atom([]);
 
   const value = computed(() => controls().map((control: any) => control.value));
 
   const setValue = (val: TValue) => {
-    controls().forEach((control, index) => {
-      control.setValue(val[index]);
-    });
+    controls(
+      val.map((v, index) =>
+        isFieldControl(arrayControl)
+          ? field(String(index), v, ...arrayControl.args)
+          : isArrayControl(arrayControl)
+          ? // @ts-ignore
+            array(v, ...arrayControl.args)
+          : isGroupControl(arrayControl)
+          ? // @ts-ignore
+            group(v, ...arrayControl.args)
+          : null
+      )
+    );
   };
+
+  setValue(initialValue);
 
   return atom({ value, setValue, controls })() as extractStateValue<
     ArrayInstance<TValue, TA>
@@ -72,11 +58,10 @@ export function array<
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");
 
-type TArrayControlArgs0 = (
+type TArrayControlArgs0 =
   | FieldControl<any, any>
   | ArrayControl<any, any>
-  | GroupControl<any, any>
-)[];
+  | GroupControl<any, any>;
 
 export type ArrayControl<TValue, TACArgs0 extends TArrayControlArgs0> = {
   $$typeof: typeof IS_ARRAY;
@@ -90,8 +75,8 @@ export function isArrayControl(
 }
 
 export function formArray<
-  TValue,
-  TArgs extends FilterFirstElement<Parameters<typeof array>>
+  TValue extends any[],
+  TArgs extends [TArrayControlArgs0]
 >(...args: TArgs): ArrayControl<TValue, TArgs[0]> {
   return {
     $$typeof: IS_ARRAY,

@@ -34,7 +34,7 @@ export default function FormPage() {
         contact: {
           email: "bcd@bcd.com",
         },
-        relatives: [{ phone: "1213123" }],
+        relatives: [{ phone: "1213123" }, { phone: "329234" }],
       },
       {
         firstname: form.field({}),
@@ -47,7 +47,7 @@ export default function FormPage() {
             mode: "onBlur",
           }),
         }),
-        relatives: form.array([relative]),
+        relatives: form.array(relative),
       }
     )
   );
