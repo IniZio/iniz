@@ -21,7 +21,10 @@ export function atom<TValue>(value: TValue): Atom<TValue> {
   return state(
     Object.assign(
       function (this: { value: TValue }) {
-        if (arguments.length !== 0) this.value = arguments[0];
+        if (arguments.length !== 0) {
+          this.value = arguments[0];
+        }
+
         return this.value;
       },
       { [IS_ATOM]: true, value }
