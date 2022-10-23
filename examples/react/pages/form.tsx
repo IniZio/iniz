@@ -26,7 +26,6 @@ const relative = form.group({
 export default function FormPage() {
   const [profileForm] = useState(() =>
     group(
-      "register",
       {
         firstname: "First",
         lastname: "Last",
@@ -151,9 +150,7 @@ export default function FormPage() {
             <button
               type="button"
               onClick={() =>
-                fields.controls.push(
-                  group("", { phone: "123" }, ...relative.args)
-                )
+                fields.controls.push(group({ phone: "123" }, ...relative.args))
               }
             >
               + row

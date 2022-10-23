@@ -1,7 +1,7 @@
 import { atom, Atom, computed } from "@iniz/core";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
-import { extractStateValue, FilterFirstTwoElements } from "./types";
+import { extractStateValue, FilterFirstElement } from "./types";
 
 export type ArrayInstance<
   TValue extends { [k in keyof TGG]: any },
@@ -41,17 +41,17 @@ export type ArrayInstance<
 export function array<
   TValue extends { [k in keyof TA]: any },
   TA extends TArrayControlArgs0
->(name: string, initialValue: TValue, arrayControl: TA) {
+>(initialValue: TValue, arrayControl: TA) {
   const controls: Atom<any[]> = atom(
     arrayControl.map((control, index) =>
       isFieldControl(control)
-        ? field(name, initialValue[index], ...control.args)
+        ? field(String(index), initialValue[index], ...control.args)
         : isArrayControl(control)
         ? // @ts-ignore
-          array(name, initialValue[index], ...control.args)
+          array(initialValue[index], ...control.args)
         : isGroupControl(control)
         ? // @ts-ignore
-          group(name, initialValue[index], ...control.args)
+          group(initialValue[index], ...control.args)
         : null
     )
   );
@@ -90,7 +90,7 @@ export function isArrayControl(
 
 export function formArray<
   TValue,
-  TArgs extends FilterFirstTwoElements<Parameters<typeof array>>
+  TArgs extends FilterFirstElement<Parameters<typeof array>>
 >(...args: TArgs): ArrayControl<TValue, TArgs[0]> {
   return {
     $$typeof: IS_ARRAY,

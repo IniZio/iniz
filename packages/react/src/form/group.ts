@@ -1,7 +1,7 @@
 import { Atom, atom, computed } from "@iniz/core";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
-import { extractStateValue, FilterFirstTwoElements } from "./types";
+import { extractStateValue, FilterFirstElement } from "./types";
 
 export type GroupInstance<
   TValue extends Record<keyof TGG, any>,
@@ -41,7 +41,7 @@ export type GroupInstance<
 export function group<
   TValue extends Record<keyof TG, any>,
   TG extends TGroupControlArgs0
->(name: string, initialValue: TValue, groupControl: TG) {
+>(initialValue: TValue, groupControl: TG) {
   const controls: Atom<Record<any, any>> = atom(
     Object.entries(groupControl).reduce(
       (acc, [name, control]) => ({
@@ -50,10 +50,10 @@ export function group<
           ? field(name, initialValue[name], ...control.args)
           : isGroupControl(control)
           ? // @ts-ignore
-            group(name, initialValue[name], ...control.args)
+            group(initialValue[name], ...control.args)
           : isArrayControl(control)
           ? // @ts-ignore
-            array(name, initialValue[name], ...control.args)
+            array(initialValue[name], ...control.args)
           : null,
       }),
       {}
@@ -105,7 +105,7 @@ export function isGroupControl(
 
 export function formGroup<
   TValue,
-  TArgs extends FilterFirstTwoElements<Parameters<typeof group>>
+  TArgs extends FilterFirstElement<Parameters<typeof group>>
 >(...args: TArgs): GroupControl<TValue, TArgs[0]> {
   return {
     $$typeof: IS_GROUP,
