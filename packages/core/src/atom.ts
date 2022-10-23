@@ -24,7 +24,7 @@ export function atom<TValue>(value: TValue): Atom<TValue> {
         if (arguments.length !== 0) this.value = arguments[0];
         return this.value;
       },
-      { [IS_ATOM]: true as const, value }
+      { [IS_ATOM]: true, value }
     )
   ) as unknown as Atom<TValue>;
 }

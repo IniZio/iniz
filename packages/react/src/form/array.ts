@@ -1,85 +1,97 @@
 import { atom, Atom, computed } from "@iniz/core";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
-import { extractStateValue, FilterFirstElement } from "./types";
+import { extractStateValue, FilterFirstTwoElements } from "./types";
 
-export type ArrayInstance<TGG extends ArrayControl<any>["args"][0]> = {
+export type ArrayInstance<
+  TValue extends { [k in keyof TGG]: any },
+  TGG extends ArrayControl<any, any>["args"][0]
+> = {
   value: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any>
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? ReturnType<
           FieldInstance<
-            Exclude<TGG[k]["args"][0], undefined>,
-            Exclude<TGG[k]["args"][1], undefined>,
-            Exclude<TGG[k]["args"][2], undefined>
+            TValue[k],
+            Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
+            Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
           >
         >["value"]
-      : TGG[k] extends ArrayControl<any>
-      ? ArrayInstance<TGG[k]["args"][0]>["value"]
-      : TGG[k] extends GroupControl<any>
-      ? GroupInstance<TGG[k]["args"][0]>["value"]
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["value"]
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["value"]
       : never;
   };
-
+  setValue: (val: TValue) => void;
   controls: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any>
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
-          Exclude<TGG[k]["args"][0], undefined>,
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          TValue[k],
+          Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
+          Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
         >
-      : TGG[k] extends ArrayControl<any>
-      ? ArrayInstance<TGG[k]["args"][0]>
-      : TGG[k] extends GroupControl<any>
-      ? GroupInstance<TGG[k]["args"][0]>
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>
       : never;
   };
 };
 
-export function array<TA extends TArrayControlArgs0>(
-  name: string,
-  arrayControl: TA
-) {
-  const controls: any = atom(
-    arrayControl.map((control) =>
+export function array<
+  TValue extends { [k in keyof TA]: any },
+  TA extends TArrayControlArgs0
+>(name: string, initialValue: TValue, arrayControl: TA) {
+  const controls: Atom<any[]> = atom(
+    arrayControl.map((control, index) =>
       isFieldControl(control)
-        ? field(name, ...control.args)
+        ? field(name, initialValue[index], ...control.args)
         : isArrayControl(control)
         ? // @ts-ignore
-          array(name, ...control.args)
+          array(name, initialValue[index], ...control.args)
         : isGroupControl(control)
         ? // @ts-ignore
-          group(name, ...control.args)
+          group(name, initialValue[index], ...control.args)
         : null
     )
   );
 
   const value = computed(() => controls().map((control: any) => control.value));
 
-  return atom({ value, controls })() as extractStateValue<
-    Atom<ArrayInstance<TA>>
+  const setValue = (val: TValue) => {
+    controls().forEach((control, index) => {
+      control.setValue(val[index]);
+    });
+  };
+
+  return atom({ value, setValue, controls })() as extractStateValue<
+    ArrayInstance<TValue, TA>
   >;
 }
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");
 
 type TArrayControlArgs0 = (
-  | FieldControl<any>
-  | ArrayControl<any>
-  | GroupControl<any>
+  | FieldControl<any, any>
+  | ArrayControl<any, any>
+  | GroupControl<any, any>
 )[];
 
-export type ArrayControl<TACArgs0 extends TArrayControlArgs0> = {
+export type ArrayControl<TValue, TACArgs0 extends TArrayControlArgs0> = {
   $$typeof: typeof IS_ARRAY;
   args: [TACArgs0];
 };
 
-export function isArrayControl(control: any): control is ArrayControl<any> {
+export function isArrayControl(
+  control: any
+): control is ArrayControl<any, any> {
   return control.$$typeof === IS_ARRAY;
 }
 
 export function formArray<
-  TArgs extends FilterFirstElement<Parameters<typeof array>>
->(...args: TArgs): ArrayControl<TArgs[0]> {
+  TValue,
+  TArgs extends FilterFirstTwoElements<Parameters<typeof array>>
+>(...args: TArgs): ArrayControl<TValue, TArgs[0]> {
   return {
     $$typeof: IS_ARRAY,
     args,

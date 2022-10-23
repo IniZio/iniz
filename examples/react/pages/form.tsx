@@ -2,7 +2,7 @@
 
 import { useSideEffect } from "@iniz/react";
 import { Field, form, group, validators } from "@iniz/react/form";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 function emailSuffixValidator(suffix: string) {
   return ({ value }: { value: string }) =>
@@ -20,47 +20,54 @@ function emailSuffixValidator(suffix: string) {
 }
 
 const relative = form.group({
-  phone: form.field("11111111", [validators.maxLength(10)]),
+  phone: form.field({ syncValidators: [validators.maxLength(10)] }),
 });
 
 export default function FormPage() {
   const [profileForm] = useState(() =>
-    group("register", {
-      firstname: form.field("First"),
-      lastname: form.field("Last"),
-      gender: form.field("F"),
-      age: form.field(1, [validators.min(10)], []),
-      contact: form.group({
-        email: form.field(
-          "abc@abc.com",
-          [],
-          [emailSuffixValidator("bcd.com")],
-          "onChange"
-        ),
-      }),
-      relatives: form.array([relative, relative]),
-    })
+    group(
+      "register",
+      {
+        firstname: "First",
+        lastname: "Last",
+        gender: "M",
+        age: 10,
+        contact: {
+          email: "bcd@bcd.com",
+        },
+        relatives: [{ phone: "1213123" }],
+      },
+      {
+        firstname: form.field({}),
+        lastname: form.field({}),
+        gender: form.field({}),
+        age: form.field({ syncValidators: [validators.min(10)] }),
+        contact: form.group({
+          email: form.field({
+            asyncValidators: [emailSuffixValidator("bcd.com")],
+            mode: "onBlur",
+          }),
+        }),
+        relatives: form.array([relative]),
+      }
+    )
   );
 
   useSideEffect(() => {
-    // console.log("=== profile form", JSON.stringify(profileForm.value));
+    console.log("=== profile form", JSON.stringify(profileForm.value));
   });
 
-  useEffect(() => {
-    // profileForm.value = {
-    //   firstname: 'YOLO',
-    //   lastname: 'Last',
-    //   gender: 'M',
-    //   age: 2,
-    //   contact: {
-    //     email: 'bcd@bcd.com'
-    //   },
-    //   relatives: [{ phone: '22222222' }]
-    // }
-    setTimeout(() => {
-      profileForm.controls.age.value = 11;
+  const reset = useCallback(() => {
+    profileForm.setValue({
+      firstname: "First",
+      lastname: "Last",
+      gender: "M",
+      age: 10,
+      contact: {
+        email: "bcd@bcd.com",
+      },
+      relatives: [{ phone: "1213123" }],
     });
-    console.log("=== profile form", profileForm.controls.age.value);
   }, []);
 
   return (
@@ -143,13 +150,20 @@ export default function FormPage() {
             )}
             <button
               type="button"
-              onClick={() => fields.controls.push(group("", ...relative.args))}
+              onClick={() =>
+                fields.controls.push(
+                  group("", { phone: "123" }, ...relative.args)
+                )
+              }
             >
               + row
             </button>
           </div>
         )}
       </Field>
+      <button type="button" onClick={reset}>
+        Reset
+      </button>
     </form>
   );
 }

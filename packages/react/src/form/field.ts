@@ -1,5 +1,4 @@
 import { Atom, atom } from "@iniz/core";
-import { FilterFirstElement } from "./types";
 
 export const onChangeMap = (e: any) => {
   const tagName = e?.target?.tagName;
@@ -59,6 +58,7 @@ export type FieldInstance<
   )[]
 > = Atom<{
   value?: TValue;
+  setValue: (val: TValue) => void;
   touched: Atom<boolean>;
   errors: Atom<
     (UnionToIntersection<
@@ -89,15 +89,18 @@ export function field<
 >(
   name: string,
   initialValue?: TValue,
-  syncValidators: TSyncValidators = [] as any,
-  asyncValidators: TAsyncValidators = [] as any,
   // TODO: Handle onSubmit
-  mode: "onChange" | "onBlur" | "onTouched" | "all" = "onChange",
   {
+    syncValidators = [] as unknown as TSyncValidators,
+    asyncValidators = [] as unknown as TAsyncValidators,
+    mode = "onChange",
     propName = "value",
     handlerName = "onChange",
     map = onChangeMap,
   }: {
+    syncValidators?: TSyncValidators;
+    asyncValidators?: TAsyncValidators;
+    mode?: "onChange" | "onBlur" | "onTouched" | "all";
     propName?: string;
     handlerName?: string;
     map?: (...args: any[]) => any;
@@ -175,6 +178,7 @@ export function field<
 
   return atom({
     value,
+    setValue: ((val: any) => value(val)) as any,
 
     touched,
     errors,
@@ -209,19 +213,22 @@ export function field<
 const IS_FIELD = Symbol.for("IS_FIELD");
 
 export type FieldControl<
-  TFieldControlArgs extends FilterFirstElement<Parameters<typeof field>>
+  TValue,
+  TFieldControlArgs extends [Parameters<typeof field>[2]]
 > = {
   $$typeof: typeof IS_FIELD;
   args: TFieldControlArgs;
 };
 
-export function isFieldControl(control: any): control is FieldControl<any> {
+export function isFieldControl(
+  control: any
+): control is FieldControl<any, any> {
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField<
-  TFieldArgs extends FilterFirstElement<Parameters<typeof field>>
->(...args: TFieldArgs): FieldControl<TFieldArgs> {
+export function formField<TValue, TArgs extends [Parameters<typeof field>[2]]>(
+  ...args: TArgs
+): FieldControl<TValue, TArgs> {
   return {
     $$typeof: IS_FIELD,
     args,
