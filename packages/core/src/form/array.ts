@@ -1,7 +1,8 @@
-import { atom, Atom, computed } from "@iniz/core";
+import { atom, Atom } from "../atom";
+import { computed } from "../computed";
+import { extractStateValue, FilterFirstElement } from "../types";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
-import { extractStateValue, FilterFirstElement } from "./types";
 
 export type ArrayInstance<
   TValue extends { [k in keyof TGG]: any },

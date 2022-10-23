@@ -1,7 +1,6 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vitest/config";
-// import { viteStaticCopy as copy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -31,6 +30,8 @@ export default defineConfig({
         globals: {
           react: "React",
         },
+        // By default chunk's filename will be the file will most code without format, causing different formats to overwrite each other.
+        chunkFileNames: `chunk.[hash].[format].js`,
         inlineDynamicImports: false,
       },
     },
@@ -46,17 +47,5 @@ export default defineConfig({
     react({
       jsxRuntime: "classic",
     }) as any,
-    // copy({
-    //   targets: [
-    //     {
-    //       src: 'dist/jsx-dev-runtime*',
-    //       dest: '../jsx-dev-runtime/dist'
-    //     },
-    //     {
-    //       src: 'dist/jsx-runtime*',
-    //       dest: '../jsx-runtime/dist'
-    //     }
-    //   ]
-    // })
   ],
 });

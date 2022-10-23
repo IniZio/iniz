@@ -1,5 +1,5 @@
-import { extractStateValue } from "@iniz/core/dist/types/types";
 import { ReactElement } from "react";
+import { extractStateValue } from "../types";
 
 export function Field<
   TField,

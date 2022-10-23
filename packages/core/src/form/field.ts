@@ -1,4 +1,4 @@
-import { Atom, atom } from "@iniz/core";
+import { Atom, atom } from "../atom";
 
 export const onChangeMap = (e: any) => {
   const tagName = e?.target?.tagName;
