@@ -1,3 +1,4 @@
+import { ref } from "./ref";
 import { isState, state } from "./state";
 import { extractStateValue } from "./types";
 
@@ -27,7 +28,7 @@ export function atom<TValue>(value: TValue): Atom<TValue> {
 
         return this.value;
       },
-      { [IS_ATOM]: true, value }
+      { [IS_ATOM]: ref(true), value }
     )
   ) as unknown as Atom<TValue>;
 }

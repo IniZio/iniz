@@ -1,5 +1,6 @@
 import { atom, Atom } from "./atom";
 import { effect } from "./effect";
+import { ref } from "./ref";
 
 export type Computed<TValue> = Atom<TValue> & {
   /** @internal */
@@ -9,8 +10,14 @@ export type Computed<TValue> = Atom<TValue> & {
 export function computed<TValue>(compute: () => TValue): Computed<TValue> {
   const computed = atom<TValue>(compute()) as Computed<TValue>;
 
-  computed._compute = compute;
-  effect(() => computed(computed._compute() as any));
+  computed._compute = ref(compute);
+  effect(() => {
+    const value = computed._compute();
 
-  return computed as any;
+    if (computed() !== value) {
+      computed(value as any);
+    }
+  });
+
+  return computed;
 }

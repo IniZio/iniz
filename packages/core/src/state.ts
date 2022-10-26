@@ -73,8 +73,12 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
         let untrackChild = untrack;
 
         if (isRef(value)) {
+          const { frozen } = value;
+
           value = value.value;
           untrackChild = true;
+
+          if (frozen) return value;
         }
 
         if (isAtom(value)) {
