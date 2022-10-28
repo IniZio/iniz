@@ -1,6 +1,7 @@
 import { Atom, atom } from "../atom";
 import { computed } from "../computed";
-import { extractStateValue, FilterFirstElement } from "../types";
+import { State, state } from "../state";
+import { FilterFirstElement } from "../types";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 
@@ -10,12 +11,10 @@ export type GroupInstance<
 > = {
   value: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? ReturnType<
-          FieldInstance<
-            TValue[k],
-            Exclude<TGG[k]["args"][1], undefined>,
-            Exclude<TGG[k]["args"][2], undefined>
-          >
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
         >["value"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["args"][0]>["value"]
@@ -37,6 +36,21 @@ export type GroupInstance<
       ? ArrayInstance<TValue[k], TGG[k]["args"][0]>
       : never;
   };
+  touchedFields: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
+        >["touched"]
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
+      : never;
+  };
+  touched: boolean;
+  reset: () => void;
 };
 
 export function group<
@@ -49,10 +63,12 @@ export function group<
         ...acc,
         [name]: isFieldControl(control)
           ? field(name, initialValue[name], ...control.args)
-          : isGroupControl(control)
+          : // @ts-ignore
+          isGroupControl(control)
           ? // @ts-ignore
             group(initialValue[name], ...control.args)
-          : isArrayControl(control)
+          : // @ts-ignore
+          isArrayControl(control)
           ? // @ts-ignore
             array(initialValue[name], ...control.args)
           : null,
@@ -65,9 +81,26 @@ export function group<
     Object.entries(controls()).reduce(
       (acc, [name, control]) => ({
         ...acc,
-        [name]: (control as any).value,
+        [name]: control.value,
       }),
       {}
+    )
+  );
+
+  const touchedFields = computed(() =>
+    Object.entries(controls()).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: control.touchedFields ?? control.touched,
+      }),
+      {}
+    )
+  );
+
+  const touched = computed(() =>
+    Object.entries(controls()).reduce(
+      (touched, [name, control]) => touched || control.touched,
+      false
     )
   );
 
@@ -77,11 +110,20 @@ export function group<
     });
   };
 
-  return atom({
+  const reset = () => {
+    Object.entries(controls()).forEach(([name, control]) => {
+      control.reset();
+    });
+  };
+
+  return state({
     value,
     setValue,
+    reset,
     controls,
-  })() as extractStateValue<GroupInstance<TValue, TG>>;
+    touchedFields,
+    touched,
+  }) as State<GroupInstance<TValue, TG>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");

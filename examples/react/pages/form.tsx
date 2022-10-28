@@ -1,7 +1,7 @@
 /** @jsxImportSource @iniz/react */
 
 import { useSideEffect } from "@iniz/react";
-import { Field, form, group, validators } from "@iniz/react/form";
+import { field, Field, form, group, validators } from "@iniz/react/form";
 import { useCallback, useState } from "react";
 
 function emailSuffixValidator(suffix: string) {
@@ -19,6 +19,8 @@ function emailSuffixValidator(suffix: string) {
     );
 }
 
+const hobby = form.field();
+
 const relative = form.group({
   phone: form.field({ syncValidators: [validators.maxLength(10)] }),
 });
@@ -34,12 +36,13 @@ export default function FormPage() {
         contact: {
           email: "bcd@bcd.com",
         },
+        hobbies: ["Sleeping", "Idling"],
         relatives: [{ phone: "1213123" }, { phone: "329234" }],
       },
       {
-        firstname: form.field({}),
-        lastname: form.field({}),
-        gender: form.field({}),
+        firstname: form.field(),
+        lastname: form.field(),
+        gender: form.field(),
         age: form.field({ syncValidators: [validators.min(10)] }),
         contact: form.group({
           email: form.field({
@@ -47,30 +50,47 @@ export default function FormPage() {
             mode: "onBlur",
           }),
         }),
+        hobbies: form.array(hobby),
         relatives: form.array(relative),
       }
     )
   );
 
   useSideEffect(() => {
-    console.log("=== profile form", JSON.stringify(profileForm.value));
+    console.log(
+      "=== profile form",
+      JSON.stringify(
+        profileForm.controls.relatives.controls.map((f) => f.value)
+      )
+    );
   });
 
-  const reset = useCallback(() => {
+  const setValue = useCallback(() => {
     profileForm.setValue({
-      firstname: "First",
-      lastname: "Last",
-      gender: "M",
-      age: 10,
+      firstname: "Harry",
+      lastname: "Potter",
+      gender: "F",
+      age: 989,
       contact: {
         email: "bcd@bcd.com",
       },
-      relatives: [{ phone: "1213123" }],
+      hobbies: ["Swimming"],
+      relatives: [{ phone: "56456" }],
     });
-  }, []);
+  }, [profileForm]);
 
   return (
     <form>
+      <Field>
+        {() => (
+          <textarea
+            value={JSON.stringify(profileForm.touchedFields, null, 4)}
+            rows={35}
+            style={{ width: 400 }}
+            readOnly
+          ></textarea>
+        )}
+      </Field>
       <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
@@ -119,34 +139,51 @@ export default function FormPage() {
           </div>
         )}
       </Field>
+      {profileForm.controls.hobbies.touched ? "Touched" : "Not touched"}
+      <Field field={profileForm.controls.hobbies}>
+        {(fields) => (
+          <div>
+            {fields.controls.map(({ touched, errors, props }, index) => (
+              <div key={index}>
+                <input {...props} />
+                <button
+                  type="button"
+                  onClick={() => fields.controls.splice(index, 1)}
+                >
+                  -
+                </button>
+                {touched ? "Touched" : "Not touched"}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => fields.controls.push(field("hobby", "Eating", {}))}
+            >
+              + row
+            </button>
+          </div>
+        )}
+      </Field>
+      {profileForm.controls.relatives.touched ? "Touched" : "Not touched"}
       <Field field={profileForm.controls.relatives}>
         {(fields) => (
           <div>
-            {fields.controls.map(
-              (
-                {
-                  controls: {
-                    phone: { touched, errors, props },
-                  },
-                },
-                index
-              ) => (
-                <div key={index}>
-                  <input {...props} />
-                  <span>
-                    {touched &&
-                      errors.maxLength &&
-                      `At most ${errors.maxLength.maxLength} is allowed but got ${errors.maxLength.actual}`}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => fields.controls.splice(index, 1)}
-                  >
-                    -
-                  </button>
-                </div>
-              )
-            )}
+            {fields.controls.map((group, index) => (
+              <div key={index}>
+                <input {...group.controls.phone.props} />
+                <span>
+                  {group.controls.phone.touched &&
+                    group.controls.phone.errors.maxLength &&
+                    `At most ${group.controls.phone.errors.maxLength.maxLength} is allowed but got ${group.controls.phone.errors.maxLength.actual}`}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => fields.controls.splice(index, 1)}
+                >
+                  -
+                </button>
+              </div>
+            ))}
             <button
               type="button"
               onClick={() =>
@@ -158,7 +195,10 @@ export default function FormPage() {
           </div>
         )}
       </Field>
-      <button type="button" onClick={reset}>
+      <button type="button" onClick={setValue}>
+        Set value
+      </button>
+      <button type="button" onClick={profileForm.reset}>
         Reset
       </button>
     </form>

@@ -1,4 +1,5 @@
 import { Atom, atom } from "../atom";
+import { State, state } from "../state";
 
 export const onChangeMap = (e: any) => {
   const tagName = e?.target?.tagName;
@@ -56,7 +57,7 @@ export type FieldInstance<
     | ((...args: any) => Promise<any>)
     | undefined
   )[]
-> = Atom<{
+> = {
   value?: TValue;
   setValue: (val: TValue) => void;
   touched: Atom<boolean>;
@@ -80,7 +81,7 @@ export type FieldInstance<
     name: string;
     onBlur: () => void;
   };
-}>;
+};
 
 export function field<
   TValue extends any,
@@ -105,7 +106,7 @@ export function field<
     handlerName?: string;
     map?: (...args: any[]) => any;
   } = {}
-): FieldInstance<TValue, TSyncValidators, TAsyncValidators> {
+) {
   const value = atom(initialValue);
   const touched = atom(false);
   const pending = atom(false);
@@ -176,7 +177,7 @@ export function field<
       });
   };
 
-  return atom({
+  return state({
     value,
     setValue: ((val: any) => value(val)) as any,
 
@@ -207,14 +208,14 @@ export function field<
         if (mode === "all") validate();
       },
     },
-  });
+  }) as State<FieldInstance<TValue, TSyncValidators, TAsyncValidators>>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");
 
 export type FieldControl<
   TValue,
-  TFieldControlArgs extends [Parameters<typeof field>[2]]
+  TFieldControlArgs extends [Parameters<typeof field>[2]] | []
 > = {
   $$typeof: typeof IS_FIELD;
   args: TFieldControlArgs;
@@ -226,9 +227,10 @@ export function isFieldControl(
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField<TValue, TArgs extends [Parameters<typeof field>[2]]>(
-  ...args: TArgs
-): FieldControl<TValue, TArgs> {
+export function formField<
+  TValue,
+  TArgs extends [Parameters<typeof field>[2]] | []
+>(...args: TArgs): FieldControl<TValue, TArgs> {
   return {
     $$typeof: IS_FIELD,
     args,
