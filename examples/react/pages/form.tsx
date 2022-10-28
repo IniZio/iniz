@@ -27,7 +27,7 @@ const relative = form.group({
 
 export default function FormPage() {
   const [profileForm] = useState(() =>
-    group(
+    form(
       {
         firstname: "First",
         lastname: "Last",
@@ -39,7 +39,7 @@ export default function FormPage() {
         hobbies: ["Sleeping", "Idling"],
         relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
       },
-      {
+      form.group({
         firstname: form.field(),
         lastname: form.field(),
         gender: form.field(),
@@ -52,9 +52,13 @@ export default function FormPage() {
         }),
         hobbies: form.array(hobby),
         relatives: form.array(relative),
-      }
+      })
     )
   );
+
+  const onSubmit = () => {
+    alert("Submitted Form");
+  };
 
   useSideEffect(() => {
     console.log("=== profile form", JSON.stringify(profileForm.value));
@@ -75,7 +79,7 @@ export default function FormPage() {
   }, [profileForm]);
 
   return (
-    <form>
+    <form onSubmit={profileForm.handleSubmit(onSubmit)}>
       <Field>
         {() => (
           <textarea
@@ -200,6 +204,7 @@ export default function FormPage() {
       <button type="button" onClick={profileForm.validate}>
         Validate
       </button>
+      <button type="submit">Submit</button>
     </form>
   );
 }

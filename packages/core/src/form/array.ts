@@ -50,6 +50,7 @@ export type ArrayInstance<
       ? GroupInstance<TValue[k], TAA["args"][0]>["errors"]
       : never;
   };
+  hasError: boolean;
   touched: boolean;
   validate: () => Promise<void>;
   pending: boolean;
@@ -103,6 +104,13 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls().map((control: any) => control.errors)
   );
 
+  const hasError = computed(() =>
+    controls().reduce(
+      (hasError, control: any) => hasError || control.hasError,
+      false
+    )
+  );
+
   const touched = computed(() =>
     controls().reduce(
       (touched, control: any) => touched || control.touched,
@@ -132,6 +140,7 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls,
     touchedFields,
     errors,
+    hasError,
     touched,
     validate,
     pending,

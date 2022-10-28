@@ -62,6 +62,7 @@ export type GroupInstance<
       ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["errors"]
       : never;
   };
+  hasError: boolean;
   touched: boolean;
   pending: boolean;
   validate: () => Promise<void>;
@@ -122,6 +123,13 @@ export function group<
     )
   );
 
+  const hasError = computed(() =>
+    Object.entries(controls()).reduce(
+      (hasError, [name, control]) => hasError || control.hasError,
+      false
+    )
+  );
+
   const touched = computed(() =>
     Object.entries(controls()).reduce(
       (touched, [name, control]) => touched || control.touched,
@@ -160,6 +168,7 @@ export function group<
     controls,
     touchedFields,
     errors,
+    hasError,
     touched,
     pending,
     validate,

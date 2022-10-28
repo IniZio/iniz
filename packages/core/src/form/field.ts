@@ -1,4 +1,5 @@
 import { Atom, atom } from "../atom";
+import { computed } from "../computed";
 import { State, state } from "../state";
 
 export const onChangeMap = (e: any) => {
@@ -73,6 +74,7 @@ export type FieldInstance<
         ? { [K in keyof O]?: O[K] | undefined }
         : never)
   >;
+  hasError: boolean;
   pending: Atom<boolean>;
   validate: () => void;
   reset: () => void;
@@ -131,6 +133,7 @@ export function field<
   const errors = atom<SyncValidatorsReturnTypes & AsyncValidatorsReturnTypes>(
     {} as any
   );
+  const hasError = computed(() => Object.keys(errors).length !== 0);
 
   let validationVersion = 0;
   const validate = () => {
@@ -153,7 +156,7 @@ export function field<
       pending(false);
     }
 
-    Promise.all(asyncValidators.map((v) => v({ value: value() })))
+    return Promise.all(asyncValidators.map((v) => v({ value: value() })))
       .then((results) => {
         // Ensure only latest validation result is taken
         if (version < validationVersion) {
@@ -183,6 +186,7 @@ export function field<
 
     touched,
     errors,
+    hasError,
     pending,
 
     validate,
