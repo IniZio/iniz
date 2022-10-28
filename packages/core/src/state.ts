@@ -1,9 +1,10 @@
-import { Atom, isAtom, IS_ATOM } from "./atom";
+import { Atom, ATOM_VALUE, isAtom, IS_ATOM } from "./atom";
 import { endBatch, startBatch } from "./batch";
+import { COMPUTED_FN } from "./computed";
 import { DependencyTracker } from "./dependency";
 import { isRef } from "./ref";
 import { extractStateValue } from "./types";
-import { isClass } from "./util";
+import { get, isClass } from "./util";
 
 export const IS_STATE = Symbol.for("IS_STATE");
 
@@ -55,19 +56,23 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
 
   function createProxyHandler(
     root: TValue | undefined = undefined,
-    parentPropArray: (string | symbol)[] = [],
+    parentPath: (string | symbol)[] = [],
     untrack: boolean = false
   ): ProxyHandler<any> {
     return {
       apply(target, _thisArg, argArray) {
-        return target.apply(state, argArray);
+        return target.apply(get(state, parentPath), argArray);
       },
       get(target, prop, receiver) {
         if (prop === IS_STATE) {
           return !root;
         }
 
-        const currentPropArray = parentPropArray.concat(prop);
+        const path = parentPath
+          .concat(prop)
+          .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
+        const access = { state, path };
+
         let value = Reflect.get(target, prop, receiver);
 
         let untrackChild = untrack;
@@ -85,30 +90,27 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
           value = value();
         }
 
-        if (canApplyStateProxy(value)) {
+        if (canApplyStateProxy(value) && !isAtom(value) && !isState(value)) {
           return new Proxy(
             value,
-            createProxyHandler(root ?? target, currentPropArray, untrackChild)
+            createProxyHandler(root ?? target, path, untrackChild)
           );
         }
 
-        DependencyTracker.addDependency({
-          state: root ?? target,
-          path: currentPropArray,
-        });
+        DependencyTracker.addDependency(access);
 
         return value;
       },
       set(target, prop, newValue, receiver) {
-        const currentPropArray = parentPropArray.concat(prop);
+        const path = parentPath
+          .concat(prop)
+          .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
+        const access = { state, path };
 
         startBatch();
         Reflect.set(target, prop, newValue, receiver);
         if (!untrack) {
-          DependencyTracker.notifyObservers({
-            state: root ?? target,
-            path: currentPropArray,
-          });
+          DependencyTracker.notifyObservers(access);
         }
         endBatch();
 

@@ -30,6 +30,20 @@ describe("state", () => {
     expect(() => state(new Set() as any)).toThrow();
     expect(() => state(new Date() as any)).toThrow();
   });
+
+  it("shoud allow function to refer to state itself", () => {
+    const a1 = state({
+      value: {
+        a: { b: 1 },
+        inc() {
+          this.a.b++;
+        },
+      },
+    });
+    expect(a1.value.a.b).toBe(1);
+    a1.value.inc();
+    expect(a1.value.a.b).toBe(2);
+  });
 });
 
 describe("atom", () => {

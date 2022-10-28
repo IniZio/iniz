@@ -8,12 +8,13 @@ class Effect {
   constructor(fn: () => void, { scheduler }: { scheduler?: () => void } = {}) {
     this.#fn = fn;
     this.#observer.scheduler = () => {
-      this.#fn();
+      this.exec();
       scheduler?.();
     };
   }
 
   exec = () => {
+    this.#observer.dispose();
     this.#observer.start();
     this.#fn();
     this.#observer.stop();
