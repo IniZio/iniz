@@ -66,6 +66,7 @@ export type GroupInstance<
   touched: boolean;
   pending: boolean;
   validate: () => Promise<void>;
+  markAsFresh: () => void;
   reset: () => void;
 };
 
@@ -156,6 +157,12 @@ export function group<
     );
   };
 
+  const markAsFresh = () => {
+    Object.entries(controls()).forEach(([name, control]) => {
+      control.markAsFresh();
+    });
+  };
+
   const reset = () => {
     Object.entries(controls()).forEach(([name, control]) => {
       control.reset();
@@ -172,6 +179,7 @@ export function group<
     touched,
     pending,
     validate,
+    markAsFresh,
     reset,
   }) as State<GroupInstance<TValue, TG>>;
 }

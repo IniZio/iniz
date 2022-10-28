@@ -54,6 +54,7 @@ export type ArrayInstance<
   touched: boolean;
   validate: () => Promise<void>;
   pending: boolean;
+  markAsFresh: () => void;
   reset: () => void;
 };
 
@@ -125,6 +126,10 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     )
   );
 
+  function markAsFresh() {
+    controls().forEach((control: any) => control.markAsFresh());
+  }
+
   const reset = () => {
     setValue(initialValue);
     controls().forEach((control: any) => control.reset());
@@ -144,6 +149,7 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     touched,
     validate,
     pending,
+    markAsFresh,
     reset,
   }) as State<ArrayInstance<TValue, TA>>;
 }

@@ -198,6 +198,9 @@ export default function FormPage() {
       <button type="button" onClick={setValue}>
         Set value
       </button>
+      <button type="button" onClick={profileForm.markAsFresh}>
+        Mark as fresh
+      </button>
       <button type="button" onClick={profileForm.reset}>
         Reset
       </button>

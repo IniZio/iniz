@@ -77,6 +77,7 @@ export type FieldInstance<
   hasError: boolean;
   pending: Atom<boolean>;
   validate: () => void;
+  markAsFresh: () => void;
   reset: () => void;
   props: {
     [x: string]: string | ((...args: any[]) => void);
@@ -136,7 +137,7 @@ export function field<
   const hasError = computed(() => Object.keys(errors).length !== 0);
 
   let validationVersion = 0;
-  const validate = () => {
+  function validate() {
     const version = ++validationVersion;
     pending(true);
 
@@ -178,7 +179,12 @@ export function field<
 
         pending(false);
       });
-  };
+  }
+
+  function markAsFresh() {
+    touched(false);
+    errors({} as any);
+  }
 
   return state({
     value,
@@ -190,9 +196,10 @@ export function field<
     pending,
 
     validate,
+    markAsFresh,
     reset: () => {
       value(initialValue as any);
-      touched(false);
+      markAsFresh();
     },
 
     props: {
