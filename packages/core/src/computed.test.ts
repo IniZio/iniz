@@ -8,29 +8,29 @@ describe("computed", () => {
     const a1 = atom("abc");
     const a2 = atom(2);
 
-    const c1 = computed(() => `${a1.value} ${a2.value}`);
+    const c1 = computed(() => `${a1()} ${a2()}`);
 
-    expect(c1.value).toBe("abc 2");
+    expect(c1()).toBe("abc 2");
 
-    a1.value = "bbb";
+    a1("bbb");
 
-    expect(c1.value).toBe("bbb 2");
+    expect(c1()).toBe("bbb 2");
   });
 
   it("should only update after batch", () => {
     const a1 = atom("abc");
     const a2 = atom(2);
 
-    const c1 = computed(() => `${a1.value} ${a2.value}`);
-    expect(c1.value).toBe("abc 2");
+    const c1 = computed(() => `${a1()} ${a2()}`);
+    expect(c1()).toBe("abc 2");
 
     batch(() => {
-      a1.value = "xyz";
-      a2.value = 10;
-      expect(c1.value).toBe("abc 2");
+      a1("xyz");
+      a2(10);
+      expect(c1()).toBe("abc 2");
     });
 
-    expect(c1.value).toBe("xyz 10");
+    expect(c1()).toBe("xyz 10");
   });
 
   // TODO: I am actually not sure how to fit this logic in yet lol
@@ -38,8 +38,8 @@ describe("computed", () => {
     const a1 = atom("abc");
     const a2 = atom(2);
 
-    const c1 = computed(() => `${a1.value} ${a2.value}`);
+    const c1 = computed(() => `${a1()} ${a2()}`);
 
-    expect(() => (c1.value = "BCD")).toThrowError();
+    expect(() => c1("BCD")).toThrowError();
   });
 });

@@ -10,15 +10,15 @@ describe("effect", () => {
 
     let effectCount = -1;
     effect(() => {
-      a1.value;
-      a2.value;
+      a1();
+      a2();
       effectCount++;
     });
 
     expect(effectCount).toBe(0);
-    a1.value = `xyz`;
+    a1(`xyz`);
     expect(effectCount).toBe(1);
-    a2.value = 2.5;
+    a2(2.5);
     expect(effectCount).toBe(2);
   });
 
@@ -53,15 +53,15 @@ describe("effect", () => {
 
     let effectCount = -1;
     const dispose = effect(() => {
-      a1.value;
+      a1();
       effectCount++;
     });
 
     expect(effectCount).toBe(0);
-    a1.value = `xyz`;
+    a1(`xyz`);
     expect(effectCount).toBe(1);
     dispose();
-    a1.value = `zyx`;
+    a1(`zyx`);
     expect(effectCount).toBe(1);
   });
 });

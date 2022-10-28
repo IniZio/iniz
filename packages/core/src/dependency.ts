@@ -14,7 +14,7 @@ interface Access {
 }
 
 const observerMap = new Map<Observer, Dependency[]>();
-const atomMap = new Map<State<any>, Set<Observer>>();
+const stateMap = new Map<State<any>, Set<Observer>>();
 
 export class DependencyTracker {
   static addDependency(access: Access) {
@@ -38,10 +38,10 @@ export class DependencyTracker {
       dependency.paths.push(access.path);
     }
 
-    if (!atomMap.has(access.state)) {
-      atomMap.set(access.state, new Set());
+    if (!stateMap.has(access.state)) {
+      stateMap.set(access.state, new Set());
     }
-    atomMap.get(access.state)!.add(observer);
+    stateMap.get(access.state)!.add(observer);
   }
 
   static clearDependencies(observer: Observer) {
@@ -49,12 +49,12 @@ export class DependencyTracker {
     if (!dependencies) return;
 
     for (const dependency of dependencies) {
-      const observerSet = atomMap.get(dependency.state);
+      const observerSet = stateMap.get(dependency.state);
       if (!observerSet) continue;
 
       observerSet.delete(observer);
       if (observerSet.size === 0) {
-        atomMap.delete(dependency.state);
+        stateMap.delete(dependency.state);
       }
     }
 
@@ -62,7 +62,7 @@ export class DependencyTracker {
   }
 
   static notifyObservers(access: Access) {
-    const observerSet = atomMap.get(access.state);
+    const observerSet = stateMap.get(access.state);
     if (!observerSet) {
       return;
     }

@@ -1,13 +1,15 @@
-import { isState, State, state } from "./state";
+import { ref } from "./ref";
+import { isState, state } from "./state";
 import { extractStateValue } from "./types";
 
 export const IS_ATOM = Symbol.for("IS_ATOM");
+export const ATOM_VALUE = Symbol.for("ATOM_VALUE");
 
-export type Atom<TValue> = { value: State<TValue> } & {
+export type Atom<TValue> = {
   /** @internal */
   [IS_ATOM]: true;
-} & (() => State<TValue>) &
-  ((v: extractStateValue<TValue>) => void);
+} & (() => extractStateValue<TValue>) &
+  ((v: extractStateValue<TValue>) => extractStateValue<TValue>);
 
 export function isAtom(value: any): value is Atom<any> {
   return !!value?.[IS_ATOM];
@@ -20,11 +22,14 @@ export function atom<TValue>(value: TValue): Atom<extractStateValue<TValue>> {
 
   return state(
     Object.assign(
-      function (this: { value: TValue }) {
-        if (arguments.length === 0) return this.value;
-        this.value = arguments[0];
+      function (this: { [ATOM_VALUE]: TValue }) {
+        if (arguments.length !== 0) {
+          this[ATOM_VALUE] = arguments[0];
+        }
+
+        return this[ATOM_VALUE];
       },
-      { [IS_ATOM]: true, value }
+      { [IS_ATOM]: ref(true), [ATOM_VALUE]: value }
     )
-  ) as any;
+  ) as unknown as Atom<extractStateValue<TValue>>;
 }

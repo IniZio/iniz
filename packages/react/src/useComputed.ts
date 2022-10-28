@@ -1,10 +1,13 @@
-import { computed } from "@iniz/core";
+import { computed, COMPUTED_FN, ref } from "@iniz/core";
 import { useEffect, useState } from "react";
 
 export function useComputed<TValue>(compute: () => TValue, deps: any[] = []) {
   const [snapshot] = useState(() => computed(compute));
   useEffect(
-    () => void snapshot(compute() as any),
+    () => {
+      snapshot[COMPUTED_FN] = ref(compute);
+      snapshot(compute() as any);
+    },
     deps // eslint-disable-line react-hooks/exhaustive-deps
   );
 

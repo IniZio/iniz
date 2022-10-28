@@ -1,0 +1,8 @@
+{
+  "name": "@iniz/form",
+  "source": "../src/form/index.ts",
+  "main": "../dist/form.cjs.js",
+  "module": "../dist/form.es.js",
+  "types": "../dist/types/form/index.d.ts",
+  "sideEffects": false
+}

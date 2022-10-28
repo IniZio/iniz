@@ -54,7 +54,7 @@ describe("useSideEffect", () => {
   test("should execute on atom chaNge", () => {
     expect(effectCount).toBe(1);
     act(() => {
-      lastName("CD");
+      lastName("EF");
     });
     expect(effectCount).toBe(2);
 

@@ -1,9 +1,10 @@
-import { Atom, isAtom } from "./atom";
+import { Atom, ATOM_VALUE, isAtom, IS_ATOM } from "./atom";
 import { endBatch, startBatch } from "./batch";
+import { COMPUTED_FN } from "./computed";
 import { DependencyTracker } from "./dependency";
 import { isRef } from "./ref";
 import { extractStateValue } from "./types";
-import { isClass } from "./util";
+import { get, isClass } from "./util";
 
 export const IS_STATE = Symbol.for("IS_STATE");
 
@@ -25,9 +26,8 @@ export function isState<TValue>(value: TValue): value is State<any> {
 export function canApplyStateProxy(value: any): boolean {
   return (
     value !== undefined &&
-    (typeof value === "object" ||
-      // HACK: For primitive to work, is this a good idea though...?
-      typeof value === "function") &&
+    value !== null &&
+    typeof value === "object" &&
     (!isClass(value) ||
       (!(value instanceof Map) &&
         !(value instanceof Set) &&
@@ -47,7 +47,8 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     return value as any;
   }
 
-  if (!canApplyStateProxy(value)) {
+  // Atom is an object-assigned function, so bypass proxiable check here
+  if (!canApplyStateProxy(value) && !value?.[IS_ATOM]) {
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
@@ -55,56 +56,61 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
 
   function createProxyHandler(
     root: TValue | undefined = undefined,
-    parentPropArray: (string | symbol)[] = [],
+    parentPath: (string | symbol)[] = [],
     untrack: boolean = false
   ): ProxyHandler<any> {
     return {
-      apply(target, thisArg, argArray) {
-        return target.apply(thisArg ?? state, argArray);
+      apply(target, _thisArg, argArray) {
+        return target.apply(get(state, parentPath), argArray);
       },
       get(target, prop, receiver) {
         if (prop === IS_STATE) {
           return !root;
         }
 
-        const currentPropArray = parentPropArray.concat(prop);
+        const path = parentPath
+          .concat(prop)
+          .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
+        const access = { state, path };
+
         let value = Reflect.get(target, prop, receiver);
 
         let untrackChild = untrack;
 
         if (isRef(value)) {
+          const { frozen } = value;
+
           value = value.value;
           untrackChild = true;
+
+          if (frozen) return value;
         }
 
         if (isAtom(value)) {
           value = value();
         }
 
-        if (canApplyStateProxy(value)) {
+        if (canApplyStateProxy(value) && !isAtom(value) && !isState(value)) {
           return new Proxy(
             value,
-            createProxyHandler(root ?? target, currentPropArray, untrackChild)
+            createProxyHandler(root ?? target, path, untrackChild)
           );
         }
 
-        DependencyTracker.addDependency({
-          state: root ?? target,
-          path: currentPropArray,
-        });
+        DependencyTracker.addDependency(access);
 
         return value;
       },
       set(target, prop, newValue, receiver) {
-        const currentPropArray = parentPropArray.concat(prop);
+        const path = parentPath
+          .concat(prop)
+          .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
+        const access = { state, path };
 
         startBatch();
         Reflect.set(target, prop, newValue, receiver);
         if (!untrack) {
-          DependencyTracker.notifyObservers({
-            state: root ?? target,
-            path: currentPropArray,
-          });
+          DependencyTracker.notifyObservers(access);
         }
         endBatch();
 

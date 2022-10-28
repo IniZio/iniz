@@ -1,7 +1,7 @@
 export { atom } from "./atom";
 export type { Atom } from "./atom";
 export { batch } from "./batch";
-export { computed } from "./computed";
+export { computed, COMPUTED_FN } from "./computed";
 export { effect } from "./effect";
 export { observer } from "./observer";
 export type { Observer } from "./observer";
