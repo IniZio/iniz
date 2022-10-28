@@ -49,7 +49,22 @@ export type GroupInstance<
       ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
       : never;
   };
+  errors: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TGG[k]["args"][1], undefined>,
+          Exclude<TGG[k]["args"][2], undefined>
+        >["errors"]
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      : never;
+  };
   touched: boolean;
+  pending: boolean;
+  validate: () => Promise<void>;
   reset: () => void;
 };
 
@@ -97,9 +112,26 @@ export function group<
     )
   );
 
+  const errors = computed(() =>
+    Object.entries(controls()).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: control.errors,
+      }),
+      {}
+    )
+  );
+
   const touched = computed(() =>
     Object.entries(controls()).reduce(
       (touched, [name, control]) => touched || control.touched,
+      false
+    )
+  );
+
+  const pending = computed(() =>
+    Object.entries(controls()).reduce(
+      (pending, [name, control]) => pending || control.pending,
       false
     )
   );
@@ -108,6 +140,12 @@ export function group<
     Object.entries(controls()).forEach(([name, control]) => {
       control.setValue(val[name]);
     });
+  };
+
+  const validate = async () => {
+    await Promise.all(
+      Object.entries(controls()).map(([name, control]) => control.validate())
+    );
   };
 
   const reset = () => {
@@ -119,10 +157,13 @@ export function group<
   return state({
     value,
     setValue,
-    reset,
     controls,
     touchedFields,
+    errors,
     touched,
+    pending,
+    validate,
+    reset,
   }) as State<GroupInstance<TValue, TG>>;
 }
 

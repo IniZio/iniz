@@ -32,12 +32,12 @@ export default function FormPage() {
         firstname: "First",
         lastname: "Last",
         gender: "M",
-        age: 10,
+        age: 1,
         contact: {
-          email: "bcd@bcd.com",
+          email: "bcd@bbb.org",
         },
         hobbies: ["Sleeping", "Idling"],
-        relatives: [{ phone: "1213123" }, { phone: "329234" }],
+        relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
       },
       {
         firstname: form.field(),
@@ -57,12 +57,7 @@ export default function FormPage() {
   );
 
   useSideEffect(() => {
-    console.log(
-      "=== profile form",
-      JSON.stringify(
-        profileForm.controls.relatives.controls.map((f) => f.value)
-      )
-    );
+    console.log("=== profile form", JSON.stringify(profileForm.value));
   });
 
   const setValue = useCallback(() => {
@@ -84,13 +79,14 @@ export default function FormPage() {
       <Field>
         {() => (
           <textarea
-            value={JSON.stringify(profileForm.touchedFields, null, 4)}
+            value={JSON.stringify(profileForm.errors, null, 4)}
             rows={35}
             style={{ width: 400 }}
             readOnly
           ></textarea>
         )}
       </Field>
+      {profileForm.pending ? "Validating..." : ""}
       <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
@@ -110,8 +106,7 @@ export default function FormPage() {
           <div>
             <input {...props} />
             {pending ? "Validating..." : ""}
-            {touched &&
-              errors.emailSuffix &&
+            {errors.emailSuffix &&
               `Only email with domain '${errors.emailSuffix.suffix}' can signup`}
           </div>
         )}
@@ -128,14 +123,16 @@ export default function FormPage() {
         )}
       </Field>
       <Field field={profileForm.controls.age}>
-        {({ touched, errors, props }) => (
+        {({ touched, errors, props, validate }) => (
           <div>
             <input {...props} type="number" />
             <span>
-              {touched &&
-                errors.min &&
+              {errors.min &&
                 `At lease ${errors.min.min} is needed but got ${errors.min.actual}`}
             </span>
+            <button type="button" onClick={validate}>
+              Validate
+            </button>
           </div>
         )}
       </Field>
@@ -172,8 +169,7 @@ export default function FormPage() {
               <div key={index}>
                 <input {...group.controls.phone.props} />
                 <span>
-                  {group.controls.phone.touched &&
-                    group.controls.phone.errors.maxLength &&
+                  {group.controls.phone.errors.maxLength &&
                     `At most ${group.controls.phone.errors.maxLength.maxLength} is allowed but got ${group.controls.phone.errors.maxLength.actual}`}
                 </span>
                 <button
@@ -200,6 +196,9 @@ export default function FormPage() {
       </button>
       <button type="button" onClick={profileForm.reset}>
         Reset
+      </button>
+      <button type="button" onClick={profileForm.validate}>
+        Validate
       </button>
     </form>
   );
