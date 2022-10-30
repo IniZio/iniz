@@ -93,7 +93,6 @@ export function field<
 >(
   name: string,
   initialValue?: TValue,
-  // TODO: Handle onSubmit
   {
     syncValidators = [] as unknown as TSyncValidators,
     asyncValidators = [] as unknown as TAsyncValidators,

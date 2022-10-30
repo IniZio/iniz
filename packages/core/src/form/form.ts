@@ -1,3 +1,4 @@
+import { atom } from "../atom";
 import {
   array,
   ArrayControl,
@@ -33,6 +34,7 @@ type FormInstance<TValue, TControl> = (TControl extends FieldControl<any, any>
     ? ArrayInstance<TValue, TControl["args"][0]>
     : never
   : never) & {
+  isSubmitting: boolean;
   handleSubmit: <TFn extends (...args: any[]) => any>(
     onSubmit: TFn
   ) => (event?: any) => void;
@@ -61,6 +63,8 @@ function _form<
     throw Error("Invalid form control");
   }
 
+  const isSubmitting = atom(false);
+
   const handleSubmit =
     <TFn extends (...args: any[]) => any>(onSubmit: TFn) =>
     async (event?: any) => {
@@ -68,7 +72,14 @@ function _form<
 
       await instance.validate();
       if (instance.hasError) return;
-      onSubmit(instance.value);
+
+      isSubmitting(true);
+
+      try {
+        await onSubmit(instance.value);
+      } finally {
+        isSubmitting(false);
+      }
     };
 
   return Object.assign(instance, {
