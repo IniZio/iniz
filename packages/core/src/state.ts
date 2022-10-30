@@ -1,7 +1,7 @@
 import { Atom, ATOM_VALUE, isAtom, IS_ATOM } from "./atom";
 import { endBatch, startBatch } from "./batch";
 import { COMPUTED_FN } from "./computed";
-import { DependencyTracker } from "./dependency";
+import { DependencyTracker, OBJECT_LENGTH_KEY } from "./dependency";
 import { isRef } from "./ref";
 import { extractStateValue } from "./types";
 import { get, isClass } from "./util";
@@ -62,6 +62,15 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     return {
       apply(target, _thisArg, argArray) {
         return target.apply(get(state, parentPath), argArray);
+      },
+      ownKeys(target) {
+        const path = parentPath
+          .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN)
+          .concat(Array.isArray(target) ? ["length"] : [OBJECT_LENGTH_KEY]);
+        const access = { state, path };
+
+        DependencyTracker.addDependency(access);
+        return Reflect.ownKeys(target);
       },
       get(target, prop, receiver) {
         if (prop === IS_STATE) {

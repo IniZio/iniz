@@ -134,29 +134,21 @@ export function field<
   const errors = atom<SyncValidatorsReturnTypes & AsyncValidatorsReturnTypes>(
     {} as any
   );
-  const hasError = computed(() => Object.keys(errors).length !== 0);
+  const hasError = computed(() => Object.keys(errors()).length !== 0);
 
   let validationVersion = 0;
   function validate() {
     const version = ++validationVersion;
+
+    errors({
+      ...syncValidators.reduce(
+        (es, v) => ({ ...es, ...v?.({ value: value() }) }),
+        {} as SyncValidatorsReturnTypes
+      ),
+    } as any);
+    if (asyncValidators.length === 0) return;
+
     pending(true);
-
-    try {
-      errors({
-        ...syncValidators.reduce(
-          (es, v) => ({ ...es, ...v?.({ value: value() }) }),
-          {} as SyncValidatorsReturnTypes
-        ),
-      } as any);
-
-      if (asyncValidators.length === 0) {
-        pending(false);
-        return;
-      }
-    } catch {
-      pending(false);
-    }
-
     return Promise.all(asyncValidators.map((v) => v({ value: value() })))
       .then((results) => {
         // Ensure only latest validation result is taken

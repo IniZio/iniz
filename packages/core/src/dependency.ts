@@ -13,6 +13,8 @@ interface Access {
   path: (string | symbol | number)[];
 }
 
+export const OBJECT_LENGTH_KEY = Symbol.for("OBJECT_LENGTH_KEY");
+
 const observerMap = new Map<Observer, Dependency[]>();
 const stateMap = new Map<State<any>, Set<Observer>>();
 
