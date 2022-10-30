@@ -22,7 +22,7 @@ function emailSuffixValidator(suffix: string) {
 const hobby = form.field();
 
 const relative = form.group({
-  phone: form.field({ syncValidators: [validators.maxLength(10)] }),
+  phone: form.field({ validators: [validators.maxLength(10)] }),
 });
 
 export default function FormPage() {
@@ -43,12 +43,12 @@ export default function FormPage() {
         firstname: form.field(),
         lastname: form.field(),
         gender: form.field(),
-        age: form.field({ syncValidators: [validators.min(10)] }),
+        age: form.field({ validators: [validators.min(10)] }),
         contact: form.group({
           email: form.field({
-            asyncValidators: [emailSuffixValidator("bcd.com")],
+            validators: [emailSuffixValidator("bcd.com")],
             mode: "onBlur",
-          }),
+          } as const),
         }),
         hobbies: form.array(hobby),
         relatives: form.array(relative),
@@ -106,12 +106,15 @@ export default function FormPage() {
         )}
       </Field>
       <Field field={profileForm.controls.contact.controls.email}>
-        {({ pending, touched, errors, props }) => (
+        {({ validate, pending, touched, errors, props }) => (
           <div>
             <input {...props} />
             {pending ? "Validating..." : ""}
             {errors.emailSuffix &&
               `Only email with domain '${errors.emailSuffix.suffix}' can signup`}
+            <button type="button" onClick={validate}>
+              Validate
+            </button>
           </div>
         )}
       </Field>

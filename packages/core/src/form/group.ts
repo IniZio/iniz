@@ -13,8 +13,7 @@ export type GroupInstance<
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["args"][0]["validators"], undefined>
         >["value"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["args"][0]>["value"]
@@ -27,8 +26,7 @@ export type GroupInstance<
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
-          Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
+          Exclude<TGG[k]["args"][0]["validators"], undefined>
         >
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["args"][0]>
@@ -40,8 +38,7 @@ export type GroupInstance<
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["args"][0]["validators"], undefined>
         >["touched"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
@@ -53,8 +50,7 @@ export type GroupInstance<
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["args"][1]["validators"], undefined>
         >["errors"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["args"][0]>["fieldErrors"]

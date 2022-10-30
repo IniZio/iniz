@@ -53,26 +53,17 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 export type FieldInstance<
   TValue,
-  TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
-  TAsyncValidators extends readonly (
-    | ((...args: any) => Promise<any>)
-    | undefined
-  )[]
+  TValidators extends readonly (((...args: any) => any) | undefined)[]
 > = {
   value?: TValue;
   setValue: (val: TValue) => void;
   touched: Atom<boolean>;
   errors: Atom<
-    (UnionToIntersection<
-      Exclude<ExtractReturnTypes<TSyncValidators>[number], null | undefined>
+    UnionToIntersection<
+      Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
     > extends infer O
       ? { [K in keyof O]?: O[K] | undefined }
-      : never) &
-      (UnionToIntersection<
-        Exclude<ExtractReturnTypes<TAsyncValidators>[number], null | undefined>
-      > extends infer O
-        ? { [K in keyof O]?: O[K] | undefined }
-        : never)
+      : never
   >;
   hasError: boolean;
   pending: Atom<boolean>;
@@ -88,21 +79,18 @@ export type FieldInstance<
 
 export function field<
   TValue extends any,
-  TSyncValidators extends readonly (((...args: any) => any) | undefined)[],
-  TAsyncValidators extends readonly ((...args: any) => Promise<any>)[]
+  TValidators extends readonly ((...args: any) => any)[]
 >(
   name: string,
   initialValue?: TValue,
   {
-    syncValidators = [] as unknown as TSyncValidators,
-    asyncValidators = [] as unknown as TAsyncValidators,
+    validators = [] as unknown as TValidators,
     mode = "onChange",
     propName = "value",
     handlerName = "onChange",
     map = onChangeMap,
   }: {
-    syncValidators?: TSyncValidators;
-    asyncValidators?: TAsyncValidators;
+    validators?: TValidators;
     mode?: "onChange" | "onBlur" | "onTouched" | "all";
     propName?: string;
     handlerName?: string;
@@ -119,48 +107,43 @@ export function field<
    * 3. Exclude null | undefined to avoid the type become never
    * 4. UnionToIntersection to merge into intersection object
    */
-  type SyncValidatorsReturnTypes = UnionToIntersection<
-    Exclude<ExtractReturnTypes<TSyncValidators>[number], null | undefined>
-  > extends infer O
-    ? { [K in keyof O]?: O[K] }
-    : never;
-  type AsyncValidatorsReturnTypes = UnionToIntersection<
-    Exclude<ExtractReturnTypes<TAsyncValidators>[number], null | undefined>
+  type ValidatorsReturnTypes = UnionToIntersection<
+    Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
   > extends infer O
     ? { [K in keyof O]?: O[K] }
     : never;
 
-  const errors = atom<SyncValidatorsReturnTypes & AsyncValidatorsReturnTypes>(
-    {} as any
-  );
+  const errors = atom<ValidatorsReturnTypes>({} as any);
   const hasError = computed(() => Object.keys(errors()).length !== 0);
 
   let validationVersion = 0;
   function validate() {
     const version = ++validationVersion;
 
-    errors({
-      ...syncValidators.reduce(
-        (es, v) => ({ ...es, ...v?.({ value: value() }) }),
-        {} as SyncValidatorsReturnTypes
-      ),
-    } as any);
-    if (asyncValidators.length === 0) return;
+    const results = validators.map((v) => v({ value: value() }));
+    if (!results.some((err) => typeof (err as any)?.then === "function")) {
+      errors(
+        results.reduce(
+          (es, res) => ({ ...es, ...res }),
+          {} as ValidatorsReturnTypes
+        )
+      );
+      return;
+    }
 
     pending(true);
-    return Promise.all(asyncValidators.map((v) => v({ value: value() })))
+    return Promise.all(results)
       .then((results) => {
         // Ensure only latest validation result is taken
         if (version < validationVersion) {
           return;
         }
-        errors({
-          ...errors(),
-          ...results.reduce(
+        errors(
+          results.reduce(
             (es, res) => ({ ...es, ...res }),
-            {} as AsyncValidatorsReturnTypes
-          ),
-        });
+            {} as ValidatorsReturnTypes
+          )
+        );
       })
       .finally(() => {
         // Ensure only latest validation result is taken
@@ -210,7 +193,7 @@ export function field<
         if (mode === "all") validate();
       },
     },
-  }) as State<FieldInstance<TValue, TSyncValidators, TAsyncValidators>>;
+  }) as State<FieldInstance<TValue, TValidators>>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");

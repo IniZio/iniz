@@ -22,11 +22,7 @@ import {
 } from "./group";
 
 type FormInstance<TValue, TControl> = (TControl extends FieldControl<any, any>
-  ? FieldInstance<
-      TValue,
-      Exclude<TControl["args"][0]["syncValidators"], undefined>,
-      Exclude<TControl["args"][0]["asyncValidators"], undefined>
-    >
+  ? FieldInstance<TValue, Exclude<TControl["args"][0]["validators"], undefined>>
   : TControl extends GroupControl<any, any>
   ? GroupInstance<TValue, TControl["args"][0]>
   : TControl extends ArrayControl<any[], any>

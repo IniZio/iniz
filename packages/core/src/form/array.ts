@@ -15,8 +15,7 @@ export type ArrayInstance<
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["args"][0]["validators"], undefined>
         >
       : TAA extends ArrayControl<any, any>
       ? ArrayInstance<TValue[k], TAA["args"][0]>
@@ -28,8 +27,7 @@ export type ArrayInstance<
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["args"][0]["validators"], undefined>
         >["touched"]
       : TAA extends ArrayControl<any, any>
       ? ArrayInstance<TValue[k], TAA["args"][0]>["touchedFields"]
@@ -41,8 +39,7 @@ export type ArrayInstance<
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["args"][0]["validators"], undefined>
         >["errors"]
       : TAA extends ArrayControl<any, any>
       ? ArrayInstance<TValue[k], TAA["args"][0]>["fieldErrors"]
