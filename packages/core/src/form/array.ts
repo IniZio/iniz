@@ -37,7 +37,7 @@ export type ArrayInstance<
       ? GroupInstance<TValue[k], TAA["args"][0]>["touchedFields"]
       : never;
   };
-  errors: {
+  fieldErrors: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
@@ -45,9 +45,9 @@ export type ArrayInstance<
           Exclude<TAA["args"][0]["asyncValidators"], undefined>
         >["errors"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["errors"]
+      ? ArrayInstance<TValue[k], TAA["args"][0]>["fieldErrors"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["errors"]
+      ? GroupInstance<TValue[k], TAA["args"][0]>["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -101,7 +101,7 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls().map((control: any) => control.touchedFields ?? control.touched)
   );
 
-  const errors = computed(() =>
+  const fieldErrors = computed(() =>
     controls().map((control: any) => control.errors)
   );
 
@@ -144,7 +144,7 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     setValue,
     controls,
     touchedFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     validate,

@@ -83,7 +83,7 @@ export default function FormPage() {
       <Field>
         {() => (
           <textarea
-            value={JSON.stringify(profileForm.errors, null, 4)}
+            value={JSON.stringify(profileForm.fieldErrors, null, 4)}
             rows={35}
             style={{ width: 400 }}
             readOnly

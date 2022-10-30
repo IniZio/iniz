@@ -49,7 +49,7 @@ export type GroupInstance<
       ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
       : never;
   };
-  errors: {
+  fieldErrors: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
@@ -57,9 +57,9 @@ export type GroupInstance<
           Exclude<TGG[k]["args"][2], undefined>
         >["errors"]
       : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["fieldErrors"]
       : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -114,7 +114,7 @@ export function group<
     )
   );
 
-  const errors = computed(() =>
+  const fieldErrors = computed(() =>
     Object.entries(controls()).reduce(
       (acc, [name, control]) => ({
         ...acc,
@@ -174,7 +174,7 @@ export function group<
     setValue,
     controls,
     touchedFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     pending,
