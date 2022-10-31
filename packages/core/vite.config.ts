@@ -1,10 +1,10 @@
+import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "vitest/config";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "Iniz",
@@ -34,5 +34,10 @@ export default defineConfig({
       provider: "istanbul",
     },
   },
-  plugins: [],
+  plugins: [
+    typescript({
+      declaration: true,
+      declarationDir: path.resolve(__dirname, "dist/types"),
+    }),
+  ],
 });

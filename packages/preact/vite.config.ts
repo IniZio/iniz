@@ -1,4 +1,5 @@
 import preact from "@preact/preset-vite";
+import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "vitest/config";
 
@@ -40,5 +41,11 @@ export default defineConfig({
       provider: "istanbul",
     },
   },
-  plugins: [preact()],
+  plugins: [
+    typescript({
+      declaration: true,
+      declarationDir: path.resolve(__dirname, "dist/types"),
+    }),
+    preact(),
+  ],
 });
