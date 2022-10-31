@@ -53,7 +53,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 export type FieldInstance<
   TValue,
-  TValidators extends readonly (((...args: any) => any) | undefined)[]
+  TValidators extends readonly (((...arg: any) => any) | undefined)[]
 > = {
   value?: TValue;
   setValue: (val: TValue) => void;
@@ -72,7 +72,7 @@ export type FieldInstance<
   markAsFresh: () => void;
   reset: () => void;
   props: {
-    [x: string]: string | ((...args: any[]) => void);
+    [x: string]: string | ((...arg: any[]) => void);
     name: string;
     onBlur: () => void;
   };
@@ -80,7 +80,7 @@ export type FieldInstance<
 
 export function field<
   TValue extends any,
-  TValidators extends readonly ((...args: any) => any)[]
+  TValidators extends readonly ((...arg: any) => any)[]
 >(
   name: string,
   initialValue?: TValue,
@@ -95,7 +95,7 @@ export function field<
     mode?: "onChange" | "onBlur" | "onTouched" | "onSubmit" | "all";
     propName?: string;
     handlerName?: string;
-    map?: (...args: any[]) => any;
+    map?: (...arg: any[]) => any;
   } = {}
 ) {
   const value = atom(initialValue);
@@ -183,10 +183,10 @@ export function field<
     props: {
       name,
       [propName]: value,
-      [handlerName]: (...args: any[]) => {
+      [handlerName]: (...arg: any[]) => {
         dirty(true);
 
-        value(map(...args));
+        value(map(...arg));
 
         if (touched() && mode === "onTouched") validate();
         if (mode === "onChange") validate();
@@ -207,10 +207,10 @@ const IS_FIELD = Symbol.for("IS_FIELD");
 
 export type FieldControl<
   TValue,
-  TFieldControlArgs extends [Parameters<typeof field>[2]] | []
+  TFieldControlArg extends Parameters<typeof field>[2]
 > = {
   $$typeof: typeof IS_FIELD;
-  args: TFieldControlArgs;
+  arg?: TFieldControlArg;
 };
 
 export function isFieldControl(
@@ -219,12 +219,11 @@ export function isFieldControl(
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField<
-  TValue,
-  TArgs extends [Parameters<typeof field>[2]] | []
->(...args: TArgs): FieldControl<TValue, TArgs> {
+export function formField<TValue, TArg extends Parameters<typeof field>[2]>(
+  arg?: TArg
+): FieldControl<TValue, TArg> {
   return {
     $$typeof: IS_FIELD,
-    args,
+    arg,
   };
 }

@@ -22,16 +22,16 @@ import {
 } from "./group";
 
 type FormInstance<TValue, TControl> = (TControl extends FieldControl<any, any>
-  ? FieldInstance<TValue, Exclude<TControl["args"][0]["validators"], undefined>>
+  ? FieldInstance<TValue, Exclude<TControl["arg"]["validators"], undefined>>
   : TControl extends GroupControl<any, any>
-  ? GroupInstance<TValue, TControl["args"][0]>
+  ? GroupInstance<TValue, TControl["arg"]>
   : TControl extends ArrayControl<any[], any>
   ? TValue extends any[]
-    ? ArrayInstance<TValue, TControl["args"][0]>
+    ? ArrayInstance<TValue, TControl["arg"]>
     : never
   : never) & {
   isSubmitting: boolean;
-  handleSubmit: <TFn extends (...args: any[]) => any>(
+  handleSubmit: <TFn extends (...arg: any[]) => any>(
     onSubmit: TFn
   ) => (event?: any) => void;
 };
@@ -44,15 +44,15 @@ function _form<
     | ArrayControl<any, any>
 >(initialValue: TValue, control: TControl): FormInstance<TValue, TControl> {
   const instance = isFieldControl(control)
-    ? field("", initialValue, ...control.args)
+    ? field("", initialValue, ...control.arg)
     : // @ts-ignore
     isGroupControl(control)
     ? // @ts-ignore
-      group(initialValue, ...control.args)
+      group(initialValue, ...control.arg)
     : // @ts-ignore
     isArrayControl(control)
     ? // @ts-ignore
-      array(initialValue, ...control.args)
+      array(initialValue, ...control.arg)
     : null;
 
   if (instance === null) {
@@ -62,7 +62,7 @@ function _form<
   const isSubmitting = atom(false);
 
   const handleSubmit =
-    <TFn extends (...args: any[]) => any>(onSubmit: TFn) =>
+    <TFn extends (...arg: any[]) => any>(onSubmit: TFn) =>
     async (event?: any) => {
       event?.preventDefault();
 

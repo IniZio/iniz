@@ -7,56 +7,53 @@ import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 
 export type ArrayInstance<
   TValue extends any[],
-  TAA extends ArrayControl<TValue, any>["args"][0]
+  TAA extends ArrayControl<TValue, any>["arg"]
 > = {
   value: TValue;
   setValue: (val: TValue) => void;
   controls: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TAA["args"][0]["validators"], undefined>
-        >
+      ? FieldInstance<TValue[k], Exclude<TAA["arg"]["validators"], undefined>>
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>
+      ? ArrayInstance<TValue[k], TAA["arg"]>
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>
+      ? GroupInstance<TValue[k], TAA["arg"]>
       : never;
   };
   touchedFields: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["validators"], undefined>
+          Exclude<TAA["arg"]["validators"], undefined>
         >["touched"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["touchedFields"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["touchedFields"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["touchedFields"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["touchedFields"]
       : never;
   };
   dirtyFields: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["validators"], undefined>
+          Exclude<TAA["arg"]["validators"], undefined>
         >["dirty"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["dirtyFields"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["dirtyFields"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["dirtyFields"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["dirtyFields"]
       : never;
   };
   fieldErrors: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["validators"], undefined>
+          Exclude<TAA["arg"]["validators"], undefined>
         >["errors"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["fieldErrors"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["fieldErrors"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["fieldErrors"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -68,7 +65,7 @@ export type ArrayInstance<
   reset: () => void;
 };
 
-export function array<TValue extends any[], TA extends TArrayControlArgs0>(
+export function array<TValue extends any[], TA extends TArrayControlArg>(
   initialValue: TValue,
   arrayControl: TA
 ) {
@@ -76,15 +73,15 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
   const controls: Atom<any[]> = atom(
     initialValue.map((v, index) =>
       isFieldControl(arrayControl)
-        ? field(String(index), v, ...arrayControl.args)
+        ? field(String(index), v, ...arrayControl.arg)
         : // @ts-ignore
         isArrayControl(arrayControl)
         ? // @ts-ignore
-          array(v, ...arrayControl.args)
+          array(v, ...arrayControl.arg)
         : // @ts-ignore
         isGroupControl(arrayControl)
         ? // @ts-ignore
-          group(v, ...arrayControl.args)
+          group(v, ...arrayControl.arg)
         : null
     )
   );
@@ -95,13 +92,13 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls(
       val.map((v, index) =>
         isFieldControl(arrayControl)
-          ? field(String(index), v, ...arrayControl.args)
+          ? field(String(index), v, ...arrayControl.arg)
           : isArrayControl(arrayControl)
           ? // @ts-ignore
-            array(v, ...arrayControl.args)
+            array(v, ...arrayControl.arg)
           : isGroupControl(arrayControl)
           ? // @ts-ignore
-            group(v, ...arrayControl.args)
+            group(v, ...arrayControl.arg)
           : null
       )
     );
@@ -176,14 +173,14 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");
 
-type TArrayControlArgs0 =
+type TArrayControlArg =
   | FieldControl<any, any>
   | ArrayControl<any, any>
   | GroupControl<any, any>;
 
-export type ArrayControl<TValue, TACArgs0 extends TArrayControlArgs0> = {
+export type ArrayControl<TValue, TACArg extends TArrayControlArg> = {
   $$typeof: typeof IS_ARRAY;
-  args: [TACArgs0];
+  arg: TACArg;
 };
 
 export function isArrayControl(
@@ -192,12 +189,11 @@ export function isArrayControl(
   return control.$$typeof === IS_ARRAY;
 }
 
-export function formArray<
-  TValue extends any[],
-  TArgs extends [TArrayControlArgs0]
->(...args: TArgs): ArrayControl<TValue, TArgs[0]> {
+export function formArray<TValue extends any[], TArg extends TArrayControlArg>(
+  arg: TArg
+): ArrayControl<TValue, TArg> {
   return {
     $$typeof: IS_ARRAY,
-    args,
+    arg,
   };
 }
