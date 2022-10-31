@@ -57,7 +57,8 @@ export type FieldInstance<
 > = {
   value?: TValue;
   setValue: (val: TValue) => void;
-  touched: Atom<boolean>;
+  touched: boolean;
+  dirty: boolean;
   errors: Atom<
     UnionToIntersection<
       Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
@@ -91,7 +92,7 @@ export function field<
     map = onChangeMap,
   }: {
     validators?: TValidators;
-    mode?: "onChange" | "onBlur" | "onTouched" | "all";
+    mode?: "onChange" | "onBlur" | "onTouched" | "onSubmit" | "all";
     propName?: string;
     handlerName?: string;
     map?: (...args: any[]) => any;
@@ -99,6 +100,7 @@ export function field<
 ) {
   const value = atom(initialValue);
   const touched = atom(false);
+  const dirty = atom(false);
   const pending = atom(false);
   /**
    * Here we cast array of validators to object of all validation results
@@ -156,6 +158,7 @@ export function field<
   }
 
   function markAsFresh() {
+    dirty(false);
     touched(false);
     errors({} as any);
   }
@@ -165,6 +168,7 @@ export function field<
     setValue: ((val: any) => value(val)) as any,
 
     touched,
+    dirty,
     errors,
     hasError,
     pending,
@@ -180,15 +184,18 @@ export function field<
       name,
       [propName]: value,
       [handlerName]: (...args: any[]) => {
+        dirty(true);
+
         value(map(...args));
 
-        if (!touched() && mode === "onTouched") validate();
+        if (touched() && mode === "onTouched") validate();
         if (mode === "onChange") validate();
         if (mode === "all") validate();
-
-        touched(true);
       },
       onBlur: () => {
+        touched(true);
+
+        if (!touched() && mode === "onTouched") validate();
         if (mode === "onBlur") validate();
         if (mode === "all") validate();
       },

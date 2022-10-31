@@ -46,6 +46,18 @@ export type GroupInstance<
       ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
       : never;
   };
+  dirtyFields: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TGG[k]["args"][0]["validators"], undefined>
+        >["dirty"]
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["dirtyFields"]
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["dirtyFields"]
+      : never;
+  };
   fieldErrors: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
@@ -60,6 +72,7 @@ export type GroupInstance<
   };
   hasError: boolean;
   touched: boolean;
+  dirty: boolean;
   pending: boolean;
   validate: () => Promise<void>;
   markAsFresh: () => void;
@@ -110,6 +123,16 @@ export function group<
     )
   );
 
+  const dirtyFields = computed(() =>
+    Object.entries(controls()).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: control.dirtyFields ?? control.dirty,
+      }),
+      {}
+    )
+  );
+
   const fieldErrors = computed(() =>
     Object.entries(controls()).reduce(
       (acc, [name, control]) => ({
@@ -130,6 +153,13 @@ export function group<
   const touched = computed(() =>
     Object.entries(controls()).reduce(
       (touched, [name, control]) => touched || control.touched,
+      false
+    )
+  );
+
+  const dirty = computed(() =>
+    Object.entries(controls()).reduce(
+      (dirty, [name, control]) => dirty || control.dirty,
       false
     )
   );
@@ -170,9 +200,11 @@ export function group<
     setValue,
     controls,
     touchedFields,
+    dirtyFields,
     fieldErrors,
     hasError,
     touched,
+    dirty,
     pending,
     validate,
     markAsFresh,

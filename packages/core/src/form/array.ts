@@ -35,6 +35,18 @@ export type ArrayInstance<
       ? GroupInstance<TValue[k], TAA["args"][0]>["touchedFields"]
       : never;
   };
+  dirtyFields: {
+    [k in keyof TValue]: TAA extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TAA["args"][0]["validators"], undefined>
+        >["dirty"]
+      : TAA extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TAA["args"][0]>["dirtyFields"]
+      : TAA extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TAA["args"][0]>["dirtyFields"]
+      : never;
+  };
   fieldErrors: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
@@ -49,6 +61,7 @@ export type ArrayInstance<
   };
   hasError: boolean;
   touched: boolean;
+  dirty: boolean;
   validate: () => Promise<void>;
   pending: boolean;
   markAsFresh: () => void;
@@ -98,6 +111,10 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls().map((control: any) => control.touchedFields ?? control.touched)
   );
 
+  const dirtyFields = computed(() =>
+    controls().map((control: any) => control.dirtyFields ?? control.dirty)
+  );
+
   const fieldErrors = computed(() =>
     controls().map((control: any) => control.errors)
   );
@@ -114,6 +131,10 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
       (touched, control: any) => touched || control.touched,
       false
     )
+  );
+
+  const dirty = computed(() =>
+    controls().reduce((dirty, control: any) => dirty || control.dirty, false)
   );
 
   const pending = computed(() =>
@@ -141,9 +162,11 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     setValue,
     controls,
     touchedFields,
+    dirtyFields,
     fieldErrors,
     hasError,
     touched,
+    dirty,
     validate,
     pending,
     markAsFresh,
