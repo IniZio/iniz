@@ -63,7 +63,7 @@ export type ArrayInstance<
   touched: boolean;
   dirty: boolean;
   validate: () => Promise<void>;
-  pending: boolean;
+  isValidating: boolean;
   markAsFresh: () => void;
   reset: () => void;
 };
@@ -137,9 +137,9 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     controls().reduce((dirty, control: any) => dirty || control.dirty, false)
   );
 
-  const pending = computed(() =>
+  const isValidating = computed(() =>
     controls().reduce(
-      (pending, control: any) => pending || control.pending,
+      (isValidating, control: any) => isValidating || control.isValidating,
       false
     )
   );
@@ -168,7 +168,7 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     touched,
     dirty,
     validate,
-    pending,
+    isValidating,
     markAsFresh,
     reset,
   }) as State<ArrayInstance<TValue, TA>>;

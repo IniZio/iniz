@@ -73,7 +73,7 @@ export type GroupInstance<
   hasError: boolean;
   touched: boolean;
   dirty: boolean;
-  pending: boolean;
+  isValidating: boolean;
   validate: () => Promise<void>;
   markAsFresh: () => void;
   reset: () => void;
@@ -164,9 +164,9 @@ export function group<
     )
   );
 
-  const pending = computed(() =>
+  const isValidating = computed(() =>
     Object.entries(controls()).reduce(
-      (pending, [name, control]) => pending || control.pending,
+      (isValidating, [name, control]) => isValidating || control.isValidating,
       false
     )
   );
@@ -205,7 +205,7 @@ export function group<
     hasError,
     touched,
     dirty,
-    pending,
+    isValidating,
     validate,
     markAsFresh,
     reset,

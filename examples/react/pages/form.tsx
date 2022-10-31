@@ -90,7 +90,7 @@ export default function FormPage() {
           ></textarea>
         )}
       </Field>
-      {profileForm.pending ? "Validating..." : ""}
+      {profileForm.isValidating ? "Validating..." : ""}
       <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
@@ -106,10 +106,10 @@ export default function FormPage() {
         )}
       </Field>
       <Field field={profileForm.controls.contact.controls.email}>
-        {({ validate, pending, touched, errors, props }) => (
+        {({ validate, isValidating, touched, errors, props }) => (
           <div>
             <input {...props} />
-            {pending ? "Validating..." : ""}
+            {isValidating ? "Validating..." : ""}
             {errors.emailSuffix &&
               `Only email with domain '${errors.emailSuffix.suffix}' can signup`}
             <button type="button" onClick={validate}>

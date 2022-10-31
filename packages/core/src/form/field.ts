@@ -67,7 +67,7 @@ export type FieldInstance<
       : never
   >;
   hasError: boolean;
-  pending: Atom<boolean>;
+  isValidating: Atom<boolean>;
   validate: () => void;
   markAsFresh: () => void;
   reset: () => void;
@@ -101,7 +101,7 @@ export function field<
   const value = atom(initialValue);
   const touched = atom(false);
   const dirty = atom(false);
-  const pending = atom(false);
+  const isValidating = atom(false);
   /**
    * Here we cast array of validators to object of all validation results
    * 1. ExtractReturnTypes to derive array of return types for all validators
@@ -133,7 +133,7 @@ export function field<
       return;
     }
 
-    pending(true);
+    isValidating(true);
     return Promise.all(results)
       .then((results) => {
         // Ensure only latest validation result is taken
@@ -153,7 +153,7 @@ export function field<
           return;
         }
 
-        pending(false);
+        isValidating(false);
       });
   }
 
@@ -171,7 +171,7 @@ export function field<
     dirty,
     errors,
     hasError,
-    pending,
+    isValidating,
 
     validate,
     markAsFresh,
