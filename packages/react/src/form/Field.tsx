@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { extractStateValue } from "../types";
+import { extractStateValue } from "./types";
 
 export function Field<
   TField,

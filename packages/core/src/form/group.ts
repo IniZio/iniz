@@ -87,15 +87,15 @@ export function group<
       (acc, [name, control]) => ({
         ...acc,
         [name]: isFieldControl(control)
-          ? field(name, initialValue[name], ...control.arg)
+          ? field(name, initialValue[name], control.arg)
           : // @ts-ignore
           isGroupControl(control)
           ? // @ts-ignore
-            group(initialValue[name], ...control.arg)
+            group(initialValue[name], control.arg)
           : // @ts-ignore
           isArrayControl(control)
           ? // @ts-ignore
-            array(initialValue[name], ...control.arg)
+            array(initialValue[name], control.arg)
           : null,
       }),
       {}

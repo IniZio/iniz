@@ -1,8 +1,15 @@
 /** @jsxImportSource @iniz/react */
 
 import { useSideEffect } from "@iniz/react";
-import { field, Field, form, group, validators } from "@iniz/react/form";
-import { useCallback, useState } from "react";
+import {
+  field,
+  Field,
+  form,
+  group,
+  useForm,
+  validators,
+} from "@iniz/react/form";
+import { useCallback } from "react";
 
 function emailSuffixValidator(suffix: string) {
   return ({ value }: { value: string }) =>
@@ -26,34 +33,32 @@ const relative = form.group({
 });
 
 export default function FormPage() {
-  const [profileForm] = useState(() =>
-    form(
-      {
-        firstname: "First",
-        lastname: "Last",
-        gender: "M",
-        age: 1,
-        contact: {
-          email: "bcd@bbb.org",
-        },
-        hobbies: ["Sleeping", "Idling"],
-        relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
+  const profileForm = useForm(
+    {
+      firstname: "First",
+      lastname: "Last",
+      gender: "M",
+      age: 1,
+      contact: {
+        email: "bcd@bbb.org",
       },
-      form.group({
-        firstname: form.field(),
-        lastname: form.field(),
-        gender: form.field(),
-        age: form.field({ validators: [validators.min(10)] }),
-        contact: form.group({
-          email: form.field({
-            validators: [emailSuffixValidator("bcd.com")],
-            mode: "onBlur",
-          } as const),
-        }),
-        hobbies: form.array(hobby),
-        relatives: form.array(relative),
-      })
-    )
+      hobbies: ["Sleeping", "Idling"],
+      relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
+    },
+    form.group({
+      firstname: form.field(),
+      lastname: form.field(),
+      gender: form.field(),
+      age: form.field({ validators: [validators.min(10)] }),
+      contact: form.group({
+        email: form.field({
+          validators: [emailSuffixValidator("bcd.com")],
+          mode: "onBlur",
+        } as const),
+      }),
+      hobbies: form.array(hobby),
+      relatives: form.array(relative),
+    })
   );
 
   const onSubmit = () => {

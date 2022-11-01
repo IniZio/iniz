@@ -73,15 +73,15 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
   const controls: Atom<any[]> = atom(
     initialValue.map((v, index) =>
       isFieldControl(arrayControl)
-        ? field(String(index), v, ...arrayControl.arg)
+        ? field(String(index), v, arrayControl.arg)
         : // @ts-ignore
         isArrayControl(arrayControl)
         ? // @ts-ignore
-          array(v, ...arrayControl.arg)
+          array(v, arrayControl.arg)
         : // @ts-ignore
         isGroupControl(arrayControl)
         ? // @ts-ignore
-          group(v, ...arrayControl.arg)
+          group(v, arrayControl.arg)
         : null
     )
   );
@@ -92,13 +92,13 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
     controls(
       val.map((v, index) =>
         isFieldControl(arrayControl)
-          ? field(String(index), v, ...arrayControl.arg)
+          ? field(String(index), v, arrayControl.arg)
           : isArrayControl(arrayControl)
           ? // @ts-ignore
-            array(v, ...arrayControl.arg)
+            array(v, arrayControl.arg)
           : isGroupControl(arrayControl)
           ? // @ts-ignore
-            group(v, ...arrayControl.arg)
+            group(v, arrayControl.arg)
           : null
       )
     );

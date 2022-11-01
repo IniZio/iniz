@@ -21,7 +21,10 @@ import {
   isGroupControl,
 } from "./group";
 
-type FormInstance<TValue, TControl> = (TControl extends FieldControl<any, any>
+export type FormInstance<TValue, TControl> = (TControl extends FieldControl<
+  any,
+  any
+>
   ? FieldInstance<TValue, Exclude<TControl["arg"]["validators"], undefined>>
   : TControl extends GroupControl<any, any>
   ? GroupInstance<TValue, TControl["arg"]>
@@ -44,15 +47,15 @@ function _form<
     | ArrayControl<any, any>
 >(initialValue: TValue, control: TControl): FormInstance<TValue, TControl> {
   const instance = isFieldControl(control)
-    ? field("", initialValue, ...control.arg)
+    ? field("", initialValue, control.arg)
     : // @ts-ignore
     isGroupControl(control)
     ? // @ts-ignore
-      group(initialValue, ...control.arg)
+      group(initialValue, control.arg)
     : // @ts-ignore
     isArrayControl(control)
     ? // @ts-ignore
-      array(initialValue, ...control.arg)
+      array(initialValue, control.arg)
     : null;
 
   if (instance === null) {
