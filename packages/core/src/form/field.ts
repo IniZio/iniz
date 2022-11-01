@@ -16,7 +16,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 export type FieldInstance<
   TValue,
   TValidators extends readonly (((...arg: any) => any) | undefined)[]
-> = State<{
+> = {
   name: string;
   value?: TValue;
   setValue: (
@@ -25,20 +25,18 @@ export type FieldInstance<
   ) => void;
   touched: boolean;
   dirty: boolean;
-  errors: Atom<
-    UnionToIntersection<
-      Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
-    > extends infer O
-      ? { [K in keyof O]?: O[K] | undefined }
-      : never
-  >;
+  errors: UnionToIntersection<
+    Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
+  > extends infer O
+    ? { [K in keyof O]?: O[K] | undefined }
+    : never;
   hasError: boolean;
   isValidating: Atom<boolean>;
   validate: () => void;
   markAsFresh: () => void;
   reset: () => void;
   onBlur: () => void;
-}>;
+};
 
 export function field<
   TValue extends any,
@@ -162,7 +160,7 @@ export function field<
       value(initialValue as any);
       markAsFresh();
     },
-  }) as FieldInstance<TValue, TValidators>;
+  }) as State<FieldInstance<TValue, TValidators>>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");
