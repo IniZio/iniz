@@ -9,23 +9,32 @@ function maxValidator<T>(max: T) {
 }
 
 function minLengthValidator<T extends { length: number }>(minLength: number) {
-  return ({ value }: { value: T }) =>
-    value.length < minLength
-      ? { minLength: { minLength: minLength, actual: value.length } }
+  return ({ value }: { value?: T }) =>
+    (value?.length ?? 0) < minLength
+      ? { minLength: { minLength: minLength, actual: value?.length ?? 0 } }
       : null;
 }
 
 function maxLengthValidator<T extends { length: number }>(maxLength: number) {
-  return ({ value }: { value: T }) =>
-    value.length > maxLength
-      ? { maxLength: { maxLength: maxLength, actual: value.length } }
+  return ({ value }: { value?: T }) =>
+    (value?.length ?? 0) > maxLength
+      ? { maxLength: { maxLength: maxLength, actual: value?.length ?? 0 } }
       : null;
 }
 
 function requiredValidator<T>() {
-  return ({ value }: { value: T }) =>
-    value === null || (Array.isArray(value) && value.length === 0)
+  return ({ value }: { value?: T }) =>
+    value === null ||
+    value === undefined ||
+    (Array.isArray(value) && value.length === 0)
       ? { required: true }
+      : null;
+}
+
+function patternValidator(regex: string | RegExp) {
+  return ({ value }: { value?: string }) =>
+    typeof value !== "string" || !new RegExp(regex).test(value)
+      ? { pattern: true }
       : null;
 }
 
@@ -35,4 +44,5 @@ export const validators = {
   minLength: minLengthValidator,
   maxLength: maxLengthValidator,
   required: requiredValidator,
+  pattern: patternValidator,
 };
