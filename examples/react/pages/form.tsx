@@ -99,25 +99,25 @@ export default function FormPage() {
       <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
-            <input {...field.props} />
+            <input {...profileForm.register(field)} />
           </div>
         )}
       </Field>
       <Field field={profileForm.controls.lastname}>
         {(field) => (
           <div>
-            <input {...field.props} />
+            <input {...profileForm.register(field)} />
           </div>
         )}
       </Field>
       <Field field={profileForm.controls.contact.controls.email}>
-        {({ validate, isValidating, touched, errors, props }) => (
+        {(field) => (
           <div>
-            <input {...props} />
-            {isValidating ? "Validating..." : ""}
-            {errors.emailSuffix &&
-              `Only email with domain '${errors.emailSuffix.suffix}' can signup`}
-            <button type="button" onClick={validate}>
+            <input {...profileForm.register(field)} />
+            {field.isValidating ? "Validating..." : ""}
+            {field.errors.emailSuffix &&
+              `Only email with domain '${field.errors.emailSuffix.suffix}' can signup`}
+            <button type="button" onClick={field.validate}>
               Validate
             </button>
           </div>
@@ -126,7 +126,7 @@ export default function FormPage() {
       <Field field={profileForm.controls.gender}>
         {(field) => (
           <div>
-            <select {...field.props}>
+            <select {...profileForm.register(field)}>
               <option value="M">Male</option>
               <option value="F">Female</option>
               <option value={null}>Unspecified</option>
@@ -135,14 +135,14 @@ export default function FormPage() {
         )}
       </Field>
       <Field field={profileForm.controls.age}>
-        {({ touched, errors, props, validate }) => (
+        {(field) => (
           <div>
-            <input {...props} type="number" />
+            <input {...profileForm.register(field)} type="number" />
             <span>
-              {errors.min &&
-                `At lease ${errors.min.min} is needed but got ${errors.min.actual}`}
+              {field.errors.min &&
+                `At lease ${field.errors.min.min} is needed but got ${field.errors.min.actual}`}
             </span>
-            <button type="button" onClick={validate}>
+            <button type="button" onClick={field.validate}>
               Validate
             </button>
           </div>
@@ -152,16 +152,16 @@ export default function FormPage() {
       <Field field={profileForm.controls.hobbies}>
         {(fields) => (
           <div>
-            {fields.controls.map(({ touched, errors, props }, index) => (
+            {fields.controls.map((field, index) => (
               <div key={index}>
-                <input {...props} />
+                <input {...profileForm.register(field)} />
                 <button
                   type="button"
                   onClick={() => fields.controls.splice(index, 1)}
                 >
                   -
                 </button>
-                {touched ? "Touched" : "Not touched"}
+                {field.touched ? "Touched" : "Not touched"}
               </div>
             ))}
             <button
@@ -179,7 +179,7 @@ export default function FormPage() {
           <div>
             {fields.controls.map((group, index) => (
               <div key={index}>
-                <input {...group.controls.phone.props} />
+                <input {...profileForm.register(group.controls.phone)} />
                 <span>
                   {group.controls.phone.errors.maxLength &&
                     `At most ${group.controls.phone.errors.maxLength.maxLength} is allowed but got ${group.controls.phone.errors.maxLength.actual}`}

@@ -2,44 +2,6 @@ import { Atom, atom } from "../atom";
 import { computed } from "../computed";
 import { State, state } from "../state";
 
-export const onChangeMap = (e: any) => {
-  const tagName = e?.target?.tagName;
-  if (tagName !== undefined) {
-    e.persist();
-  }
-
-  if (tagName === "INPUT") {
-    if (e.target.type === "checkbox" || e.target.type === "radio") {
-      return e.target.checked;
-    }
-    if (e.target.type === "number") {
-      return Number(e.target.value);
-    }
-    return e.target.value;
-  }
-
-  if (tagName === "SELECT") {
-    const { target } = e;
-    if (target.multiple) {
-      const value = Array.from(target.options).reduce((acc, node) => {
-        // @ts-ignore
-        if (node.selected) {
-          // @ts-ignore
-          acc.push(node.value);
-        }
-        return acc;
-      }, []);
-      return value;
-    }
-    return e.target.value;
-  }
-  if (tagName !== undefined) {
-    return e.target.value;
-  }
-
-  return e;
-};
-
 type ExtractReturnTypes<T extends readonly (((i: any) => any) | undefined)[]> =
   {
     [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
@@ -54,9 +16,13 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 export type FieldInstance<
   TValue,
   TValidators extends readonly (((...arg: any) => any) | undefined)[]
-> = {
+> = State<{
+  name: string;
   value?: TValue;
-  setValue: (val: TValue) => void;
+  setValue: (
+    val: TValue,
+    options?: { shouldDirty?: boolean; shouldTouch?: boolean }
+  ) => void;
   touched: boolean;
   dirty: boolean;
   errors: Atom<
@@ -71,12 +37,8 @@ export type FieldInstance<
   validate: () => void;
   markAsFresh: () => void;
   reset: () => void;
-  props: {
-    [x: string]: string | ((...arg: any[]) => void);
-    name: string;
-    onBlur: () => void;
-  };
-};
+  onBlur: () => void;
+}>;
 
 export function field<
   TValue extends any,
@@ -87,15 +49,9 @@ export function field<
   {
     validators = [] as unknown as TValidators,
     mode = "onChange",
-    propName = "value",
-    handlerName = "onChange",
-    map = onChangeMap,
   }: {
     validators?: TValidators;
     mode?: "onChange" | "onBlur" | "onTouched" | "onSubmit" | "all";
-    propName?: string;
-    handlerName?: string;
-    map?: (...arg: any[]) => any;
   } = {}
 ) {
   const value = atom(initialValue);
@@ -117,6 +73,31 @@ export function field<
 
   const errors = atom<ValidatorsReturnTypes>({} as any);
   const hasError = computed(() => Object.keys(errors()).length !== 0);
+
+  function setValue(
+    val: TValue,
+    {
+      shouldDirty,
+      shouldTouch,
+    }: { shouldDirty?: boolean; shouldTouch?: boolean } = {}
+  ) {
+    if (shouldDirty) dirty(true);
+    if (shouldTouch) touched(true);
+
+    value(val as any);
+
+    if (touched() && mode === "onTouched") validate();
+    if (mode === "onChange") validate();
+    if (mode === "all") validate();
+  }
+
+  function onBlur() {
+    touched(true);
+
+    if (!touched() && mode === "onTouched") validate();
+    if (mode === "onBlur") validate();
+    if (mode === "all") validate();
+  }
 
   let validationVersion = 0;
   function validate() {
@@ -164,8 +145,10 @@ export function field<
   }
 
   return state({
+    name,
     value,
-    setValue: ((val: any) => value(val)) as any,
+    setValue,
+    onBlur,
 
     touched,
     dirty,
@@ -179,28 +162,7 @@ export function field<
       value(initialValue as any);
       markAsFresh();
     },
-
-    props: {
-      name,
-      [propName]: value,
-      [handlerName]: (...arg: any[]) => {
-        dirty(true);
-
-        value(map(...arg));
-
-        if (touched() && mode === "onTouched") validate();
-        if (mode === "onChange") validate();
-        if (mode === "all") validate();
-      },
-      onBlur: () => {
-        touched(true);
-
-        if (!touched() && mode === "onTouched") validate();
-        if (mode === "onBlur") validate();
-        if (mode === "all") validate();
-      },
-    },
-  }) as State<FieldInstance<TValue, TValidators>>;
+  }) as FieldInstance<TValue, TValidators>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");

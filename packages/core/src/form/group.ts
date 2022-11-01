@@ -84,6 +84,7 @@ export function group<
 >(initialValue: TValue, groupControl: TG) {
   const controls: Atom<Record<any, any>> = atom(
     Object.entries(groupControl).reduce(
+      // @ts-ignore
       (acc, [name, control]) => ({
         ...acc,
         [name]: isFieldControl(control)

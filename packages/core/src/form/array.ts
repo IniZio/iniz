@@ -69,8 +69,8 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
   initialValue: TValue,
   arrayControl: TA
 ) {
-  // @ts-ignore
   const controls: Atom<any[]> = atom(
+    // @ts-ignore
     initialValue.map((v, index) =>
       isFieldControl(arrayControl)
         ? field(String(index), v, arrayControl.arg)
