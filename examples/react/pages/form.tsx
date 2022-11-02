@@ -54,7 +54,7 @@ export default function FormPage() {
         email: form.field({
           validators: [emailSuffixValidator("bcd.com")],
           mode: "onBlur",
-        } as const),
+        }),
       }),
       hobbies: form.array(hobby),
       relatives: form.array(relative),

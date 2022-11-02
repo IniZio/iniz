@@ -1,4 +1,4 @@
-import { Atom, atom } from "../atom";
+import { atom } from "../atom";
 import { computed } from "../computed";
 import { State, state } from "../state";
 
@@ -30,7 +30,7 @@ export type FieldInstance<
     ? { [K in keyof O]?: O[K] | undefined }
     : never;
   hasError: boolean;
-  isValidating: Atom<boolean>;
+  isValidating: boolean;
   validate: () => void;
   markAsFresh: () => void;
   reset: () => void;

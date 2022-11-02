@@ -36,7 +36,7 @@ export type FormInstance<TValue, TControl> = (TControl extends FieldControl<
   isSubmitting: boolean;
   handleSubmit: <TFn extends (...arg: any[]) => any>(
     onSubmit: TFn
-  ) => (event?: any) => void;
+  ) => (event?: any) => Promise<void>;
 };
 
 function _form<
