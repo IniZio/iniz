@@ -16,6 +16,7 @@ Iniz is a reactive state library.
     - [Mutate the atom value](#mutate-the-atom-value)
     - [Subscribe to atom](#subscribe-to-atom)
   - [React ⚛](#react-)
+- [Credits](#credits)
 
 ## Guide
 
@@ -118,3 +119,9 @@ function MessageInput() {
   );
 }
 ```
+
+## Credits
+
+- [pmndrs/valtio](https://github.com/pmndrs/valtio): The original snapshot idea
+- [tomasklaen/statin](https://github.com/tomasklaen/statin): Use function call to get/set atom value
+- [RisingStack/react-easy-state](https://github.com/RisingStack/react-easy-state): Original implementation for `useAtom`
