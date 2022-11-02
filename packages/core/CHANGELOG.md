@@ -1,5 +1,11 @@
 # @iniz/core
 
+## 0.7.0
+
+### Minor Changes
+
+- [#184](https://github.com/IniZio/iniz/pull/184) [`bb50e00`](https://github.com/IniZio/iniz/commit/bb50e00422e55d34af899919def2794833c40a38) Thanks [@IniZio](https://github.com/IniZio)! - Add form-related test cases, also extracted react-related form logic from core
+
 ## 0.6.0
 
 ### Minor Changes
