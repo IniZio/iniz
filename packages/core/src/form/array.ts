@@ -10,7 +10,10 @@ export type ArrayInstance<
   TAA extends ArrayControl<TValue, any>["arg"]
 > = {
   value: TValue;
-  setValue: (val: TValue) => void;
+  setValue: (
+    val: TValue,
+    options?: { shouldDirty?: boolean; shouldTouch?: boolean }
+  ) => void;
   controls: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<TValue[k], Exclude<TAA["arg"]["validators"], undefined>>
@@ -88,7 +91,13 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
 
   const value = computed(() => controls().map((control: any) => control.value));
 
-  const setValue = (val: TValue) => {
+  const setValue = (
+    val: TValue,
+    {
+      shouldDirty,
+      shouldTouch,
+    }: { shouldDirty?: boolean; shouldTouch?: boolean } = {}
+  ) => {
     controls(
       val.map((v, index) =>
         isFieldControl(arrayControl)
@@ -102,6 +111,10 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
           : null
       )
     );
+
+    controls().forEach((control) => {
+      control.setValue(control.value, { shouldDirty, shouldTouch });
+    });
   };
 
   const touchedFields = computed(() =>
