@@ -65,7 +65,7 @@ export type ArrayInstance<
         >["dirtyFields"]
       : never;
   };
-  errors: {
+  fieldErrors: {
     [k in keyof TValue]: TTemplate extends FieldControl<any, any>
       ? FieldInstance<TValue[k], TTemplate["args"][0]>["errors"]
       : TTemplate extends ArrayControl<any, any, any>
@@ -73,13 +73,13 @@ export type ArrayInstance<
           TValue[k],
           TTemplate["args"][0],
           TTemplate["args"][1]
-        >["errors"]
+        >["fieldErrors"]
       : TTemplate extends GroupControl<any, any, any>
       ? GroupInstance<
           TValue[k],
           TTemplate["args"][0],
           TTemplate["args"][1]
-        >["errors"]
+        >["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -149,8 +149,8 @@ export function array<
     controls().map((control: any) => control.dirtyFields ?? control.dirty)
   );
 
-  const errors = computed(() =>
-    controls().map((control: any) => control.errors)
+  const fieldErrors = computed(() =>
+    controls().map((control: any) => control.fieldErrors ?? control.errors)
   );
 
   const hasError = computed(() =>
@@ -197,7 +197,7 @@ export function array<
     controls,
     touchedFields,
     dirtyFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     dirty,

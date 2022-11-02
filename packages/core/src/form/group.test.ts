@@ -53,7 +53,7 @@ describe("group", () => {
 
     await signup.validate();
 
-    expect(signup.errors.contact.email).toMatchObject({
+    expect(signup.fieldErrors.contact.email).toMatchObject({
       minLength: { minLength: 5, actual: 3 },
     });
   });
@@ -162,10 +162,10 @@ describe("group", () => {
 
     await validatePromise.then(() => {
       expect(signup.isValidating).toBe(false);
-      expect(signup.errors.contact.email).toMatchObject({
+      expect(signup.fieldErrors.contact.email).toMatchObject({
         minLength: { minLength: 5, actual: 3 },
       });
-      expect(signup.errors.contact.phone).toMatchObject({ fail: 1 });
+      expect(signup.fieldErrors.contact.phone).toMatchObject({ fail: 1 });
     });
   });
 });

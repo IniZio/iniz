@@ -90,7 +90,7 @@ export type GroupInstance<
         >["dirtyFields"]
       : never;
   };
-  errors: {
+  fieldErrors: {
     [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
       ? FieldInstance<TValue[k], TChildren[k]["args"][0]>["errors"]
       : TChildren[k] extends GroupControl<any, any, any>
@@ -98,13 +98,13 @@ export type GroupInstance<
           TValue[k],
           TChildren[k]["args"][0],
           TChildren[k]["args"][1]
-        >["errors"]
+        >["fieldErrors"]
       : TChildren[k] extends ArrayControl<any, any, any>
       ? ArrayInstance<
           TValue[k],
           TChildren[k]["args"][0],
           TChildren[k]["args"][1]
-        >["errors"]
+        >["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -171,11 +171,11 @@ export function group<
     )
   );
 
-  const errors = computed(() =>
+  const fieldErrors = computed(() =>
     Object.entries(controls()).reduce(
       (acc, [name, control]) => ({
         ...acc,
-        [name]: control.errors,
+        [name]: control.fieldErrors ?? control.errors,
       }),
       {}
     )
@@ -245,7 +245,7 @@ export function group<
     controls,
     touchedFields,
     dirtyFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     dirty,

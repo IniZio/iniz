@@ -31,7 +31,7 @@ describe("array", () => {
     );
 
     await contacts.validate();
-    expect(contacts.errors[1].phone).toMatchObject({
+    expect(contacts.fieldErrors[1].phone).toMatchObject({
       maxLength: { maxLength: 10, actual: 16 },
     });
   });
@@ -100,10 +100,10 @@ describe("array", () => {
 
     await validatePromise.then(() => {
       expect(contacts.isValidating).toBe(false);
-      expect(contacts.errors[0].email).toMatchObject({
+      expect(contacts.fieldErrors[0].email).toMatchObject({
         fail: true,
       });
-      expect(contacts.errors[1].phone).toMatchObject({
+      expect(contacts.fieldErrors[1].phone).toMatchObject({
         maxLength: { maxLength: 10, actual: 16 },
       });
     });
