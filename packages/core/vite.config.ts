@@ -1,4 +1,3 @@
-import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "vitest/config";
 
@@ -35,10 +34,5 @@ export default defineConfig({
       provider: "istanbul",
     },
   },
-  plugins: [
-    typescript({
-      declaration: true,
-      declarationDir: path.resolve(__dirname, "dist/types"),
-    }),
-  ],
+  plugins: [],
 });

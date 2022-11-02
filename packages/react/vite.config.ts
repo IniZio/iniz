@@ -1,4 +1,3 @@
-import typescript from "@rollup/plugin-typescript";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vitest/config";
@@ -45,10 +44,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    typescript({
-      declaration: true,
-      declarationDir: path.resolve(__dirname, "dist/types"),
-    }),
     react({
       jsxRuntime: "classic",
     }) as any,

@@ -32,12 +32,11 @@
     }
   },
   "scripts": {
-    "dev": "tsc --noEmit -w & vite build --watch",
-    "build": "tsc --noEmit && vite build",
+    "dev": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types -w & vite build --watch",
+    "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build",
     "lint": "eslint"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^9.0.2",
     "@testing-library/react": "^13.4.0",
     "@types/use-sync-external-store": "^0.0.3",
     "@vitejs/plugin-react": "^2.1.0",
@@ -49,11 +48,11 @@
     "preact": "^10.11.2",
     "tsconfig": "*",
     "tsup": "^6.2.3",
-    "typescript": "^4.8.3",
     "vite": "^3.1.7",
     "vite-plugin-dts": "^1.2.0",
     "vite-plugin-static-copy": "^0.9.0",
-    "vitest": "^0.24.1"
+    "vitest": "^0.24.1",
+    "typescript": "^4.8.3"
   },
   "dependencies": {
     "@iniz/core": "*"

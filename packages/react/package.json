@@ -38,14 +38,13 @@
     }
   },
   "scripts": {
-    "dev": "tsc --noEmit -w & vite build --watch",
-    "build": "tsc --noEmit && vite build",
+    "dev": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types -w & vite build --watch",
+    "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build",
     "lint": "eslint",
     "test": "vitest run --coverage",
     "test:watch": "vitest watch --ui"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^9.0.2",
     "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
