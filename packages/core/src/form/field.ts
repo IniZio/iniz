@@ -165,7 +165,7 @@ const IS_FIELD = Symbol.for("IS_FIELD");
 
 export type FieldControl<TValue, TFieldControlArg extends FieldOptions> = {
   $$typeof: typeof IS_FIELD;
-  arg?: TFieldControlArg;
+  args: [TFieldControlArg | undefined];
 };
 
 export function isFieldControl(
@@ -174,11 +174,11 @@ export function isFieldControl(
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField<TValue, TArg extends FieldOptions>(
-  arg?: TArg
-): FieldControl<TValue, TArg> {
+export function formField<TValue, TOptions extends FieldOptions>(
+  options?: TOptions
+): FieldControl<TValue, TOptions> {
   return {
     $$typeof: IS_FIELD,
-    arg,
+    args: [options],
   };
 }

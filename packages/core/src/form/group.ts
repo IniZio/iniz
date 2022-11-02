@@ -4,24 +4,35 @@ import { State, state } from "../state";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 
-export type GroupOptions = {
+export type GroupOptions = {};
+
+export type GroupChildren = {
   [index: string]:
     | FieldControl<any, any>
-    | ArrayControl<any, any>
-    | GroupControl<any, any>;
+    | ArrayControl<any, any, any>
+    | GroupControl<any, any, any>;
 };
 
 export type GroupInstance<
-  TValue extends Record<keyof TGG, any>,
-  TGG extends GroupOptions
+  TValue extends Record<keyof TChildren, any>,
+  TChildren extends GroupChildren,
+  TOptions extends GroupOptions
 > = {
   value: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TGG[k]["arg"]>["value"]
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["arg"]>["value"]
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["value"]
+    [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TChildren[k]["args"][0]>["value"]
+      : TChildren[k] extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["value"]
+      : TChildren[k] extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["value"]
       : never;
   };
   setValue: (
@@ -29,39 +40,71 @@ export type GroupInstance<
     options?: { shouldDirty?: boolean; shouldTouch?: boolean }
   ) => void;
   controls: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TGG[k]["arg"]>
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["arg"]>
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["arg"]>
+    [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TChildren[k]["args"][0]>
+      : TChildren[k] extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >
+      : TChildren[k] extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >
       : never;
   };
   touchedFields: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TGG[k]["arg"]>["touched"]
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["arg"]>["touchedFields"]
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["touchedFields"]
+    [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TChildren[k]["args"][0]>["touched"]
+      : TChildren[k] extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["touchedFields"]
+      : TChildren[k] extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["touchedFields"]
       : never;
   };
   dirtyFields: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TGG[k]["arg"]>["dirty"]
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["arg"]>["dirtyFields"]
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["dirtyFields"]
+    [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TChildren[k]["args"][0]>["dirty"]
+      : TChildren[k] extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["dirtyFields"]
+      : TChildren[k] extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["dirtyFields"]
       : never;
   };
-  errors: {
-    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TGG[k]["arg"]>["errors"]
-      : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["arg"]>["errors"]
-      : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["errors"]
+  fieldErrors: {
+    [k in keyof TChildren]: TChildren[k] extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TChildren[k]["args"][0]>["errors"]
+      : TChildren[k] extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["fieldErrors"]
+      : TChildren[k] extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TChildren[k]["args"][0],
+          TChildren[k]["args"][1]
+        >["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -74,24 +117,24 @@ export type GroupInstance<
 };
 
 export function group<
-  TValue extends Record<keyof TG, any>,
-  TG extends GroupOptions
->(initialValue: TValue, groupControl: TG) {
+  TValue extends Record<keyof TChildren, any>,
+  TChildren extends GroupChildren,
+  TOptions extends GroupOptions
+>(initialValue: TValue, children: TChildren, options?: TOptions) {
   const controls: Atom<Record<any, any>> = atom(
-    Object.entries(groupControl).reduce(
-      // @ts-ignore
+    Object.entries(children).reduce(
       (acc, [name, control]) => ({
         ...acc,
         [name]: isFieldControl(control)
-          ? field(name, initialValue[name], control.arg)
+          ? field(name, initialValue[name], ...control.args)
           : // @ts-ignore
           isGroupControl(control)
           ? // @ts-ignore
-            group(initialValue[name], control.arg)
+            group(initialValue[name], ...control.args)
           : // @ts-ignore
           isArrayControl(control)
           ? // @ts-ignore
-            array(initialValue[name], control.arg)
+            array(initialValue[name], ...control.args)
           : null,
       }),
       {}
@@ -128,11 +171,11 @@ export function group<
     )
   );
 
-  const errors = computed(() =>
+  const fieldErrors = computed(() =>
     Object.entries(controls()).reduce(
       (acc, [name, control]) => ({
         ...acc,
-        [name]: control.errors,
+        [name]: control.fieldErrors ?? control.errors,
       }),
       {}
     )
@@ -202,7 +245,7 @@ export function group<
     controls,
     touchedFields,
     dirtyFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     dirty,
@@ -210,27 +253,36 @@ export function group<
     validate,
     markAsFresh,
     reset,
-  }) as State<GroupInstance<TValue, TG>>;
+  }) as State<GroupInstance<TValue, TChildren, TOptions>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");
 
-export type GroupControl<TValue, TGCArg extends GroupOptions> = {
+export type GroupControl<
+  TValue,
+  TChildren extends GroupChildren,
+  TOptions extends GroupOptions
+> = {
   $$typeof: typeof IS_GROUP;
-  arg: TGCArg;
+  args: [TChildren, TOptions | undefined];
 };
 
 export function isGroupControl(
   control: any
-): control is GroupControl<any, any> {
+): control is GroupControl<any, any, any> {
   return control.$$typeof === IS_GROUP;
 }
 
-export function formGroup<TValue, TArg extends GroupOptions>(
-  arg: TArg
-): GroupControl<TValue, TArg> {
+export function formGroup<
+  TValue,
+  TChildren extends GroupChildren,
+  TOptions extends GroupOptions
+>(
+  children: TChildren,
+  options?: TOptions
+): GroupControl<TValue, TChildren, TOptions> {
   return {
     $$typeof: IS_GROUP,
-    arg,
+    args: [children, options],
   };
 }

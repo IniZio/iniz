@@ -5,51 +5,81 @@ import { State } from "./../state";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 
-type ArrayOptions =
-  | FieldControl<any, any>
-  | ArrayControl<any, any>
-  | GroupControl<any, any>;
+export type ArrayOptions = {};
 
-export type ArrayInstance<TValue extends any[], TAA extends ArrayOptions> = {
+export type ArrayTemplate =
+  | FieldControl<any, any>
+  | ArrayControl<any, any, any>
+  | GroupControl<any, any, any>;
+
+export type ArrayInstance<
+  TValue extends any[],
+  TTemplate extends ArrayTemplate,
+  TOptions extends ArrayOptions
+> = {
   value: TValue;
   setValue: (
     val: TValue,
     options?: { shouldDirty?: boolean; shouldTouch?: boolean }
   ) => void;
   controls: {
-    [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TAA["arg"]>
-      : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["arg"]>
-      : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["arg"]>
+    [k in keyof TValue]: TTemplate extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TTemplate["args"][0]>
+      : TTemplate extends ArrayControl<any, any, any>
+      ? ArrayInstance<TValue[k], TTemplate["args"][0], TTemplate["args"][1]>
+      : TTemplate extends GroupControl<any, any, any>
+      ? GroupInstance<TValue[k], TTemplate["args"][0], TTemplate["args"][1]>
       : never;
   };
   touchedFields: {
-    [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TAA["arg"]>["touched"]
-      : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["arg"]>["touchedFields"]
-      : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["arg"]>["touchedFields"]
+    [k in keyof TValue]: TTemplate extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TTemplate["args"][0]>["touched"]
+      : TTemplate extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["touchedFields"]
+      : TTemplate extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["touchedFields"]
       : never;
   };
   dirtyFields: {
-    [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TAA["arg"]>["dirty"]
-      : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["arg"]>["dirtyFields"]
-      : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["arg"]>["dirtyFields"]
+    [k in keyof TValue]: TTemplate extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TTemplate["args"][0]>["dirty"]
+      : TTemplate extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["dirtyFields"]
+      : TTemplate extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["dirtyFields"]
       : never;
   };
-  errors: {
-    [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<TValue[k], TAA["arg"]>["errors"]
-      : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["arg"]>["errors"]
-      : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["arg"]>["errors"]
+  fieldErrors: {
+    [k in keyof TValue]: TTemplate extends FieldControl<any, any>
+      ? FieldInstance<TValue[k], TTemplate["args"][0]>["errors"]
+      : TTemplate extends ArrayControl<any, any, any>
+      ? ArrayInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["fieldErrors"]
+      : TTemplate extends GroupControl<any, any, any>
+      ? GroupInstance<
+          TValue[k],
+          TTemplate["args"][0],
+          TTemplate["args"][1]
+        >["fieldErrors"]
       : never;
   };
   hasError: boolean;
@@ -61,23 +91,24 @@ export type ArrayInstance<TValue extends any[], TAA extends ArrayOptions> = {
   reset: () => void;
 };
 
-export function array<TValue extends any[], TA extends ArrayOptions>(
-  initialValue: TValue,
-  arrayControl: TA
-) {
+export function array<
+  TValue extends any[],
+  TTemplate extends ArrayTemplate,
+  TOptions extends ArrayOptions
+>(initialValue: TValue, template: TTemplate, _options?: TOptions) {
   const controls: Atom<any[]> = atom(
     // @ts-ignore
     initialValue.map((v, index) =>
-      isFieldControl(arrayControl)
-        ? field(String(index), v, arrayControl.arg)
+      isFieldControl(template)
+        ? field(String(index), v, ...template.args)
         : // @ts-ignore
-        isArrayControl(arrayControl)
+        isArrayControl(template)
         ? // @ts-ignore
-          array(v, arrayControl.arg)
+          array(v, ...template.args)
         : // @ts-ignore
-        isGroupControl(arrayControl)
+        isGroupControl(template)
         ? // @ts-ignore
-          group(v, arrayControl.arg)
+          group(v, ...template.args)
         : null
     )
   );
@@ -93,14 +124,14 @@ export function array<TValue extends any[], TA extends ArrayOptions>(
   ) => {
     controls(
       val.map((v, index) =>
-        isFieldControl(arrayControl)
-          ? field(String(index), v, arrayControl.arg)
-          : isArrayControl(arrayControl)
+        isFieldControl(template)
+          ? field(String(index), v, ...template.args)
+          : isArrayControl(template)
           ? // @ts-ignore
-            array(v, arrayControl.arg)
-          : isGroupControl(arrayControl)
+            array(v, ...template.args)
+          : isGroupControl(template)
           ? // @ts-ignore
-            group(v, arrayControl.arg)
+            group(v, ...template.args)
           : null
       )
     );
@@ -118,8 +149,8 @@ export function array<TValue extends any[], TA extends ArrayOptions>(
     controls().map((control: any) => control.dirtyFields ?? control.dirty)
   );
 
-  const errors = computed(() =>
-    controls().map((control: any) => control.errors)
+  const fieldErrors = computed(() =>
+    controls().map((control: any) => control.fieldErrors ?? control.errors)
   );
 
   const hasError = computed(() =>
@@ -166,7 +197,7 @@ export function array<TValue extends any[], TA extends ArrayOptions>(
     controls,
     touchedFields,
     dirtyFields,
-    errors,
+    fieldErrors,
     hasError,
     touched,
     dirty,
@@ -174,27 +205,36 @@ export function array<TValue extends any[], TA extends ArrayOptions>(
     isValidating,
     markAsFresh,
     reset,
-  }) as State<ArrayInstance<TValue, TA>>;
+  }) as State<ArrayInstance<TValue, TTemplate, TOptions>>;
 }
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");
 
-export type ArrayControl<TValue, TACArg extends ArrayOptions> = {
+export type ArrayControl<
+  TValue,
+  TTemplate extends ArrayTemplate,
+  TOptions extends ArrayOptions
+> = {
   $$typeof: typeof IS_ARRAY;
-  arg: TACArg;
+  args: [TTemplate, TOptions | undefined];
 };
 
 export function isArrayControl(
   control: any
-): control is ArrayControl<any, any> {
+): control is ArrayControl<any, any, any> {
   return control.$$typeof === IS_ARRAY;
 }
 
-export function formArray<TValue extends any[], TArg extends ArrayOptions>(
-  arg: TArg
-): ArrayControl<TValue, TArg> {
+export function formArray<
+  TValue extends any[],
+  TTemplate extends ArrayTemplate,
+  TOptions extends ArrayOptions
+>(
+  template: TTemplate,
+  options?: TOptions
+): ArrayControl<TValue, TTemplate, TOptions> {
   return {
     $$typeof: IS_ARRAY,
-    arg,
+    args: [template, options],
   };
 }
