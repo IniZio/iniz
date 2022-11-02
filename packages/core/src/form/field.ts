@@ -12,10 +12,12 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   ? I
   : never;
 
-export type FieldInstance<
-  TValue,
-  TValidators extends (((...arg: any) => any) | undefined)[]
-> = {
+export type FieldOptions = {
+  validators?: ((...arg: any) => any)[];
+  mode?: "onChange" | "onBlur" | "onTouched" | "onSubmit" | "all";
+};
+
+export type FieldInstance<TValue, TOptions extends FieldOptions> = {
   name: string;
   value?: TValue;
   setValue: (
@@ -25,7 +27,10 @@ export type FieldInstance<
   touched: boolean;
   dirty: boolean;
   errors: UnionToIntersection<
-    Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
+    Exclude<
+      ExtractReturnTypes<Exclude<TOptions["validators"], undefined>>[number],
+      null | undefined
+    >
   > extends infer O
     ? { [K in keyof O]?: O[K] | undefined }
     : never;
@@ -37,19 +42,10 @@ export type FieldInstance<
   onBlur: () => void;
 };
 
-export function field<
-  TValue extends any,
-  TValidators extends ((...arg: any) => any)[]
->(
+export function field<TValue extends any, TOptions extends FieldOptions>(
   name: string,
   initialValue?: TValue,
-  {
-    validators = [] as unknown as TValidators,
-    mode = "onChange",
-  }: {
-    validators?: TValidators;
-    mode?: "onChange" | "onBlur" | "onTouched" | "onSubmit" | "all";
-  } = {}
+  { validators = [], mode = "onChange" }: TOptions = {} as any
 ) {
   const value = atom(initialValue);
   const touched = atom(false);
@@ -63,7 +59,10 @@ export function field<
    * 4. UnionToIntersection to merge into intersection object
    */
   type ValidatorsReturnTypes = UnionToIntersection<
-    Exclude<ExtractReturnTypes<TValidators>[number], null | undefined>
+    Exclude<
+      ExtractReturnTypes<Exclude<TOptions["validators"], undefined>>[number],
+      null | undefined
+    >
   > extends infer O
     ? { [K in keyof O]?: O[K] }
     : never;
@@ -159,15 +158,12 @@ export function field<
       value(initialValue as any);
       markAsFresh();
     },
-  }) as State<FieldInstance<TValue, TValidators>>;
+  }) as State<FieldInstance<TValue, TOptions>>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");
 
-export type FieldControl<
-  TValue,
-  TFieldControlArg extends Parameters<typeof field>[2]
-> = {
+export type FieldControl<TValue, TFieldControlArg extends FieldOptions> = {
   $$typeof: typeof IS_FIELD;
   arg?: TFieldControlArg;
 };
@@ -178,7 +174,7 @@ export function isFieldControl(
   return control.$$typeof === IS_FIELD;
 }
 
-export function formField<TValue, TArg extends Parameters<typeof field>[2]>(
+export function formField<TValue, TArg extends FieldOptions>(
   arg?: TArg
 ): FieldControl<TValue, TArg> {
   return {

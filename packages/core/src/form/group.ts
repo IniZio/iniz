@@ -4,16 +4,20 @@ import { State, state } from "../state";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 
+export type GroupOptions = {
+  [index: string]:
+    | FieldControl<any, any>
+    | ArrayControl<any, any>
+    | GroupControl<any, any>;
+};
+
 export type GroupInstance<
   TValue extends Record<keyof TGG, any>,
-  TGG extends GroupControl<any, any>["arg"]
+  TGG extends GroupOptions
 > = {
   value: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TGG[k]["arg"]["validators"], undefined>
-        >["value"]
+      ? FieldInstance<TValue[k], TGG[k]["arg"]>["value"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["arg"]>["value"]
       : TGG[k] extends ArrayControl<any, any>
@@ -26,10 +30,7 @@ export type GroupInstance<
   ) => void;
   controls: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TGG[k]["arg"]["validators"], undefined>
-        >
+      ? FieldInstance<TValue[k], TGG[k]["arg"]>
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["arg"]>
       : TGG[k] extends ArrayControl<any, any>
@@ -38,10 +39,7 @@ export type GroupInstance<
   };
   touchedFields: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TGG[k]["arg"]["validators"], undefined>
-        >["touched"]
+      ? FieldInstance<TValue[k], TGG[k]["arg"]>["touched"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["arg"]>["touchedFields"]
       : TGG[k] extends ArrayControl<any, any>
@@ -50,10 +48,7 @@ export type GroupInstance<
   };
   dirtyFields: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TGG[k]["arg"]["validators"], undefined>
-        >["dirty"]
+      ? FieldInstance<TValue[k], TGG[k]["arg"]>["dirty"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["arg"]>["dirtyFields"]
       : TGG[k] extends ArrayControl<any, any>
@@ -62,10 +57,7 @@ export type GroupInstance<
   };
   errors: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TGG[k]["arg"]["validators"], undefined>
-        >["errors"]
+      ? FieldInstance<TValue[k], TGG[k]["arg"]>["errors"]
       : TGG[k] extends GroupControl<any, any>
       ? GroupInstance<TValue[k], TGG[k]["arg"]>["errors"]
       : TGG[k] extends ArrayControl<any, any>
@@ -83,7 +75,7 @@ export type GroupInstance<
 
 export function group<
   TValue extends Record<keyof TG, any>,
-  TG extends TGroupControlArg
+  TG extends GroupOptions
 >(initialValue: TValue, groupControl: TG) {
   const controls: Atom<Record<any, any>> = atom(
     Object.entries(groupControl).reduce(
@@ -223,14 +215,7 @@ export function group<
 
 const IS_GROUP = Symbol.for("IS_GROUP");
 
-type TGroupControlArg = {
-  [index: string]:
-    | FieldControl<any, any>
-    | ArrayControl<any, any>
-    | GroupControl<any, any>;
-};
-
-export type GroupControl<TValue, TGCArg extends TGroupControlArg> = {
+export type GroupControl<TValue, TGCArg extends GroupOptions> = {
   $$typeof: typeof IS_GROUP;
   arg: TGCArg;
 };
@@ -241,7 +226,7 @@ export function isGroupControl(
   return control.$$typeof === IS_GROUP;
 }
 
-export function formGroup<TValue, TArg extends Parameters<typeof group>[1]>(
+export function formGroup<TValue, TArg extends GroupOptions>(
   arg: TArg
 ): GroupControl<TValue, TArg> {
   return {
