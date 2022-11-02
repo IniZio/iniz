@@ -195,7 +195,7 @@ export default function FormPage() {
             <button
               type="button"
               onClick={() =>
-                fields.controls.push(group({ phone: "123" }, relative.arg))
+                fields.controls.push(group({ phone: "123" }, ...relative.args))
               }
             >
               + row

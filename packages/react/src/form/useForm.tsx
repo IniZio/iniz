@@ -13,8 +13,8 @@ export function useForm<
   TValue,
   TControl extends
     | FieldControl<any, any>
-    | GroupControl<any, any>
-    | ArrayControl<any, any>
+    | GroupControl<any, any, any>
+    | ArrayControl<any, any, any>
 >(initialValue: TValue, control: TControl) {
   const instance = useState(() => form(initialValue, control))[0];
   const refMap = useState(() => new Map<FieldInstance<any, any>, any>())[0];

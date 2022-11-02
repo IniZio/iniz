@@ -25,12 +25,12 @@ export type FormInstance<TValue, TControl> = (TControl extends FieldControl<
   any,
   any
 >
-  ? FieldInstance<TValue, Exclude<TControl["arg"]["validators"], undefined>>
-  : TControl extends GroupControl<any, any>
-  ? GroupInstance<TValue, TControl["arg"]>
-  : TControl extends ArrayControl<any[], any>
+  ? FieldInstance<TValue, TControl["args"][0]>
+  : TControl extends GroupControl<any, any, any>
+  ? GroupInstance<TValue, TControl["args"][0], TControl["args"][1]>
+  : TControl extends ArrayControl<any[], any, any>
   ? TValue extends any[]
-    ? ArrayInstance<TValue, TControl["arg"]>
+    ? ArrayInstance<TValue, TControl["args"][0], TControl["args"][1]>
     : never
   : never) & {
   isSubmitting: boolean;
@@ -43,19 +43,19 @@ function _form<
   TValue,
   TControl extends
     | FieldControl<any, any>
-    | GroupControl<any, any>
-    | ArrayControl<any, any>
+    | GroupControl<any, any, any>
+    | ArrayControl<any, any, any>
 >(initialValue: TValue, control: TControl): FormInstance<TValue, TControl> {
   const instance = isFieldControl(control)
-    ? field("", initialValue, control.arg)
+    ? field("", initialValue, ...control.args)
     : // @ts-ignore
     isGroupControl(control)
     ? // @ts-ignore
-      group(initialValue, control.arg)
+      group(initialValue, ...control.args)
     : // @ts-ignore
     isArrayControl(control)
     ? // @ts-ignore
-      array(initialValue, control.arg)
+      array(initialValue, ...control.args)
     : null;
 
   if (instance === null) {
