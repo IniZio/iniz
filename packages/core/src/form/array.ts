@@ -44,16 +44,16 @@ export type ArrayInstance<
       ? GroupInstance<TValue[k], TAA["arg"]>["dirtyFields"]
       : never;
   };
-  fieldErrors: {
+  errors: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
           Exclude<TAA["arg"]["validators"], undefined>
         >["errors"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["arg"]>["fieldErrors"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["errors"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["arg"]>["fieldErrors"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["errors"]
       : never;
   };
   hasError: boolean;
@@ -112,7 +112,7 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
     controls().map((control: any) => control.dirtyFields ?? control.dirty)
   );
 
-  const fieldErrors = computed(() =>
+  const errors = computed(() =>
     controls().map((control: any) => control.errors)
   );
 
@@ -160,7 +160,7 @@ export function array<TValue extends any[], TA extends TArrayControlArg>(
     controls,
     touchedFields,
     dirtyFields,
-    fieldErrors,
+    errors,
     hasError,
     touched,
     dirty,

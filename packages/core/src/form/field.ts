@@ -2,10 +2,9 @@ import { Atom, atom } from "../atom";
 import { computed } from "../computed";
 import { State, state } from "../state";
 
-type ExtractReturnTypes<T extends readonly (((i: any) => any) | undefined)[]> =
-  {
-    [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
-  };
+type ExtractReturnTypes<T extends (((i: any) => any) | undefined)[]> = {
+  [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
+};
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I
@@ -15,7 +14,7 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 
 export type FieldInstance<
   TValue,
-  TValidators extends readonly (((...arg: any) => any) | undefined)[]
+  TValidators extends (((...arg: any) => any) | undefined)[]
 > = {
   name: string;
   value?: TValue;
@@ -40,7 +39,7 @@ export type FieldInstance<
 
 export function field<
   TValue extends any,
-  TValidators extends readonly ((...arg: any) => any)[]
+  TValidators extends ((...arg: any) => any)[]
 >(
   name: string,
   initialValue?: TValue,
