@@ -7,98 +7,122 @@ import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 
 export type ArrayInstance<
   TValue extends any[],
-  TAA extends ArrayControl<TValue, any>["args"][0]
+  TAA extends ArrayControl<TValue, any>["arg"]
 > = {
   value: TValue;
-  setValue: (val: TValue) => void;
+  setValue: (
+    val: TValue,
+    options?: { shouldDirty?: boolean; shouldTouch?: boolean }
+  ) => void;
   controls: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
-      ? FieldInstance<
-          TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
-        >
+      ? FieldInstance<TValue[k], Exclude<TAA["arg"]["validators"], undefined>>
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>
+      ? ArrayInstance<TValue[k], TAA["arg"]>
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>
+      ? GroupInstance<TValue[k], TAA["arg"]>
       : never;
   };
   touchedFields: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["arg"]["validators"], undefined>
         >["touched"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["touchedFields"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["touchedFields"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["touchedFields"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["touchedFields"]
+      : never;
+  };
+  dirtyFields: {
+    [k in keyof TValue]: TAA extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TAA["arg"]["validators"], undefined>
+        >["dirty"]
+      : TAA extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TAA["arg"]>["dirtyFields"]
+      : TAA extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TAA["arg"]>["dirtyFields"]
       : never;
   };
   errors: {
     [k in keyof TValue]: TAA extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TAA["args"][0]["syncValidators"], undefined>,
-          Exclude<TAA["args"][0]["asyncValidators"], undefined>
+          Exclude<TAA["arg"]["validators"], undefined>
         >["errors"]
       : TAA extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TAA["args"][0]>["errors"]
+      ? ArrayInstance<TValue[k], TAA["arg"]>["errors"]
       : TAA extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TAA["args"][0]>["errors"]
+      ? GroupInstance<TValue[k], TAA["arg"]>["errors"]
       : never;
   };
   hasError: boolean;
   touched: boolean;
+  dirty: boolean;
   validate: () => Promise<void>;
-  pending: boolean;
+  isValidating: boolean;
   markAsFresh: () => void;
   reset: () => void;
 };
 
-export function array<TValue extends any[], TA extends TArrayControlArgs0>(
+export function array<TValue extends any[], TA extends TArrayControlArg>(
   initialValue: TValue,
   arrayControl: TA
 ) {
-  // @ts-ignore
   const controls: Atom<any[]> = atom(
+    // @ts-ignore
     initialValue.map((v, index) =>
       isFieldControl(arrayControl)
-        ? field(String(index), v, ...arrayControl.args)
+        ? field(String(index), v, arrayControl.arg)
         : // @ts-ignore
         isArrayControl(arrayControl)
         ? // @ts-ignore
-          array(v, ...arrayControl.args)
+          array(v, arrayControl.arg)
         : // @ts-ignore
         isGroupControl(arrayControl)
         ? // @ts-ignore
-          group(v, ...arrayControl.args)
+          group(v, arrayControl.arg)
         : null
     )
   );
 
   const value = computed(() => controls().map((control: any) => control.value));
 
-  const setValue = (val: TValue) => {
+  const setValue = (
+    val: TValue,
+    {
+      shouldDirty,
+      shouldTouch,
+    }: { shouldDirty?: boolean; shouldTouch?: boolean } = {}
+  ) => {
     controls(
       val.map((v, index) =>
         isFieldControl(arrayControl)
-          ? field(String(index), v, ...arrayControl.args)
+          ? field(String(index), v, arrayControl.arg)
           : isArrayControl(arrayControl)
           ? // @ts-ignore
-            array(v, ...arrayControl.args)
+            array(v, arrayControl.arg)
           : isGroupControl(arrayControl)
           ? // @ts-ignore
-            group(v, ...arrayControl.args)
+            group(v, arrayControl.arg)
           : null
       )
     );
+
+    controls().forEach((control) => {
+      control.setValue(control.value, { shouldDirty, shouldTouch });
+    });
   };
 
   const touchedFields = computed(() =>
     controls().map((control: any) => control.touchedFields ?? control.touched)
+  );
+
+  const dirtyFields = computed(() =>
+    controls().map((control: any) => control.dirtyFields ?? control.dirty)
   );
 
   const errors = computed(() =>
@@ -119,9 +143,13 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     )
   );
 
-  const pending = computed(() =>
+  const dirty = computed(() =>
+    controls().reduce((dirty, control: any) => dirty || control.dirty, false)
+  );
+
+  const isValidating = computed(() =>
     controls().reduce(
-      (pending, control: any) => pending || control.pending,
+      (isValidating, control: any) => isValidating || control.isValidating,
       false
     )
   );
@@ -144,11 +172,13 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
     setValue,
     controls,
     touchedFields,
+    dirtyFields,
     errors,
     hasError,
     touched,
+    dirty,
     validate,
-    pending,
+    isValidating,
     markAsFresh,
     reset,
   }) as State<ArrayInstance<TValue, TA>>;
@@ -156,14 +186,14 @@ export function array<TValue extends any[], TA extends TArrayControlArgs0>(
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");
 
-type TArrayControlArgs0 =
+type TArrayControlArg =
   | FieldControl<any, any>
   | ArrayControl<any, any>
   | GroupControl<any, any>;
 
-export type ArrayControl<TValue, TACArgs0 extends TArrayControlArgs0> = {
+export type ArrayControl<TValue, TACArg extends TArrayControlArg> = {
   $$typeof: typeof IS_ARRAY;
-  args: [TACArgs0];
+  arg: TACArg;
 };
 
 export function isArrayControl(
@@ -172,12 +202,11 @@ export function isArrayControl(
   return control.$$typeof === IS_ARRAY;
 }
 
-export function formArray<
-  TValue extends any[],
-  TArgs extends [TArrayControlArgs0]
->(...args: TArgs): ArrayControl<TValue, TArgs[0]> {
+export function formArray<TValue extends any[], TArg extends TArrayControlArg>(
+  arg: TArg
+): ArrayControl<TValue, TArg> {
   return {
     $$typeof: IS_ARRAY,
-    args,
+    arg,
   };
 }

@@ -1,70 +1,81 @@
 import { Atom, atom } from "../atom";
 import { computed } from "../computed";
 import { State, state } from "../state";
-import { FilterFirstElement } from "../types";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 
 export type GroupInstance<
   TValue extends Record<keyof TGG, any>,
-  TGG extends GroupControl<any, any>["args"][0]
+  TGG extends GroupControl<any, any>["arg"]
 > = {
   value: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["arg"]["validators"], undefined>
         >["value"]
       : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["value"]
+      ? GroupInstance<TValue[k], TGG[k]["arg"]>["value"]
       : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["value"]
+      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["value"]
       : never;
   };
-  setValue: (val: TValue) => void;
+  setValue: (
+    val: TValue,
+    options?: { shouldDirty?: boolean; shouldTouch?: boolean }
+  ) => void;
   controls: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][0]["syncValidators"], undefined>,
-          Exclude<TGG[k]["args"][0]["asyncValidators"], undefined>
+          Exclude<TGG[k]["arg"]["validators"], undefined>
         >
       : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>
+      ? GroupInstance<TValue[k], TGG[k]["arg"]>
       : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>
+      ? ArrayInstance<TValue[k], TGG[k]["arg"]>
       : never;
   };
   touchedFields: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["arg"]["validators"], undefined>
         >["touched"]
       : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
+      ? GroupInstance<TValue[k], TGG[k]["arg"]>["touchedFields"]
       : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["touchedFields"]
+      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["touchedFields"]
+      : never;
+  };
+  dirtyFields: {
+    [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
+      ? FieldInstance<
+          TValue[k],
+          Exclude<TGG[k]["arg"]["validators"], undefined>
+        >["dirty"]
+      : TGG[k] extends GroupControl<any, any>
+      ? GroupInstance<TValue[k], TGG[k]["arg"]>["dirtyFields"]
+      : TGG[k] extends ArrayControl<any, any>
+      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["dirtyFields"]
       : never;
   };
   errors: {
     [k in keyof TGG]: TGG[k] extends FieldControl<any, any>
       ? FieldInstance<
           TValue[k],
-          Exclude<TGG[k]["args"][1], undefined>,
-          Exclude<TGG[k]["args"][2], undefined>
+          Exclude<TGG[k]["arg"]["validators"], undefined>
         >["errors"]
       : TGG[k] extends GroupControl<any, any>
-      ? GroupInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      ? GroupInstance<TValue[k], TGG[k]["arg"]>["errors"]
       : TGG[k] extends ArrayControl<any, any>
-      ? ArrayInstance<TValue[k], TGG[k]["args"][0]>["errors"]
+      ? ArrayInstance<TValue[k], TGG[k]["arg"]>["errors"]
       : never;
   };
   hasError: boolean;
   touched: boolean;
-  pending: boolean;
+  dirty: boolean;
+  isValidating: boolean;
   validate: () => Promise<void>;
   markAsFresh: () => void;
   reset: () => void;
@@ -72,22 +83,23 @@ export type GroupInstance<
 
 export function group<
   TValue extends Record<keyof TG, any>,
-  TG extends TGroupControlArgs0
+  TG extends TGroupControlArg
 >(initialValue: TValue, groupControl: TG) {
   const controls: Atom<Record<any, any>> = atom(
     Object.entries(groupControl).reduce(
+      // @ts-ignore
       (acc, [name, control]) => ({
         ...acc,
         [name]: isFieldControl(control)
-          ? field(name, initialValue[name], ...control.args)
+          ? field(name, initialValue[name], control.arg)
           : // @ts-ignore
           isGroupControl(control)
           ? // @ts-ignore
-            group(initialValue[name], ...control.args)
+            group(initialValue[name], control.arg)
           : // @ts-ignore
           isArrayControl(control)
           ? // @ts-ignore
-            array(initialValue[name], ...control.args)
+            array(initialValue[name], control.arg)
           : null,
       }),
       {}
@@ -109,6 +121,16 @@ export function group<
       (acc, [name, control]) => ({
         ...acc,
         [name]: control.touchedFields ?? control.touched,
+      }),
+      {}
+    )
+  );
+
+  const dirtyFields = computed(() =>
+    Object.entries(controls()).reduce(
+      (acc, [name, control]) => ({
+        ...acc,
+        [name]: control.dirtyFields ?? control.dirty,
       }),
       {}
     )
@@ -138,16 +160,29 @@ export function group<
     )
   );
 
-  const pending = computed(() =>
+  const dirty = computed(() =>
     Object.entries(controls()).reduce(
-      (pending, [name, control]) => pending || control.pending,
+      (dirty, [name, control]) => dirty || control.dirty,
       false
     )
   );
 
-  const setValue = (val: TValue) => {
+  const isValidating = computed(() =>
+    Object.entries(controls()).reduce(
+      (isValidating, [name, control]) => isValidating || control.isValidating,
+      false
+    )
+  );
+
+  const setValue = (
+    val: TValue,
+    {
+      shouldDirty,
+      shouldTouch,
+    }: { shouldDirty?: boolean; shouldTouch?: boolean } = {}
+  ) => {
     Object.entries(controls()).forEach(([name, control]) => {
-      control.setValue(val[name]);
+      control.setValue(val[name], { shouldDirty, shouldTouch });
     });
   };
 
@@ -174,10 +209,12 @@ export function group<
     setValue,
     controls,
     touchedFields,
+    dirtyFields,
     errors,
     hasError,
     touched,
-    pending,
+    dirty,
+    isValidating,
     validate,
     markAsFresh,
     reset,
@@ -186,16 +223,16 @@ export function group<
 
 const IS_GROUP = Symbol.for("IS_GROUP");
 
-type TGroupControlArgs0 = {
+type TGroupControlArg = {
   [index: string]:
     | FieldControl<any, any>
     | ArrayControl<any, any>
     | GroupControl<any, any>;
 };
 
-export type GroupControl<TValue, TGCArgs0 extends TGroupControlArgs0> = {
+export type GroupControl<TValue, TGCArg extends TGroupControlArg> = {
   $$typeof: typeof IS_GROUP;
-  args: [TGCArgs0];
+  arg: TGCArg;
 };
 
 export function isGroupControl(
@@ -204,12 +241,11 @@ export function isGroupControl(
   return control.$$typeof === IS_GROUP;
 }
 
-export function formGroup<
-  TValue,
-  TArgs extends FilterFirstElement<Parameters<typeof group>>
->(...args: TArgs): GroupControl<TValue, TArgs[0]> {
+export function formGroup<TValue, TArg extends Parameters<typeof group>[1]>(
+  arg: TArg
+): GroupControl<TValue, TArg> {
   return {
     $$typeof: IS_GROUP,
-    args,
+    arg,
   };
 }

@@ -1,8 +1,15 @@
 /** @jsxImportSource @iniz/react */
 
 import { useSideEffect } from "@iniz/react";
-import { field, Field, form, group, validators } from "@iniz/react/form";
-import { useCallback, useState } from "react";
+import {
+  field,
+  Field,
+  form,
+  group,
+  useForm,
+  validators,
+} from "@iniz/react/form";
+import { useCallback } from "react";
 
 function emailSuffixValidator(suffix: string) {
   return ({ value }: { value: string }) =>
@@ -22,38 +29,36 @@ function emailSuffixValidator(suffix: string) {
 const hobby = form.field();
 
 const relative = form.group({
-  phone: form.field({ syncValidators: [validators.maxLength(10)] }),
+  phone: form.field({ validators: [validators.maxLength(10)] }),
 });
 
 export default function FormPage() {
-  const [profileForm] = useState(() =>
-    form(
-      {
-        firstname: "First",
-        lastname: "Last",
-        gender: "M",
-        age: 1,
-        contact: {
-          email: "bcd@bbb.org",
-        },
-        hobbies: ["Sleeping", "Idling"],
-        relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
+  const profileForm = useForm(
+    {
+      firstname: "First",
+      lastname: "Last",
+      gender: "M",
+      age: 1,
+      contact: {
+        email: "bcd@bbb.org",
       },
-      form.group({
-        firstname: form.field(),
-        lastname: form.field(),
-        gender: form.field(),
-        age: form.field({ syncValidators: [validators.min(10)] }),
-        contact: form.group({
-          email: form.field({
-            asyncValidators: [emailSuffixValidator("bcd.com")],
-            mode: "onBlur",
-          }),
+      hobbies: ["Sleeping", "Idling"],
+      relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
+    },
+    form.group({
+      firstname: form.field(),
+      lastname: form.field(),
+      gender: form.field(),
+      age: form.field({ validators: [validators.min(10)] }),
+      contact: form.group({
+        email: form.field({
+          validators: [emailSuffixValidator("bcd.com")],
+          mode: "onBlur",
         }),
-        hobbies: form.array(hobby),
-        relatives: form.array(relative),
-      })
-    )
+      }),
+      hobbies: form.array(hobby),
+      relatives: form.array(relative),
+    })
   );
 
   const onSubmit = () => {
@@ -83,42 +88,45 @@ export default function FormPage() {
       <Field>
         {() => (
           <textarea
-            value={JSON.stringify(profileForm.errors, null, 4)}
+            value={JSON.stringify(profileForm.dirtyFields, null, 4)}
             rows={35}
             style={{ width: 400 }}
             readOnly
           ></textarea>
         )}
       </Field>
-      {profileForm.pending ? "Validating..." : ""}
+      {profileForm.isValidating ? "Validating..." : ""}
       <Field field={profileForm.controls.firstname}>
         {(field) => (
           <div>
-            <input {...field.props} />
+            <input {...profileForm.register(field)} />
           </div>
         )}
       </Field>
       <Field field={profileForm.controls.lastname}>
         {(field) => (
           <div>
-            <input {...field.props} />
+            <input {...profileForm.register(field)} />
           </div>
         )}
       </Field>
       <Field field={profileForm.controls.contact.controls.email}>
-        {({ pending, touched, errors, props }) => (
+        {(field) => (
           <div>
-            <input {...props} />
-            {pending ? "Validating..." : ""}
-            {errors.emailSuffix &&
-              `Only email with domain '${errors.emailSuffix.suffix}' can signup`}
+            <input {...profileForm.register(field)} />
+            {field.isValidating ? "Validating..." : ""}
+            {field.errors.emailSuffix &&
+              `Only email with domain '${field.errors.emailSuffix.suffix}' can signup`}
+            <button type="button" onClick={field.validate}>
+              Validate
+            </button>
           </div>
         )}
       </Field>
       <Field field={profileForm.controls.gender}>
         {(field) => (
           <div>
-            <select {...field.props}>
+            <select {...profileForm.register(field)}>
               <option value="M">Male</option>
               <option value="F">Female</option>
               <option value={null}>Unspecified</option>
@@ -127,14 +135,14 @@ export default function FormPage() {
         )}
       </Field>
       <Field field={profileForm.controls.age}>
-        {({ touched, errors, props, validate }) => (
+        {(field) => (
           <div>
-            <input {...props} type="number" />
+            <input {...profileForm.register(field)} type="number" />
             <span>
-              {errors.min &&
-                `At lease ${errors.min.min} is needed but got ${errors.min.actual}`}
+              {field.errors.min &&
+                `At lease ${field.errors.min.min} is needed but got ${field.errors.min.actual}`}
             </span>
-            <button type="button" onClick={validate}>
+            <button type="button" onClick={field.validate}>
               Validate
             </button>
           </div>
@@ -144,16 +152,16 @@ export default function FormPage() {
       <Field field={profileForm.controls.hobbies}>
         {(fields) => (
           <div>
-            {fields.controls.map(({ touched, errors, props }, index) => (
+            {fields.controls.map((field, index) => (
               <div key={index}>
-                <input {...props} />
+                <input {...profileForm.register(field)} />
                 <button
                   type="button"
                   onClick={() => fields.controls.splice(index, 1)}
                 >
                   -
                 </button>
-                {touched ? "Touched" : "Not touched"}
+                {field.touched ? "Touched" : "Not touched"}
               </div>
             ))}
             <button
@@ -171,7 +179,7 @@ export default function FormPage() {
           <div>
             {fields.controls.map((group, index) => (
               <div key={index}>
-                <input {...group.controls.phone.props} />
+                <input {...profileForm.register(group.controls.phone)} />
                 <span>
                   {group.controls.phone.errors.maxLength &&
                     `At most ${group.controls.phone.errors.maxLength.maxLength} is allowed but got ${group.controls.phone.errors.maxLength.actual}`}
@@ -187,7 +195,7 @@ export default function FormPage() {
             <button
               type="button"
               onClick={() =>
-                fields.controls.push(group({ phone: "123" }, ...relative.args))
+                fields.controls.push(group({ phone: "123" }, relative.arg))
               }
             >
               + row

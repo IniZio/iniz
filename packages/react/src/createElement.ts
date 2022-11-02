@@ -85,15 +85,3 @@ export function proxyCreateElement(createElement: any) {
 if (React) {
   React.createElement = proxyCreateElement(React.createElement);
 }
-
-// NOTE: This breaks bundlers that do not handle export default from the runtime files...
-// Wasted hours to find that I forgot React v17 has new jsx runtime thing...
-// Saved me: https://stackoverflow.com/a/70755183
-// const jsxRuntime: any = _jsxRuntime;
-// if (jsxRuntime) {
-//   jsxRuntime.jsx = proxyCreateElement(jsxRuntime.jsx);
-// }
-// const jsxRuntimeDev: any = _jsxRuntimeDev;
-// if (jsxRuntimeDev) {
-//   jsxRuntimeDev.jsxDEV = proxyCreateElement(jsxRuntimeDev.jsxDEV);
-// }

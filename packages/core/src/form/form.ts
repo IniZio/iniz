@@ -1,3 +1,4 @@
+import { atom } from "../atom";
 import {
   array,
   ArrayControl,
@@ -20,22 +21,22 @@ import {
   isGroupControl,
 } from "./group";
 
-type FormInstance<TValue, TControl> = (TControl extends FieldControl<any, any>
-  ? FieldInstance<
-      TValue,
-      Exclude<TControl["args"][0]["syncValidators"], undefined>,
-      Exclude<TControl["args"][0]["asyncValidators"], undefined>
-    >
+export type FormInstance<TValue, TControl> = (TControl extends FieldControl<
+  any,
+  any
+>
+  ? FieldInstance<TValue, Exclude<TControl["arg"]["validators"], undefined>>
   : TControl extends GroupControl<any, any>
-  ? GroupInstance<TValue, TControl["args"][0]>
+  ? GroupInstance<TValue, TControl["arg"]>
   : TControl extends ArrayControl<any[], any>
   ? TValue extends any[]
-    ? ArrayInstance<TValue, TControl["args"][0]>
+    ? ArrayInstance<TValue, TControl["arg"]>
     : never
   : never) & {
-  handleSubmit: <TFn extends (...args: any[]) => any>(
+  isSubmitting: boolean;
+  handleSubmit: <TFn extends (...arg: any[]) => any>(
     onSubmit: TFn
-  ) => (event?: any) => void;
+  ) => (event?: any) => Promise<void>;
 };
 
 function _form<
@@ -46,29 +47,38 @@ function _form<
     | ArrayControl<any, any>
 >(initialValue: TValue, control: TControl): FormInstance<TValue, TControl> {
   const instance = isFieldControl(control)
-    ? field("", initialValue, ...control.args)
+    ? field("", initialValue, control.arg)
     : // @ts-ignore
     isGroupControl(control)
     ? // @ts-ignore
-      group(initialValue, ...control.args)
+      group(initialValue, control.arg)
     : // @ts-ignore
     isArrayControl(control)
     ? // @ts-ignore
-      array(initialValue, ...control.args)
+      array(initialValue, control.arg)
     : null;
 
   if (instance === null) {
     throw Error("Invalid form control");
   }
 
+  const isSubmitting = atom(false);
+
   const handleSubmit =
-    <TFn extends (...args: any[]) => any>(onSubmit: TFn) =>
+    <TFn extends (...arg: any[]) => any>(onSubmit: TFn) =>
     async (event?: any) => {
       event?.preventDefault();
 
       await instance.validate();
       if (instance.hasError) return;
-      onSubmit(instance.value);
+
+      isSubmitting(true);
+
+      try {
+        await onSubmit(instance.value);
+      } finally {
+        isSubmitting(false);
+      }
     };
 
   return Object.assign(instance, {
