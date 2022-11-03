@@ -1,5 +1,11 @@
 # @iniz/core
 
+## 0.7.1
+
+### Patch Changes
+
+- [`d728aa5`](https://github.com/IniZio/iniz/commit/d728aa5117c0c5258f65c8cc3ed2ce53070e2eb7) Thanks [@IniZio](https://github.com/IniZio)! - Fix package.json export
+
 ## 0.7.0
 
 ### Minor Changes
