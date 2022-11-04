@@ -1,5 +1,11 @@
 # @iniz/react
 
+## 0.6.2
+
+### Patch Changes
+
+- 3135011: Export Fragment from jsx runtime
+
 ## 0.6.1
 
 ### Patch Changes
