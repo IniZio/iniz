@@ -1,5 +1,13 @@
 # @iniz/preact
 
+## 0.2.2
+
+### Patch Changes
+
+- 0bce403: Add documentaion website
+- Updated dependencies [0bce403]
+  - @iniz/core@0.7.2
+
 ## 0.2.1
 
 ### Patch Changes
