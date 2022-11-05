@@ -1,0 +1,49 @@
+---
+sidebar_position: 1
+---
+
+# Introduction
+
+Iniz is a state library that brings reactivity to ReactJS.
+
+## Motivation
+
+ReactJS is a view library that uses "Push" strategy to detect changes and apply to actual DOM.
+
+For developers to "push" state through components, different patterns such as HOC, render-props, Context are introduced.
+These top-down approaches all have different drawbacks such as extra re-renders and "Provider Hell".
+
+Iniz takes a different approach by treating ReactJS "Component"" as "Effect" and variable update as "Exception" in FP.
+
+## How it works
+
+When a ReactJS "Component" is first rendered, Iniz collects its dependencies automatically and trigger re-render when the dependencies are updated.
+
+Below is a basic counter example to give you a taste of how it looks like:
+
+<SandpackEditor
+  template="react-ts"
+  dependencies={{ "@iniz/react": "*" }}
+>
+
+```tsx
+import { atom } from "@iniz/react";
+
+const counter = atom(0);
+const decrement = () => counter(counter() - 1);
+const increment = () => counter(counter() + 1);
+
+function Counter() {
+  return (
+    <div>
+      <button onClick={decrement}>-</button>
+      {counter()}
+      <button onClick={increment}>+</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+</SandpackEditor>
