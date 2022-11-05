@@ -1,0 +1,146 @@
+---
+sidebar_position: 3
+---
+
+# React
+
+To use Iniz primitives in ReactJS, simply replace `@iniz/core` with `@iniz/react` and replace `effect` with a component.
+
+<SandpackEditor
+  template="react-ts"
+  dependencies={{ "@iniz/react": "*" }}
+>
+
+```tsx
+import { atom, computed } from "@iniz/react";
+
+const counter = atom<number>(0);
+const message = computed(() => {
+  if (counter() < 10) {
+    return `Counter: ${counter()}`;
+  }
+
+  return `Reached 10!`;
+});
+
+// Here we increment counter every second
+setInterval(() => counter(counter() + 1), 1000);
+
+function Counter() {
+  return (
+    <div>
+      <h3>React Example</h3>
+      {message()}
+    </div>
+  );
+}
+
+export default Counter;
+```
+
+</SandpackEditor>
+
+## Hooks
+
+In the above example, primitives are declared and updated outside of component.
+
+To declare primitives inside a component, `@iniz/react` provides the following hooks:
+
+- `useAtom`
+- `useComputed`
+- `useSideEffect`
+
+### useAtom
+
+Similar to `atom()`, `useAtom()` accepts first argument as initial value
+
+<SandpackEditor
+  template="react-ts"
+  dependencies={{ "@iniz/react": "*" }}
+>
+
+```tsx
+import { useAtom } from "@iniz/react";
+import { useCallback } from "react";
+
+function SignupForm() {
+  const firstname = useAtom("");
+  const handleChangeFirstname = useCallback(
+    (evt) => firstname(evt.target.value),
+    []
+  );
+
+  return (
+    <div>
+      <h3>Signup Form</h3>
+      <input value={firstname()} onChange={handleChangeFirstname} />
+    </div>
+  );
+}
+
+export default SignupForm;
+```
+
+</SandpackEditor>
+
+### useComputed & useSideEffect
+
+`useComputed` and `useSideEffect` are similar to vanilla primitives, except they can accept ReactJS hook values as 2nd argument to trigger updates.
+
+<SandpackEditor
+  template="react-ts"
+  dependencies={{ "@iniz/react": "*" }}
+>
+
+```tsx
+import { useAtom, useComputed, useSideEffect } from "@iniz/react";
+import { useCallback, useState } from "react";
+
+function SignupForm() {
+  const firstname = useAtom("");
+  const handleChangeFirstname = useCallback(
+    (evt) => firstname(evt.target.value),
+    []
+  );
+
+  const [lastname, setLastname] = useState("");
+  const handleChangeLastname = useCallback(
+    (evt) => setLastname(evt.target.value),
+    [lastname]
+  );
+
+  const formError = useComputed(
+    () =>
+      (firstname().length === 0 ? "First name is required" : "") ||
+      (lastname.length === 0 ? "Last name is required" : ""),
+    [lastname]
+  );
+
+  useSideEffect(() => {
+    if (firstname() === "iniz") {
+      alert("Name reserved :(");
+    }
+  });
+
+  return (
+    <div>
+      <h3>Signup Form</h3>
+      <input
+        placeholder="First name"
+        value={firstname()}
+        onChange={handleChangeFirstname}
+      />
+      <input
+        placeholder="Last name"
+        value={lastname}
+        onChange={handleChangeLastname}
+      />
+      <p>{formError()}</p>
+    </div>
+  );
+}
+
+export default SignupForm;
+```
+
+</SandpackEditor>

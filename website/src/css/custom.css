@@ -5,14 +5,24 @@
  */
 
 /* You can override the default Infima variables here. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #647c90;
+  --ifm-color-primary-dark: #647c90;
+  --ifm-color-primary-darker: #647c90;
+  --ifm-color-primary-darkest: #647c90;
+  --ifm-color-primary-light: #E2DED0;
+  --ifm-color-primary-lighter: #E2DED0;
+  --ifm-color-primary-lightest: #E2DED0;
+  /* --ifm-font-family-base: "Inter"; */
+  --ifm-font-family-base: "Lexend";
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }

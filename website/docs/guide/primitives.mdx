@@ -1,0 +1,123 @@
+---
+sidebar_position: 2
+---
+
+# Primitives
+
+Iniz provides a few primitives to describe state: `atom`/`state`, `effect` and `computed`.
+
+## atom
+
+To create a state, call `atom()` with first argument as initial value.
+
+If you use TypeScript, Iniz already infers the inital value as type. You can optionally pass in a type as generic.
+
+You can then call an "Atom" as function to get it's value. To update it, simply pass the value in the function call.
+
+<SandpackEditor
+  template="vanilla-ts"
+  dependencies={{ "@iniz/core": "*" }}
+>
+
+```ts
+import { atom } from "@iniz/core";
+
+const counter = atom<number>(0);
+
+// Updating counter value to 10
+counter(10);
+
+document.getElementById("app").innerHTML = `Counter: ${counter()}`;
+```
+
+</SandpackEditor>
+
+## effect
+
+After an `atom` is declared, it's value can be tracked with an `effect`.
+
+`effect()` accepts function as argument and executes it once immediately.
+
+During execution, it collects all `atom`'s used, and triggers again whenever the `atom`'s are updated.
+
+<SandpackEditor
+  template="vanilla-ts"
+  dependencies={{ "@iniz/core": "*" }}
+>
+
+```ts
+import { atom, effect } from "@iniz/core";
+
+const counter = atom<number>(0);
+
+// Here we increment counter every second
+setInterval(() => counter(counter() + 1), 1000);
+
+effect(() => {
+  document.getElementById("app").innerHTML = `Counter: ${counter()}`;
+});
+```
+
+</SandpackEditor>
+
+<br />
+
+> To dispose an effect, simply call the `dispose` function that `effect` returns.
+
+<SandpackEditor
+  template="vanilla-ts"
+  dependencies={{ "@iniz/core": "*" }}
+>
+
+```ts
+import { atom, effect } from "@iniz/core";
+
+const counter = atom<number>(0);
+
+// Here we increment counter every second
+setInterval(() => counter(counter() + 1), 1000);
+
+const dispose = effect(() => {
+  document.getElementById("app").innerHTML = `Counter: ${counter()}`;
+
+  if (counter() === 10) {
+    document.getElementById("app").innerHTML = "Reached 10!";
+    dispose();
+  }
+});
+```
+
+</SandpackEditor>
+
+## computed
+
+You can also combine atoms to become a `computed` value.
+
+`computed` accepts a function as well. But unlike `effect`, it returns an `atom` with computed value.
+
+<SandpackEditor
+  template="vanilla-ts"
+  dependencies={{ "@iniz/core": "*" }}
+>
+
+```ts
+import { atom, effect, computed } from "@iniz/core";
+
+const counter = atom<number>(0);
+const message = computed(() => {
+  if (counter() < 10) {
+    return `Counter: ${counter()}`;
+  }
+
+  return `Reached 10!`;
+});
+
+// Here we increment counter every second
+setInterval(() => counter(counter() + 1), 1000);
+
+effect(() => {
+  document.getElementById("app").innerHTML = message();
+});
+```
+
+</SandpackEditor>
