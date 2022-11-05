@@ -1,5 +1,11 @@
 # @iniz/core
 
+## 0.7.2
+
+### Patch Changes
+
+- 0bce403: Add documentaion website
+
 ## 0.7.1
 
 ### Patch Changes

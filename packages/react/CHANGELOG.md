@@ -1,5 +1,13 @@
 # @iniz/react
 
+## 0.6.3
+
+### Patch Changes
+
+- 0bce403: Add documentaion website
+- Updated dependencies [0bce403]
+  - @iniz/core@0.7.2
+
 ## 0.6.2
 
 ### Patch Changes
