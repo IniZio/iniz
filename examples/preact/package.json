@@ -1,5 +1,5 @@
 {
-  "name": "preact",
+  "name": "@iniz/example-preact",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@iniz/preact": "workspace:*",
-    "preact": "^0.0.1"
+    "preact": "^10.10.6"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.3.0",
