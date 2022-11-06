@@ -95,15 +95,15 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
           if (frozen) return value;
         }
 
-        if (isAtom(value)) {
-          value = value();
-        }
-
-        if (canApplyStateProxy(value) && !isAtom(value) && !isState(value)) {
+        if (canApplyStateProxy(value)) {
           return new Proxy(
             value,
             createProxyHandler(root ?? target, path, untrackChild)
           );
+        }
+
+        if (isAtom(value)) {
+          value = value();
         }
 
         DependencyTracker.addDependency(access);
@@ -117,7 +117,13 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
         const access = { state, path };
 
         startBatch();
-        Reflect.set(target, prop, newValue, receiver);
+        const oldValue = Reflect.get(target, prop, receiver);
+        if (isAtom(oldValue)) {
+          oldValue(newValue);
+        } else {
+          Reflect.set(target, prop, newValue, receiver);
+        }
+
         if (!untrack) {
           DependencyTracker.notifyObservers(access);
         }

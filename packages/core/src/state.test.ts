@@ -105,6 +105,11 @@ describe("atom", () => {
     expect(childEffectCount).toBe(1);
     expect(parentEffectCount).toBe(1);
     expect(parent().a.b.c).toBe(2);
+
+    parent().a.b.c++;
+    expect(childEffectCount).toBe(2);
+    expect(parentEffectCount).toBe(2);
+    expect(parent().a.b.c).toBe(3);
   });
 });
 
