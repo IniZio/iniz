@@ -32,6 +32,40 @@ document.getElementById("app").innerHTML = `Counter: ${counter()}`;
 
 </SandpackEditor>
 
+## state
+
+`atom` is actually a variation of `state` that accepts non-object values.
+
+`state()` itself only accepts object / array, and does not need function call to access its value.
+You can also define setters inside state itself.
+
+
+<SandpackEditor
+  template="vanilla-ts"
+  dependencies={{ "@iniz/core": "*" }}
+>
+
+```ts
+import { atom, state } from "@iniz/core";
+
+const form = state({
+  name: '',
+  email: '',
+  reset() {
+    this.name = 'Tom Cruise';
+    this.email = 'tom@someemail.com'; // Note it won't need function call
+  }
+});
+
+form.reset();
+form.email = 'cruise@anotheremail.com';
+
+document.getElementById("app").innerHTML = `Name: ${form.name}<br /> Email: ${form.email}`;
+
+```
+
+</SandpackEditor>
+
 ## effect
 
 After an `atom` is declared, it's value can be tracked with an `effect`.
