@@ -1,7 +1,7 @@
 {
   "name": "preact",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@iniz/preact": "workspace:*",
-    "preact": "^10.10.6"
+    "preact": "^0.0.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.3.0",

@@ -1,5 +1,11 @@
 # @iniz/core
 
+## 0.7.3
+
+### Patch Changes
+
+- fdbda07: Fix parent atom update not reflected in child atom
+
 ## 0.7.2
 
 ### Patch Changes
