@@ -1,4 +1,5 @@
 .PHONY: setup-asdf
 setup-asdf:
-	asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git || true
+	asdf plugin-add pnpm || true
+	asdf plugin-add nodejs || true
 	asdf install

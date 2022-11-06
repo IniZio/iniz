@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "workspaces": [
+    "website",
     "examples/*",
     "packages/*"
   ],
@@ -17,7 +18,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.7",
     "@changesets/cli": "^2.24.4",
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "workspace:*",
     "prettier": "^2.7.1",
     "prettier-plugin-organize-imports": "^3.1.1",
     "turbo": "latest"
@@ -26,5 +27,5 @@
     "node": ">=18.10.0"
   },
   "dependencies": {},
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "pnpm@7.14.2"
 }
