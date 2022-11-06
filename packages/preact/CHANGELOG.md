@@ -1,5 +1,13 @@
 # @iniz/preact
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [fdbda07]
+  - @iniz/core@0.7.3
+  - preact@0.0.1
+
 ## 0.2.2
 
 ### Patch Changes

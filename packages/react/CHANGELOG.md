@@ -1,5 +1,12 @@
 # @iniz/react
 
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies [fdbda07]
+  - @iniz/core@0.7.3
+
 ## 0.6.3
 
 ### Patch Changes
