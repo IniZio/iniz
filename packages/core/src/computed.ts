@@ -1,6 +1,6 @@
 import { atom, Atom } from "./atom";
 import { effect } from "./effect";
-import { ref } from "./ref";
+import { untrack } from "./untrack";
 
 export const COMPUTED_FN = Symbol.for("COMPUTED_FN");
 
@@ -12,7 +12,7 @@ export type Computed<TValue> = Atom<TValue> & {
 export function computed<TValue>(compute: () => TValue): Computed<TValue> {
   const computed = atom<TValue>(compute()) as Computed<TValue>;
 
-  computed[COMPUTED_FN] = ref(compute);
+  computed[COMPUTED_FN] = untrack(compute);
   effect(() => {
     const value = computed[COMPUTED_FN]();
 

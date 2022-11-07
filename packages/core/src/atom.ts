@@ -1,4 +1,4 @@
-import { ref } from "./ref";
+import { untrack } from "./untrack";
 import { isState, state } from "./state";
 import { extractStateValue } from "./types";
 
@@ -29,7 +29,7 @@ export function atom<TValue>(value: TValue): Atom<extractStateValue<TValue>> {
 
         return this[ATOM_VALUE];
       },
-      { [IS_ATOM]: ref(true), [ATOM_VALUE]: value }
+      { [IS_ATOM]: untrack(true), [ATOM_VALUE]: value }
     )
   ) as unknown as Atom<extractStateValue<TValue>>;
 }

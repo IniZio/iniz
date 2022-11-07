@@ -2,7 +2,7 @@ import { Atom, ATOM_VALUE, isAtom, IS_ATOM } from "./atom";
 import { endBatch, startBatch } from "./batch";
 import { COMPUTED_FN } from "./computed";
 import { DependencyTracker, OBJECT_LENGTH_KEY } from "./dependency";
-import { isRef } from "./ref";
+import { isUntrack } from "./untrack";
 import { extractStateValue } from "./types";
 import { get, isClass } from "./util";
 
@@ -86,7 +86,7 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
 
         let untrackChild = untrack;
 
-        if (isRef(value)) {
+        if (isUntrack(value)) {
           const { frozen } = value;
 
           value = value.value;

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { effect } from "./effect";
-import { ref } from "./ref";
+import { untrack } from "./untrack";
 import { state } from "./state";
 
-describe("ref", () => {
+describe("untrack", () => {
   const a1 = state({
-    untracked: ref({ count: 1 }, false),
+    untracked: untrack({ count: 1 }, false),
     tracked: { count: 1 },
   });
 
@@ -35,7 +35,7 @@ describe("ref", () => {
 
   it("should trigger effect if the ref property is re-assigned", () => {
     expect(untrackedEffectCount).toBe(0);
-    a1.untracked = ref({ count: 2 }, false);
+    a1.untracked = untrack({ count: 2 }, false);
     expect(untrackedEffectCount).toBe(1);
   });
 
