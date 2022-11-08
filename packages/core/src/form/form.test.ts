@@ -18,7 +18,7 @@ describe("form", () => {
           }),
           phone: form.field({
             validators: [
-              ({ value }: { value: any }) =>
+              ({ value }: { value?: any }) =>
                 Promise.resolve(value ? null : { fail: 1 }),
             ],
           }),
