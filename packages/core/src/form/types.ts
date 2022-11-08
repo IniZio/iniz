@@ -15,11 +15,10 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
  * 3. Exclude null | undefined to avoid the type become never
  * 4. UnionToIntersection to merge into intersection object
  */
-export type ValidationErrors<T extends (((i: any) => any) | undefined)[] | undefined> = UnionToIntersection<
-  Exclude<
-    ExtractReturnTypes<Exclude<T, undefined>>[number],
-    null | undefined
-  >
-  > extends infer O
+export type ValidationErrors<
+  T extends (((i: any) => any) | undefined)[] | undefined
+> = UnionToIntersection<
+  Exclude<ExtractReturnTypes<Exclude<T, undefined>>[number], null | undefined>
+> extends infer O
   ? { [K in keyof O]?: O[K] | undefined }
   : never;

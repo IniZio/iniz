@@ -1,10 +1,14 @@
 import { Atom, atom } from "../atom";
 import { computed } from "../computed";
+import { effect } from "../effect";
 import { State, state } from "../state";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
+import { ValidationErrors } from "./types";
 
-export type GroupOptions = {};
+export type GroupOptions = {
+  validators?: ((group: GroupInstance<any, any, any>) => any)[];
+};
 
 export type GroupChildren = {
   [index: string]:
@@ -35,6 +39,7 @@ export type GroupInstance<
         >["value"]
       : never;
   };
+  errors: ValidationErrors<TOptions["validators"]>;
   setValue: (
     val: TValue,
     options?: { shouldDirty?: boolean; shouldTouch?: boolean }
@@ -121,8 +126,11 @@ export function group<
   TChildren extends GroupChildren,
   TOptions extends GroupOptions
 >(initialValue: TValue, children: TChildren, options?: TOptions) {
+  let instance: State<GroupInstance<TValue, TChildren, TOptions>>;
+
   const controls: Atom<Record<any, any>> = atom(
     Object.entries(children).reduce(
+      // @ts-ignore
       (acc, [name, control]) => ({
         ...acc,
         [name]: isFieldControl(control)
@@ -181,10 +189,11 @@ export function group<
     )
   );
 
+  const errors = atom<ValidationErrors<TOptions["validators"]>>({} as any);
   const hasError = computed(() =>
     Object.entries(controls()).reduce(
       (hasError, [name, control]) => hasError || control.hasError,
-      false
+      Object.keys(errors()).length !== 0
     )
   );
 
@@ -202,11 +211,15 @@ export function group<
     )
   );
 
-  const isValidating = computed(() =>
+  const isValidatingField = atom(false);
+  const isValidatingChildren = computed(() =>
     Object.entries(controls()).reduce(
       (isValidating, [name, control]) => isValidating || control.isValidating,
       false
     )
+  );
+  const isValidating = computed(
+    () => isValidatingField() || isValidatingChildren()
   );
 
   const setValue = (
@@ -221,11 +234,43 @@ export function group<
     });
   };
 
-  const validate = async () => {
-    await Promise.all(
-      Object.entries(controls()).map(([name, control]) => control.validate())
-    );
-  };
+  let validationVersion = 0;
+  function validateField() {
+    const version = ++validationVersion;
+    isValidatingField(true);
+
+    return Promise.all(
+      options?.validators?.map((v) => v(instance as any)) ?? []
+    )
+      .then((results) => {
+        // Ensure only latest validation result is taken
+        if (version < validationVersion) {
+          return;
+        }
+        errors(
+          results.reduce(
+            (es, res) => ({ ...es, ...res }),
+            {} as ValidationErrors<TOptions["validators"]>
+          )
+        );
+      })
+      .finally(() => {
+        // Ensure only latest validation result is taken
+        if (version < validationVersion) {
+          return;
+        }
+
+        isValidatingField(false);
+      });
+  }
+  async function validate() {
+    return Promise.all([
+      validateField(),
+      Promise.all(
+        Object.entries(controls()).map(([name, control]) => control.validate())
+      ),
+    ]);
+  }
 
   const markAsFresh = () => {
     Object.entries(controls()).forEach(([name, control]) => {
@@ -239,12 +284,13 @@ export function group<
     });
   };
 
-  return state({
+  instance = state({
     value,
     setValue,
     controls,
     touchedFields,
     dirtyFields,
+    errors,
     fieldErrors,
     hasError,
     touched,
@@ -253,7 +299,9 @@ export function group<
     validate,
     markAsFresh,
     reset,
-  }) as State<GroupInstance<TValue, TChildren, TOptions>>;
+  }) as any;
+
+  return instance;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");

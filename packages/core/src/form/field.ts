@@ -1,7 +1,7 @@
 import { atom } from "../atom";
 import { computed } from "../computed";
 import { State, state } from "../state";
-import { ValidationErrors } from './types';
+import { ValidationErrors } from "./types";
 
 type ExtractReturnTypes<T extends (((i: any) => any) | undefined)[]> = {
   [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;

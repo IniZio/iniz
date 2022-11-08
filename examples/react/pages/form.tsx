@@ -44,21 +44,35 @@ export default function FormPage() {
       },
       hobbies: ["Sleeping", "Idling"],
       relatives: [{ phone: "1213123" }, { phone: "329234sfdasdfsss" }],
+      password: "",
+      confirmPassword: "",
     },
-    form.group({
-      firstname: form.field(),
-      lastname: form.field(),
-      gender: form.field(),
-      age: form.field({ validators: [validators.min(10)] }),
-      contact: form.group({
-        email: form.field({
-          validators: [emailSuffixValidator("bcd.com")],
-          mode: "onBlur",
+    form.group(
+      {
+        firstname: form.field(),
+        lastname: form.field(),
+        gender: form.field(),
+        age: form.field({ validators: [validators.min(10)] }),
+        contact: form.group({
+          email: form.field({
+            validators: [emailSuffixValidator("bcd.com")],
+            mode: "onBlur",
+          }),
         }),
-      }),
-      hobbies: form.array(hobby),
-      relatives: form.array(relative),
-    })
+        hobbies: form.array(hobby),
+        relatives: form.array(relative),
+        password: form.field(),
+        confirmPassword: form.field(),
+      },
+      {
+        validators: [
+          (g) =>
+            g.value.password !== g.value.confirmPassword
+              ? { passwords: true }
+              : null,
+        ],
+      }
+    )
   );
 
   const onSubmit = () => {
@@ -80,6 +94,8 @@ export default function FormPage() {
       },
       hobbies: ["Swimming"],
       relatives: [{ phone: "56456" }],
+      password: "",
+      confirmPassword: "",
     });
   }, [profileForm]);
 
@@ -203,6 +219,23 @@ export default function FormPage() {
           </div>
         )}
       </Field>
+
+      <Field field={profileForm.controls.password}>
+        {(field) => (
+          <div>
+            <input {...profileForm.register(field)} />
+          </div>
+        )}
+      </Field>
+      <Field field={profileForm.controls.confirmPassword}>
+        {(field) => (
+          <div>
+            <input {...profileForm.register(field)} />
+          </div>
+        )}
+      </Field>
+      {profileForm.errors.passwords ? "Passwords not matched" : ""}
+
       <button type="button" onClick={setValue}>
         Set value
       </button>
