@@ -1,5 +1,11 @@
 # @iniz/react
 
+## 0.6.5
+
+### Patch Changes
+
+- 85a8081: Fix createElement side-effect excluded from bundle
+
 ## 0.6.4
 
 ### Patch Changes
