@@ -1,6 +1,6 @@
 import { DependencyTracker } from "./dependency";
 
-export const observerStack: Observer[] = [];
+export const observerStack: (Observer | undefined)[] = [];
 
 export class Observer {
   scheduler?: () => void;
@@ -14,6 +14,20 @@ export class Observer {
       return;
     }
     observerStack.push(this);
+  };
+
+  ignore = () => {
+    if (observerStack.slice(-1)[0] !== this) {
+      return;
+    }
+    observerStack.push(undefined);
+  };
+
+  unignore = () => {
+    if (observerStack.slice(-1)[0] !== undefined) {
+      return;
+    }
+    observerStack.pop();
   };
 
   stop = () => {

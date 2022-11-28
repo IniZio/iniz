@@ -64,4 +64,31 @@ describe("effect", () => {
     a1(`zyx`);
     expect(effectCount).toBe(1);
   });
+
+  it("should not track dependency in reaction", () => {
+    const a1 = atom("abc");
+    const a2 = atom(100);
+
+    let actionCount = -1;
+    let reactionCount = -1;
+
+    effect(
+      () => {
+        a1();
+        actionCount++;
+      },
+      () => {
+        a2(a2() + 1);
+        reactionCount++;
+      }
+    );
+
+    a1("xxx");
+    expect(actionCount).toBe(1);
+    expect(reactionCount).toBe(1);
+
+    a2(3);
+    expect(actionCount).toBe(1);
+    expect(reactionCount).toBe(1);
+  });
 });
