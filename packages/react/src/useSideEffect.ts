@@ -3,12 +3,17 @@ import { useEffect } from "react";
 
 // NOTE: Under strict mode, effect is called twice
 export function useSideEffect(
-  callback: (() => void) | (() => () => void),
+  action: (() => void) | (() => () => void),
+  reactionOrDeps: (() => void) | any[] = [],
   deps: any[] = []
 ) {
   useEffect(
-    () => effect(callback),
+    () =>
+      effect(
+        action,
+        typeof reactionOrDeps === "function" ? reactionOrDeps : undefined
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps
+    Array.isArray(reactionOrDeps) ? reactionOrDeps : deps
   );
 }

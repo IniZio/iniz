@@ -2,11 +2,17 @@ import { effect } from "@iniz/core";
 import { useEffect } from "preact/hooks";
 
 export function useSideEffect(
-  callback: (() => void) | (() => () => void),
+  action: (() => void) | (() => () => void),
+  reactionOrDeps: (() => void) | any[] = [],
   deps: any[] = []
 ) {
   useEffect(
-    () => effect(callback),
-    deps // eslint-disable-line react-hooks/exhaustive-deps
+    () =>
+      effect(
+        action,
+        typeof reactionOrDeps === "function" ? reactionOrDeps : undefined
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Array.isArray(reactionOrDeps) ? reactionOrDeps : deps
   );
 }
