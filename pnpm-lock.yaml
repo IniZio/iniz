@@ -62,6 +62,17 @@ importers:
       tsconfig: link:../../packages/tsconfig
       typescript: 4.8.4
 
+  examples/vanilla:
+    specifiers:
+      '@iniz/core': workspace:*
+      typescript: ^4.6.4
+      vite: ^3.1.0
+    dependencies:
+      '@iniz/core': link:../../packages/core
+    devDependencies:
+      typescript: 4.8.4
+      vite: 3.2.2
+
   examples/vite:
     specifiers:
       '@iniz/react': workspace:*
@@ -808,7 +819,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.12.9
-      '@babel/helper-plugin-utils': 7.10.4
+      '@babel/helper-plugin-utils': 7.20.2
       '@babel/plugin-syntax-object-rest-spread': 7.8.3_@babel+core@7.12.9
       '@babel/plugin-transform-parameters': 7.20.1_@babel+core@7.12.9
     dev: false
@@ -12625,12 +12636,14 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.0
       tinyspy: 1.0.2
-      vite: 2.9.15
+      vite: 3.2.2
     transitivePeerDependencies:
       - less
       - sass
       - stylus
+      - sugarss
       - supports-color
+      - terser
     dev: true
 
   /vitest/0.24.5_@vitest+ui@0.23.4:
