@@ -23,15 +23,21 @@
     "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && vite build",
     "lint": "eslint",
     "test": "vitest run --coverage",
-    "test:watch": "vitest watch --ui"
+    "test:watch": "vitest watch --ui",
+    "//benchmark": "node --loader ts-node/esm --inspect ./benchmarks/server.ts",
+    "benchmark": "mkdir -p .heapshots && tsx --tsconfig ./tsconfig.benchmark.json benchmarks/example.ts"
   },
   "devDependencies": {
+    "@iniz/eslint-config-internal": "workspace:*",
+    "@types/node": "^17.0.12",
     "@vitest/coverage-istanbul": "^0.24.0",
     "@vitest/ui": "^0.23.4",
     "eslint": "7.32.0",
-    "@iniz/eslint-config-internal": "workspace:*",
-    "typescript": "^4.8.3",
+    "tinybench": "^2.3.1",
+    "ts-node": "^10.9.1",
     "tsconfig": "workspace:*",
+    "tsx": "^3.12.1",
+    "typescript": "^4.8.3",
     "vite": "^2.9.9",
     "vite-plugin-dts": "^1.2.0",
     "vitest": "^0.23.4"
