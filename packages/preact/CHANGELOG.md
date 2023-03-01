@@ -1,5 +1,16 @@
 # @iniz/preact
 
+## 0.3.0
+
+### Minor Changes
+
+- e278721: Rename state to store, add useStore hook
+
+### Patch Changes
+
+- Updated dependencies [e278721]
+  - @iniz/core@0.8.0
+
 ## 0.2.3
 
 ### Patch Changes
