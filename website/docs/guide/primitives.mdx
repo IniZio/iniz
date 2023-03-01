@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Primitives
 
-Iniz provides a few primitives to describe state: `atom`/`state`, `effect` and `computed`.
+Iniz provides a few primitives to describe state: `atom`/`store`, `effect` and `computed`.
 
 ## atom
 
@@ -32,14 +32,14 @@ document.getElementById("app").innerHTML = `Counter: ${counter()}`;
 
 </SandpackEditor>
 
-## state
+## store
 
-`atom` is actually a variation of `state` that accepts non-object values.
+`atom` is actually a variation of `store` that accepts non-object values.
 
-`state()` itself only accepts object / array, and does not need function call to access its value.
-You can also define setters inside state itself.
+`store()` itself only accepts object / array, and does not need function call to access its value.
+You can also define setters inside store itself.
 
-You can also include an atom / state in another atom / state, and it will get auto-unwrapped. Update to child/parent is reflected on both sides.
+You can also include an atom / store in another atom / store, and it will get auto-unwrapped. Update to child/parent is reflected on both sides.
 
 <SandpackEditor
   template="vanilla-ts"
@@ -47,11 +47,11 @@ You can also include an atom / state in another atom / state, and it will get au
 >
 
 ```ts
-import { atom, state } from "@iniz/core";
+import { atom, store } from "@iniz/core";
 
 const email = atom('');
 
-const form = state({
+const form = store({
   name: '',
   email,
   reset() {

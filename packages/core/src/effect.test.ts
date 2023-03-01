@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { atom } from "./atom";
 import { effect } from "./effect";
-import { state } from "./state";
+import { store } from "./store";
 
 describe("effect", () => {
   it("should call when included primitve updates", () => {
@@ -22,8 +22,8 @@ describe("effect", () => {
     expect(effectCount).toBe(2);
   });
 
-  it("should call when included state updates", () => {
-    const a3 = state<string[]>([]);
+  it("should call when included store updates", () => {
+    const a3 = store<string[]>([]);
     let anotherEffectCount = -1;
 
     effect(() => {
@@ -36,7 +36,7 @@ describe("effect", () => {
   });
 
   it("should call when deeply nested property updates", () => {
-    const a3 = state({ a: { b: { c: [{ d: 1 }] } } });
+    const a3 = store({ a: { b: { c: [{ d: 1 }] } } });
     let deepEffectCount = -1;
 
     effect(() => {

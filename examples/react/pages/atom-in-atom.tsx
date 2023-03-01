@@ -1,10 +1,10 @@
 /** @jsxImportSource @iniz/react */
 
-import { atom, state } from "@iniz/react";
+import { atom, store } from "@iniz/react";
 
 const email = atom("");
 
-const form = state({
+const form = store({
   name: "",
   email,
   reset() {

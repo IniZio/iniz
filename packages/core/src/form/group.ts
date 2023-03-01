@@ -1,6 +1,6 @@
 import { Atom, atom } from "../atom";
 import { computed } from "../computed";
-import { State, state } from "../state";
+import { Store, store } from "../store";
 import { array, ArrayControl, ArrayInstance, isArrayControl } from "./array";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 
@@ -239,7 +239,7 @@ export function group<
     });
   };
 
-  return state({
+  return store({
     value,
     setValue,
     controls,
@@ -253,7 +253,7 @@ export function group<
     validate,
     markAsFresh,
     reset,
-  }) as State<GroupInstance<TValue, TChildren, TOptions>>;
+  }) as Store<GroupInstance<TValue, TChildren, TOptions>>;
 }
 
 const IS_GROUP = Symbol.for("IS_GROUP");

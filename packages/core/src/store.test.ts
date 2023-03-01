@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { atom } from "./atom";
 import { effect } from "./effect";
-import { isState, state } from "./state";
+import { isStore, store } from "./store";
 
-describe("state", () => {
-  it("should pass isState", () => {
-    expect(isState(state({}))).toBeTruthy();
+describe("store", () => {
+  it("should pass isStore", () => {
+    expect(isStore(store({}))).toBeTruthy();
   });
 
-  it("should return same state if passed again", () => {
-    const a1 = state({});
-    expect(a1).toBe(state(a1));
+  it("should return same store if passed again", () => {
+    const a1 = store({});
+    expect(a1).toBe(store(a1));
   });
 
   it("should reflect value assigned correctly", () => {
-    const a1 = state({ value: 100 });
+    const a1 = store({ value: 100 });
 
     expect(a1.value).toBe(100);
 
@@ -24,15 +24,15 @@ describe("state", () => {
   });
 
   it("should reject non-proxiable values", () => {
-    expect(() => state(1 as any)).toThrow();
-    expect(() => state("abc" as any)).toThrow();
-    expect(() => state(new Map() as any)).toThrow();
-    expect(() => state(new Set() as any)).toThrow();
-    expect(() => state(new Date() as any)).toThrow();
+    expect(() => store(1 as any)).toThrow();
+    expect(() => store("abc" as any)).toThrow();
+    expect(() => store(new Map() as any)).toThrow();
+    expect(() => store(new Set() as any)).toThrow();
+    expect(() => store(new Date() as any)).toThrow();
   });
 
-  it("shoud allow function to refer to state itself", () => {
-    const a1 = state({
+  it("shoud allow function to refer to store itself", () => {
+    const a1 = store({
       value: {
         a: { b: 1 },
         inc() {
@@ -47,8 +47,8 @@ describe("state", () => {
 });
 
 describe("atom", () => {
-  it("should pass isState", () => {
-    expect(isState(atom({}))).toBeTruthy();
+  it("should pass isStore", () => {
+    expect(isStore(atom({}))).toBeTruthy();
   });
 
   it("should return same atom if passed again", () => {
@@ -113,9 +113,9 @@ describe("atom", () => {
   });
 });
 
-describe("isState", () => {
+describe("isStore", () => {
   it("should not fail when passed weird values", () => {
-    expect(() => isState(undefined)).not.toThrow();
-    expect(() => isState(null)).not.toThrow();
+    expect(() => isStore(undefined)).not.toThrow();
+    expect(() => isStore(null)).not.toThrow();
   });
 });
