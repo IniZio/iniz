@@ -4,7 +4,7 @@ Iniz is a reactive state library for ReactJS. Try it out on our [website](https:
 
 `npm i @iniz/core`
 
-[![Build Status](https://img.shields.io/github/workflow/status/inizio/iniz/CI/main?style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/inizio/iniz/ci.yaml?branch=main&style=flat&colorA=28282B&colorB=28282B)](https://github.com/inizio/iniz/actions?query=workflow%3ACI)
 [![Test Coverage](https://img.shields.io/codecov/c/github/inizio/iniz/main?token=qiX91NsrLE&label=coverage&style=flat&colorA=28282B&colorB=28282B)](https://codecov.io/gh/IniZio/iniz)
 [![Build Size](https://img.shields.io/bundlephobia/minzip/@iniz/core?label=bundle%20size&style=flat&colorA=28282B&colorB=28282B)](https://bundlephobia.com/package/@iniz/core)
 [![Version](https://img.shields.io/npm/v/@iniz/core?style=flat&colorA=28282B&colorB=28282B)](https://www.npmjs.com/package/@iniz/core)
@@ -22,20 +22,21 @@ Iniz is a reactive state library for ReactJS. Try it out on our [website](https:
 
 ### Getting started
 
-#### Create an atom
-
-Atom is the smallets unit of reactive state.
+#### Create an atom / store
 
 ```ts
-import { atom } from "@iniz/core";
+import { atom, store } from "@iniz/core";
 
 const timer$ = atom(new Date());
 
-// It can be a complex nested object/array as well...
-const nestedCounter$ = atom({
+const nested$ = store({
   obj: {
     array: [{ count: 3 }],
     message: "Hello World",
+  },
+  async reset() {
+    this.array = [];
+    this.message = "Good bye";
   },
 });
 ```
@@ -45,17 +46,20 @@ const nestedCounter$ = atom({
 Call the atom to read/write it.
 
 ```ts
+// Initial value
 timer$(); // Returns latest value e.g. `2019-08-31T00:00:00.000Z`
 
+// Mutate the atom / state
 setInterval(() => {
-  nestedCounter$().obj.array[0].count++;
+  nested$.obj.array[0].count++;
   timer$(new Date());
-  // Calling it as function also sets `value`
 }, 1000);
 
 // Later on...
 timer$(); // Returns latest value e.g. `2022-08-31T00:00:00.000Z`
-nestedCouner$().obj.array[0].count;
+nested$.obj.array[0].count;
+
+nested$.reset();
 ```
 
 #### Subscribe to atom
