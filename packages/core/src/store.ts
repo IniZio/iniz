@@ -106,6 +106,10 @@ export function store<TValue>(value: TValue): Store<extractStoreValue<TValue>> {
           value = value();
         }
 
+        if (typeof value === "function") {
+          value = value.bind(get(store, parentPath));
+        }
+
         DependencyTracker.addDependency(access);
 
         return value;

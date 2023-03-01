@@ -31,7 +31,7 @@ describe("store", () => {
     expect(() => store(new Date() as any)).toThrow();
   });
 
-  it("shoud allow function to refer to store itself", () => {
+  it("should allow function to refer to store itself", () => {
     const a1 = store({
       value: {
         a: { b: 1 },
@@ -42,7 +42,8 @@ describe("store", () => {
     });
     expect(a1.value.a.b).toBe(1);
     a1.value.inc();
-    expect(a1.value.a.b).toBe(2);
+    a1.value.inc.bind(null)();
+    expect(a1.value.a.b).toBe(3);
   });
 });
 
