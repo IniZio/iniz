@@ -1,9 +1,9 @@
-import { Atom, State } from "@iniz/core";
+import type { Atom, Store } from "@iniz/core";
 
-export type extractStateValue<T> = T extends Atom<infer V>
-  ? extractStateValue<V>
-  : T extends State<infer V>
+export type extractStoreValue<T> = T extends Atom<infer V>
+  ? extractStoreValue<V>
+  : T extends Store<infer V>
   ? V
   : T extends { [k in keyof T]: any }
-  ? { [k in keyof T]: extractStateValue<T[k]> }
+  ? { [k in keyof T]: extractStoreValue<T[k]> }
   : T;

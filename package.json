@@ -13,6 +13,7 @@
     "format": "prettier --write --cache \"**/*.{ts,tsx,md,mdx}\"",
     "lint": "turbo run lint && prettier --check \"**/*.{ts,tsx,md,mdx}\"",
     "test": "turbo run test",
+    "changeset": "changeset",
     "publish-packages": "turbo run build lint && changeset version && changeset publish"
   },
   "devDependencies": {
