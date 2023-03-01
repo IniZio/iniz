@@ -1,6 +1,6 @@
 # Iniz
 
-Iniz is a reactive state library. Try it out on our [website](https://iniz.netlify.app)!
+Iniz is a reactive store library. Try it out on our [website](https://iniz.netlify.app)!
 
 `npm i @iniz/preact`
 

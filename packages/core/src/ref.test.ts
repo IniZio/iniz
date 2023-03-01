@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { effect } from "./effect";
 import { ref } from "./ref";
-import { state } from "./state";
+import { store } from "./store";
 
 describe("ref", () => {
-  const a1 = state({
+  const a1 = store({
     untracked: ref({ count: 1 }, false),
     tracked: { count: 1 },
   });

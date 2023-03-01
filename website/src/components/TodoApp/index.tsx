@@ -180,7 +180,7 @@ body {
 }
 `;
 
-const state = `import { atom, state } from "@iniz/react";
+const store = `import { atom, store } from "@iniz/react";
 
 interface Todo {
   completed: boolean;
@@ -188,7 +188,7 @@ interface Todo {
 }
 
 export const newTodo = atom("");
-export const todos = state<Todo[]>([]);
+export const todos = store<Todo[]>([]);
 
 export function addTodo(title: string) {
   newTodo("");
@@ -271,7 +271,7 @@ function TodoApp() {
           hidden: true,
         },
         "/todo.ts": {
-          code: state,
+          code: store,
           active: true,
         },
         "/App.tsx": code,

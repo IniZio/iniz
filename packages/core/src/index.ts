@@ -6,5 +6,5 @@ export { effect } from "./effect";
 export { observer } from "./observer";
 export type { Observer } from "./observer";
 export { ref } from "./ref";
-export { isState, state } from "./state";
-export type { State } from "./state";
+export { isStore, store as store } from "./store";
+export type { Store } from "./store";

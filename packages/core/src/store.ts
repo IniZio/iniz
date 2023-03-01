@@ -1,26 +1,26 @@
-import { Atom, ATOM_VALUE, isAtom, IS_ATOM } from "./atom";
+import { Atom, ATOM_VALUE, isAtom } from "./atom";
 import { endBatch, startBatch } from "./batch";
 import { COMPUTED_FN } from "./computed";
 import { DependencyTracker, OBJECT_LENGTH_KEY } from "./dependency";
 import { isRef } from "./ref";
-import { extractStateValue } from "./types";
+import { extractStoreValue } from "./types";
 import { get, isClass } from "./util";
 
-export const IS_STATE = Symbol.for("IS_STATE");
+export const IS_STORE = Symbol.for("IS_STORE");
 
-export type State<TValue> = (TValue extends
-  | { [k in keyof TValue]: State<any> }
+export type Store<TValue> = (TValue extends
+  | { [k in keyof TValue]: Store<any> }
   | { [k in keyof TValue]: Atom<any> }
   ? {
-      [k in keyof TValue]: extractStateValue<TValue[k]>;
+      [k in keyof TValue]: extractStoreValue<TValue[k]>;
     }
   : TValue) & {
   /** @internal */
-  [IS_STATE]?: true;
+  [IS_STORE]?: true;
 };
 
-export function isState<TValue>(value: TValue): value is State<any> {
-  return !!(value as any)?.[IS_STATE];
+export function isStore<TValue>(value: TValue): value is Store<any> {
+  return !!(value as any)?.[IS_STORE];
 }
 
 export function canApplyStateProxy(value: any): boolean {
@@ -42,17 +42,17 @@ export function canApplyStateProxy(value: any): boolean {
   );
 }
 
-export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
-  if (isState(value)) {
+export function store<TValue>(value: TValue): Store<extractStoreValue<TValue>> {
+  if (isStore(value)) {
     return value as any;
   }
 
   // Atom is an object-assigned function, so bypass proxiable check here
-  if (!canApplyStateProxy(value) && !value?.[IS_ATOM]) {
+  if (!canApplyStateProxy(value) && !isAtom(value)) {
     throw new Error("Provided value is not compatitable with Proxy");
   }
 
-  let state: any;
+  let store: any;
 
   function createProxyHandler(
     root: TValue | undefined = undefined,
@@ -61,26 +61,26 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
   ): ProxyHandler<any> {
     return {
       apply(target, _thisArg, argArray) {
-        return target.apply(get(state, parentPath), argArray);
+        return target.apply(get(store, parentPath), argArray);
       },
       ownKeys(target) {
         const path = parentPath
           .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN)
           .concat(Array.isArray(target) ? ["length"] : [OBJECT_LENGTH_KEY]);
-        const access = { state, path };
+        const access = { store, path };
 
         DependencyTracker.addDependency(access);
         return Reflect.ownKeys(target);
       },
       get(target, prop, receiver) {
-        if (prop === IS_STATE) {
+        if (prop === IS_STORE) {
           return !root;
         }
 
         const path = parentPath
           .concat(prop)
           .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
-        const access = { state, path };
+        const access = { store, path };
 
         let value = Reflect.get(target, prop, receiver);
 
@@ -114,7 +114,7 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
         const path = parentPath
           .concat(prop)
           .filter((p) => p !== ATOM_VALUE && p !== COMPUTED_FN);
-        const access = { state, path };
+        const access = { store, path };
 
         startBatch();
         const oldValue = Reflect.get(target, prop, receiver);
@@ -134,6 +134,6 @@ export function state<TValue>(value: TValue): State<extractStateValue<TValue>> {
     };
   }
 
-  state = new Proxy(value, createProxyHandler());
-  return state;
+  store = new Proxy(value, createProxyHandler());
+  return store;
 }

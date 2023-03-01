@@ -1,7 +1,7 @@
 import { atom, Atom } from "../atom";
 import { computed } from "../computed";
-import { state } from "../state";
-import { State } from "./../state";
+import { store } from "../store";
+import { Store } from "../store";
 import { field, FieldControl, FieldInstance, isFieldControl } from "./field";
 import { group, GroupControl, GroupInstance, isGroupControl } from "./group";
 
@@ -191,7 +191,7 @@ export function array<
     await Promise.all(controls().map((control: any) => control.validate()));
   };
 
-  return state({
+  return store({
     value,
     setValue,
     controls,
@@ -205,7 +205,7 @@ export function array<
     isValidating,
     markAsFresh,
     reset,
-  }) as State<ArrayInstance<TValue, TTemplate, TOptions>>;
+  }) as Store<ArrayInstance<TValue, TTemplate, TOptions>>;
 }
 
 const IS_ARRAY = Symbol.for("IS_ARRAY");

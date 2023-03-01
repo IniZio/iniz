@@ -1,22 +1,22 @@
 import { notifyStack } from "./batch";
 import { Observer, observerStack } from "./observer";
-import { State } from "./state";
+import { Store } from "./store";
 import { arrayStartsWith } from "./util";
 
 interface Dependency {
-  state: State<any>;
+  store: Store<any>;
   paths: (string | symbol | number)[][];
 }
 
 interface Access {
-  state: State<any>;
+  store: Store<any>;
   path: (string | symbol | number)[];
 }
 
 export const OBJECT_LENGTH_KEY = Symbol.for("OBJECT_LENGTH_KEY");
 
 const observerMap = new Map<Observer, Dependency[]>();
-const stateMap = new Map<State<any>, Set<Observer>>();
+const storeMap = new Map<Store<any>, Set<Observer>>();
 
 export class DependencyTracker {
   static addDependency(access: Access) {
@@ -28,10 +28,10 @@ export class DependencyTracker {
     }
     const dependencies = observerMap.get(observer)!;
 
-    const dependency = dependencies.find((dep) => dep.state === access.state);
+    const dependency = dependencies.find((dep) => dep.store === access.store);
     if (!dependency) {
       dependencies.push({
-        state: access.state,
+        store: access.store,
         paths: [access.path],
       });
     } else if (
@@ -40,10 +40,10 @@ export class DependencyTracker {
       dependency.paths.push(access.path);
     }
 
-    if (!stateMap.has(access.state)) {
-      stateMap.set(access.state, new Set());
+    if (!storeMap.has(access.store)) {
+      storeMap.set(access.store, new Set());
     }
-    stateMap.get(access.state)!.add(observer);
+    storeMap.get(access.store)!.add(observer);
   }
 
   static clearDependencies(observer: Observer) {
@@ -51,12 +51,12 @@ export class DependencyTracker {
     if (!dependencies) return;
 
     for (const dependency of dependencies) {
-      const observerSet = stateMap.get(dependency.state);
+      const observerSet = storeMap.get(dependency.store);
       if (!observerSet) continue;
 
       observerSet.delete(observer);
       if (observerSet.size === 0) {
-        stateMap.delete(dependency.state);
+        storeMap.delete(dependency.store);
       }
     }
 
@@ -64,7 +64,7 @@ export class DependencyTracker {
   }
 
   static notifyObservers(access: Access) {
-    const observerSet = stateMap.get(access.state);
+    const observerSet = storeMap.get(access.store);
     if (!observerSet) {
       return;
     }
@@ -77,7 +77,7 @@ export class DependencyTracker {
       const dependencies = observerMap.get(observer);
       if (!dependencies) continue;
 
-      const dependency = dependencies.find((dep) => dep.state === access.state);
+      const dependency = dependencies.find((dep) => dep.store === access.store);
       if (!dependency) continue;
 
       if (

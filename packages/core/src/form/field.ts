@@ -1,6 +1,6 @@
 import { atom } from "../atom";
 import { computed } from "../computed";
-import { State, state } from "../state";
+import { Store, store } from "../store";
 
 type ExtractReturnTypes<T extends (((i: any) => any) | undefined)[]> = {
   [K in keyof T]: T[K] extends (i: any) => infer R ? Awaited<R> : never;
@@ -140,7 +140,7 @@ export function field<TValue extends any, TOptions extends FieldOptions>(
     errors({} as any);
   }
 
-  return state({
+  return store({
     name,
     value,
     setValue,
@@ -158,7 +158,7 @@ export function field<TValue extends any, TOptions extends FieldOptions>(
       value(initialValue as any);
       markAsFresh();
     },
-  }) as State<FieldInstance<TValue, TOptions>>;
+  }) as Store<FieldInstance<TValue, TOptions>>;
 }
 
 const IS_FIELD = Symbol.for("IS_FIELD");
