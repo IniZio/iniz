@@ -1,5 +1,12 @@
 # @iniz/example-vite
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [e278721]
+  - @iniz/react@0.7.0
+
 ## 0.0.2
 
 ### Patch Changes
