@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [
     react({
+      fastRefresh: false,
       jsxImportSource: "@iniz/react",
     }),
   ],
